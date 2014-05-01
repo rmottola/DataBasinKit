@@ -26,8 +26,8 @@
 #import <Foundation/Foundation.h>
 
 #import <WebServices/WebServices.h>
-#import "DBCVSWriter.h"
-#import "DBCVSReader.h"
+#import "DBCSVWriter.h"
+#import "DBCSVReader.h"
 
 @class DBSObject;
 @class DBSoap;
@@ -42,12 +42,12 @@
 }
 
 - (void)setDBSoap: (DBSoap *)dbs;
-- (void)query :(NSString *)queryString queryAll:(BOOL)all toWriter:(DBCVSWriter *)writer progressMonitor:(id<DBProgressProtocol>)p;
-- (void)queryIdentify :(NSString *)queryString queryAll:(BOOL)all fromReader:(DBCVSReader *)reader toWriter:(DBCVSWriter *)writer withBatchSize:(int)bSize progressMonitor:(id<DBProgressProtocol>)p;
-- (NSMutableArray *)create :(NSString *)objectName fromReader:(DBCVSReader *)reader progressMonitor:(id<DBProgressProtocol>)p;
-- (NSMutableArray *)update :(NSString *)objectName fromReader:(DBCVSReader *)reader progressMonitor:(id<DBProgressProtocol>)p;
-- (NSMutableArray *)deleteFromReader:(DBCVSReader *)reader progressMonitor:(id<DBProgressProtocol>)p;
-- (void)describeSObject: (NSString *)objectType toWriter:(DBCVSWriter *)writer;
+- (void)query :(NSString *)queryString queryAll:(BOOL)all toWriter:(DBCSVWriter *)writer progressMonitor:(id<DBProgressProtocol>)p;
+- (void)queryIdentify :(NSString *)queryString queryAll:(BOOL)all fromReader:(DBCSVReader *)reader toWriter:(DBCSVWriter *)writer withBatchSize:(int)bSize progressMonitor:(id<DBProgressProtocol>)p;
+- (NSMutableArray *)create :(NSString *)objectName fromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p;
+- (NSMutableArray *)update :(NSString *)objectName fromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p;
+- (NSMutableArray *)deleteFromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p;
+- (void)describeSObject: (NSString *)objectType toWriter:(DBCSVWriter *)writer;
 
 
 @end

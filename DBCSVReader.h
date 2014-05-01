@@ -32,7 +32,7 @@
 
 @protocol DBLoggerProtocol;
 
-@interface DBCVSReader : NSObject
+@interface DBCSVReader : NSObject
 {
   id<DBLoggerProtocol> logger;
   NSArray      *fieldNames;

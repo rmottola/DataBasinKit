@@ -22,11 +22,11 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 */
 
-#import "DBCVSWriter.h"
+#import "DBCSVWriter.h"
 #import "DBSObject.h"
 #import "DBLoggerProtocol.h"
 
-@implementation DBCVSWriter
+@implementation DBCSVWriter
 
 - (id)initWithHandle:(NSFileHandle *)fileHandle
 {

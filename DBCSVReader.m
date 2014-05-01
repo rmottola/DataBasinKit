@@ -23,10 +23,10 @@
   Boston, MA 02111 USA.
 */
 
-#import "DBCVSReader.h"
+#import "DBCSVReader.h"
 #import "DBLoggerProtocol.h"
 
-@implementation DBCVSReader
+@implementation DBCSVReader
 
 - (id)initWithPath:(NSString *)filePath withLogger:(id<DBLoggerProtocol>)l
 {
