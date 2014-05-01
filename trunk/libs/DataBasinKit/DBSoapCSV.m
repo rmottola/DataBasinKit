@@ -39,7 +39,7 @@
   logger = [db logger];
 }
 
-- (void)query :(NSString *)queryString queryAll:(BOOL)all toWriter:(DBCVSWriter *)writer progressMonitor:(id<DBProgressProtocol>)p
+- (void)query :(NSString *)queryString queryAll:(BOOL)all toWriter:(DBCSVWriter *)writer progressMonitor:(id<DBProgressProtocol>)p
 {
   int            batchSize;
 
@@ -86,7 +86,7 @@
 /**
    See DBSoap for informations about the batch size parameter.
  */
-- (void)queryIdentify :(NSString *)queryString queryAll:(BOOL)all fromReader:(DBCVSReader *)reader toWriter:(DBCVSWriter *)writer withBatchSize:(int)bSize progressMonitor:(id<DBProgressProtocol>)p
+- (void)queryIdentify :(NSString *)queryString queryAll:(BOOL)all fromReader:(DBCSVReader *)reader toWriter:(DBCSVWriter *)writer withBatchSize:(int)bSize progressMonitor:(id<DBProgressProtocol>)p
 {
   NSArray *inFieldNames;
   unsigned inFieldCount;
@@ -148,7 +148,7 @@
   [p setEnd];
 }
 
-- (NSMutableArray *)create :(NSString *)objectName fromReader:(DBCVSReader *)reader progressMonitor:(id<DBProgressProtocol>)p
+- (NSMutableArray *)create :(NSString *)objectName fromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p
 {
   NSEnumerator   *enumerator;
   NSArray        *objectsArray;
@@ -196,7 +196,7 @@
   return resultArray;
 }
 
-- (NSMutableArray *)update :(NSString *)objectName fromReader:(DBCVSReader *)reader progressMonitor:(id<DBProgressProtocol>)p
+- (NSMutableArray *)update :(NSString *)objectName fromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p
 {
   NSEnumerator   *enumerator;
   NSArray        *objectsArray;
@@ -247,7 +247,7 @@
   return resultArray;
 }
 
-- (void)describeSObject: (NSString *)objectType toWriter:(DBCVSWriter *)writer
+- (void)describeSObject: (NSString *)objectType toWriter:(DBCSVWriter *)writer
 {
   NSUInteger      i;
   NSUInteger     size;
@@ -299,7 +299,7 @@
 
 
 
-- (NSMutableArray *)deleteFromReader:(DBCVSReader *)reader progressMonitor:(id<DBProgressProtocol>)p
+- (NSMutableArray *)deleteFromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p
 {
   NSMutableArray *objectsArray;
   NSMutableArray *resultArray;

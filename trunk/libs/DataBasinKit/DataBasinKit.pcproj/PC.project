@@ -8,11 +8,11 @@
 	dist
     );
     "CLASS_FILES" = (
-	"DBCVSReader.m",
-	"DBCVSWriter.m",
 	"DBSoap.m",
 	"DBSoapCSV.m",
-	"DBSObject.m"
+	"DBSObject.m",
+	"DBCSVReader.m",
+	"DBCSVWriter.m"
     );
     COMPILEROPTIONS = "";
     CPPOPTIONS = "";
@@ -24,13 +24,13 @@
     "HEADERS_INSTALL_DIR" = "";
     "HEADER_FILES" = (
 	"DataBasinKit.h",
-	"DBCVSReader.h",
-	"DBCVSWriter.h",
 	"DBSoap.h",
 	"DBSoapCSV.h",
 	"DBSObject.h",
 	"DBProgressProtocol.h",
-	"DBLoggerProtocol.h"
+	"DBLoggerProtocol.h",
+	"DBCSVReader.h",
+	"DBCSVWriter.h"
     );
     IMAGES = (
     );
@@ -64,13 +64,13 @@
     "PROJECT_URL" = "";
     "PUBLIC_HEADERS" = (
 	"DataBasinKit.h",
-	"DBCVSReader.h",
-	"DBCVSWriter.h",
 	"DBSoap.h",
 	"DBSoapCSV.h",
 	"DBSObject.h",
 	"DBProgressProtocol.h",
-	"DBLoggerProtocol.h"
+	"DBLoggerProtocol.h",
+	"DBCSVReader.h",
+	"DBCSVWriter.h"
     );
     "SEARCH_HEADER_DIRS" = (
     );

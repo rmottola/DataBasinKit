@@ -24,23 +24,23 @@ DataBasinKit_DEPLOY_WITH_CURRENT_VERSION = yes
 #
 DataBasinKit_HEADER_FILES = \
 DataBasinKit.h \
-DBCVSReader.h \
-DBCVSWriter.h \
 DBSoap.h \
 DBSoapCSV.h \
 DBSObject.h \
 DBProgressProtocol.h \
-DBLoggerProtocol.h 
+DBLoggerProtocol.h \
+DBCSVReader.h \
+DBCSVWriter.h 
 
 #
 # Class files
 #
 DataBasinKit_OBJC_FILES = \
-DBCVSReader.m \
-DBCVSWriter.m \
 DBSoap.m \
 DBSoapCSV.m \
-DBSObject.m
+DBSObject.m \
+DBCSVReader.m \
+DBCSVWriter.m
 
 #
 # Makefiles

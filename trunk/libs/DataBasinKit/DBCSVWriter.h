@@ -26,7 +26,7 @@
 
 @protocol DBLoggerProtocol;
 
-@interface DBCVSWriter : NSObject
+@interface DBCSVWriter : NSObject
 {
   id<DBLoggerProtocol> logger;
   NSArray      *fieldNames;
