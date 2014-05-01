@@ -24,12 +24,11 @@
 */
 
 #import "DBCVSReader.h"
-#import "DBLogger.h"
-
+#import "DBLoggerProtocol.h"
 
 @implementation DBCVSReader
 
-- (id)initWithPath:(NSString *)filePath withLogger:(DBLogger *)l
+- (id)initWithPath:(NSString *)filePath withLogger:(id<DBLoggerProtocol>)l
 {
   if ((self = [super init]))
     {
@@ -38,12 +37,12 @@
   return self;
 }
 
-- (void)setLogger:(DBLogger *)l
+- (void)setLogger:(id<DBLoggerProtocol>)l
 {
   logger = l;
 }
 
-- (id)initWithPath:(NSString *)filePath byParsingHeaders:(BOOL)parseHeader withLogger:(DBLogger *)l
+- (id)initWithPath:(NSString *)filePath byParsingHeaders:(BOOL)parseHeader withLogger:(id<DBLoggerProtocol>)l
 {
   if ((self = [super init]))
     {

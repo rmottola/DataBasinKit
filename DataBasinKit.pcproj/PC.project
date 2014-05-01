@@ -8,6 +8,11 @@
 	dist
     );
     "CLASS_FILES" = (
+	"DBCVSReader.m",
+	"DBCVSWriter.m",
+	"DBSoap.m",
+	"DBSoapCSV.m",
+	"DBSObject.m"
     );
     COMPILEROPTIONS = "";
     CPPOPTIONS = "";
@@ -18,7 +23,14 @@
     );
     "HEADERS_INSTALL_DIR" = "";
     "HEADER_FILES" = (
-	"DataBasinKit.h"
+	"DataBasinKit.h",
+	"DBCVSReader.h",
+	"DBCVSWriter.h",
+	"DBSoap.h",
+	"DBSoapCSV.h",
+	"DBSObject.h",
+	"DBProgressProtocol.h",
+	"DBLoggerProtocol.h"
     );
     IMAGES = (
     );
@@ -39,19 +51,26 @@
     );
     "PROJECT_AUTHORS" = (
     );
-    "PROJECT_COPYRIGHT" = "Copyright (C) 200x";
-    "PROJECT_COPYRIGHT_DESC" = "Released under ...";
+    "PROJECT_COPYRIGHT" = "Copyright (C) 2008-2014";
+    "PROJECT_COPYRIGHT_DESC" = "Released under LGPL v2";
     "PROJECT_CREATOR" = "";
-    "PROJECT_DESCRIPTION" = "No description avaliable!";
+    "PROJECT_DESCRIPTION" = "Salesforce.com Framework";
     "PROJECT_GROUP" = "No group avaliable!";
     "PROJECT_MAINTAINER" = "";
     "PROJECT_NAME" = DataBasinKit;
-    "PROJECT_RELEASE" = "0.1";
+    "PROJECT_RELEASE" = "0.8";
     "PROJECT_SUMMARY" = "No summary avaliable!";
     "PROJECT_TYPE" = Framework;
     "PROJECT_URL" = "";
     "PUBLIC_HEADERS" = (
-	"DataBasinKit.h"
+	"DataBasinKit.h",
+	"DBCVSReader.h",
+	"DBCVSWriter.h",
+	"DBSoap.h",
+	"DBSoapCSV.h",
+	"DBSObject.h",
+	"DBProgressProtocol.h",
+	"DBLoggerProtocol.h"
     );
     "SEARCH_HEADER_DIRS" = (
     );

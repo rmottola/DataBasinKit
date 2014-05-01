@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2013 Free Software Foundation
+  Copyright (C) 2008-2014 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -29,6 +29,7 @@
 #import "DBSObject.h"
 #import "DBSoapCSV.h"
 #import "DBProgressProtocol.h"
+#import "DBLoggerProtocol.h"
 
 @implementation DBSoapCSV
 

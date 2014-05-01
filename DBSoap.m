@@ -29,6 +29,7 @@
 #import "DBSObject.h"
 
 #import "DBProgressProtocol.h"
+#import "DBLoggerProtocol.h"
 
 @implementation DBSoap
 
@@ -58,14 +59,14 @@
   return self;
 }
 
-- (void)setLogger: (DBLogger *)l
+- (void)setLogger: (id<DBLoggerProtocol>)l
 {
   if (logger)
     [logger release];
   logger = [l retain];
 }
 
-- (DBLogger *)logger
+- (id<DBLoggerProtocol>)logger
 {
   return logger;
 }
