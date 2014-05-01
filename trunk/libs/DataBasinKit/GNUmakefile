@@ -13,9 +13,9 @@ include $(GNUSTEP_MAKEFILES)/common.make
 #
 # Framework
 #
-VERSION = 0.1
+VERSION = 0.8
 FRAMEWORK_NAME = DataBasinKit
-DataBasinKit_CURRENT_VERSION_NAME = 0.1
+DataBasinKit_CURRENT_VERSION_NAME = 0.8
 DataBasinKit_DEPLOY_WITH_CURRENT_VERSION = yes
 
 
@@ -23,7 +23,24 @@ DataBasinKit_DEPLOY_WITH_CURRENT_VERSION = yes
 # Public headers (will be installed)
 #
 DataBasinKit_HEADER_FILES = \
-DataBasinKit.h 
+DataBasinKit.h \
+DBCVSReader.h \
+DBCVSWriter.h \
+DBSoap.h \
+DBSoapCSV.h \
+DBSObject.h \
+DBProgressProtocol.h \
+DBLoggerProtocol.h 
+
+#
+# Class files
+#
+DataBasinKit_OBJC_FILES = \
+DBCVSReader.m \
+DBCVSWriter.m \
+DBSoap.m \
+DBSoapCSV.m \
+DBSObject.m
 
 #
 # Makefiles

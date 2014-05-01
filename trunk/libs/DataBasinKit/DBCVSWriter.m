@@ -24,7 +24,7 @@
 
 #import "DBCVSWriter.h"
 #import "DBSObject.h"
-#import "DBLogger.h"
+#import "DBLoggerProtocol.h"
 
 @implementation DBCVSWriter
 
@@ -42,7 +42,7 @@
   return self;
 }
 
-- (void)setLogger:(DBLogger *)l
+- (void)setLogger:(id<DBLoggerProtocol>)l
 {
   logger = l;
 }

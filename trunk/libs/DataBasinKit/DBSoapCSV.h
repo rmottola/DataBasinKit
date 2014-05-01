@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2013 Free Software Foundation
+  Copyright (C) 2008-2014 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -31,13 +31,13 @@
 
 @class DBSObject;
 @class DBSoap;
-@class DBLogger;
 
 @protocol DBProgressProtocol;
+@protocol DBLoggerProtocol;
 
 @interface DBSoapCSV : NSObject
 {
-  DBLogger *logger;
+  id<DBLoggerProtocol> logger;
   DBSoap *db;
 }
 

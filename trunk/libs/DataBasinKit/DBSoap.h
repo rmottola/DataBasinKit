@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2013 Free Software Foundation
+  Copyright (C) 2008-2014 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -26,8 +26,6 @@
 #import <Foundation/Foundation.h>
 #import <WebServices/WebServices.h>
 
-#import "DBLogger.h"
-
 #if defined(__APPLE__) && (MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_4)
 #ifndef NSUInteger
 #define NSUInteger unsigned int
@@ -42,11 +40,12 @@
 
 @class DBSObject;
 @protocol DBProgressProtocol;
+@protocol DBLoggerProtocol;
 
 @interface DBSoap : NSObject
 {
   GWSService *service;
-  DBLogger *logger;
+  id<DBLoggerProtocol> logger;
     
   /* salesforce.com session variables */
   NSString     *sessionId;
@@ -70,8 +69,8 @@
 }
 
 - (void)login :(NSURL *)url :(NSString *)userName :(NSString *)password :(BOOL)useHttps;
-- (void)setLogger: (DBLogger *)l;
-- (DBLogger *)logger;
+- (void)setLogger: (id<DBLoggerProtocol>)l;
+- (id<DBLoggerProtocol>)logger;
 - (void)setUpBatchSize:(unsigned)size;
 - (NSMutableArray *)queryFull :(NSString *)queryString queryAll:(BOOL)all progressMonitor:(id<DBProgressProtocol>)p;
 - (NSString *)query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p;

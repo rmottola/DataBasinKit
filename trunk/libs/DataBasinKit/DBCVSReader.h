@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2009-2012 Free Software Foundation
+  Copyright (C) 2009-2014 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -30,11 +30,11 @@
 #define NSUInteger unsigned int
 #endif
 
-@class DBLogger;
+@protocol DBLoggerProtocol;
 
 @interface DBCVSReader : NSObject
 {
-  DBLogger     *logger;
+  id<DBLoggerProtocol> logger;
   NSArray      *fieldNames;
   NSArray      *fieldTypes;
   NSString     *separator;
@@ -45,9 +45,9 @@
   int          currentLine;
 }
 
-- (void)setLogger:(DBLogger *)l;
-- (id)initWithPath:(NSString *)filePath withLogger:(DBLogger *)l;
-- (id)initWithPath:(NSString *)filePath byParsingHeaders:(BOOL)parseHeader withLogger:(DBLogger *)l;
+- (void)setLogger:(id<DBLoggerProtocol>)l;
+- (id)initWithPath:(NSString *)filePath withLogger:(id<DBLoggerProtocol>)l;
+- (id)initWithPath:(NSString *)filePath byParsingHeaders:(BOOL)parseHeader withLogger:(id<DBLoggerProtocol>)l;
 - (NSArray *)getFieldNames:(NSString *)firstLine;
 - (NSArray *)fieldNames;
 - (NSArray *)readDataSet;
