@@ -33,6 +33,47 @@
 
 @implementation DBSoap
 
++ (NSArray *)fieldsByParsingQuery:(NSString *)query
+{
+  NSMutableArray *fields;
+  NSString *selectPart;
+  NSArray *components;
+  NSRange fromPosition;
+  NSRange selectPosition;
+
+  if (query == nil)
+    return nil;
+
+  components = nil;
+  fields = nil;
+  fromPosition = [query rangeOfString:@"from" options:NSCaseInsensitiveSearch];
+  selectPosition = [query rangeOfString:@"select" options:NSCaseInsensitiveSearch];
+  /* we assume that we always have select and from in the query */
+  if (fromPosition.location != NSNotFound && selectPosition.location != NSNotFound)
+    {
+      selectPart = [query substringFromRange:NSMakeRange([@"select " length], fromPosition.location - [@"select " length])];
+      components = [selectPart componentsSeparatedByString:@","];
+
+
+      if ([components count] > 1)
+        {
+          NSUInteger i;
+
+          fields = [NSMutableArray arrayWithCapacity:[components count]];
+          for (i = 0; i < [components count]; i++)
+            {
+              NSString *field;
+
+              field = [components objectAtIndex:i];
+              field = [field stringByTrimmingSpaces];
+              [fields addObject:field];
+            }
+        }
+    }
+  NSLog(@"fields: %@", fields);
+  return [NSArray arrayWithArray:fields];
+}
+
 - (id)init
 {
   if ((self = [super init]))

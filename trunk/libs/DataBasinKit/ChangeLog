@@ -1,0 +1,6 @@
+Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.h
+	* DBSoap.m
+	* DBSoapCSV.m
+	SOQL query parser to extract fields.
