@@ -42,11 +42,12 @@
 - (void)query :(NSString *)queryString queryAll:(BOOL)all toWriter:(DBCSVWriter *)writer progressMonitor:(id<DBProgressProtocol>)p
 {
   int            batchSize;
-
+  NSArray        *fields;
   NSString       *qLoc;
   NSMutableArray *sObjects;
   
-  
+  fields = [DBSoap fieldsByParsingQuery:queryString];
+
   sObjects = [[NSMutableArray alloc] init];
 
   [p reset];
@@ -96,6 +97,9 @@
   unsigned i;
   unsigned batchSize;
   NSArray *keys;
+  NSArray        *fields;
+
+  fields = [DBSoap fieldsByParsingQuery:queryString];
 
   [p reset];
   
