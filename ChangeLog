@@ -2,6 +2,9 @@
 
 	* DBCSVWriter.m
         Fix warning and perhaps wrong +bomLength
+        
+        * DBSoap.m
+        Fix parsing of query which has only one field, make 10.4 compatible.
 
 Riccardo Mottola <rm@gnu.org>
 
