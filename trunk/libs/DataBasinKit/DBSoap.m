@@ -51,7 +51,7 @@
   /* we assume that we always have select and from in the query */
   if (fromPosition.location != NSNotFound && selectPosition.location != NSNotFound)
     {
-      selectPart = [query substringFromRange:NSMakeRange([@"select " length], fromPosition.location - [@"select " length])];
+      selectPart = [query substringWithRange:NSMakeRange([@"select " length], fromPosition.location - [@"select " length])];
       components = [selectPart componentsSeparatedByString:@","];
 
 
@@ -65,9 +65,14 @@
               NSString *field;
 
               field = [components objectAtIndex:i];
-              field = [field stringByTrimmingSpaces];
+              field = [field stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
               [fields addObject:field];
             }
+        }
+      else
+        {
+          fields = [NSMutableArray arrayWithCapacity:[components count]];
+          [fields addObject:[selectPart stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
         }
     }
   NSLog(@"fields: %@", fields);
