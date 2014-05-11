@@ -270,7 +270,7 @@
       oneLine = [self formatOneLine:o forHeader:NO];
       data = [oneLine dataUsingEncoding: encoding];
       if (bomLength > 0)
-	data2 = [NSData dataWithBytesNoCopy: [data bytes]+bomLength length: [data length]-bomLength freeWhenDone: NO];
+	data2 = [NSData dataWithBytesNoCopy: (void *)[data bytes] length: [data length]-bomLength freeWhenDone: NO];
       else
 	data2 = data;
       [file writeData: data2];
