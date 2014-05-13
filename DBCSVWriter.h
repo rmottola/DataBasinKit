@@ -38,11 +38,13 @@
   NSString     *newLine;
   NSStringEncoding encoding;
   unsigned     bomLength;
+  BOOL writeOrdered;
 }
 
+- (void)setWriteFieldsOrdered:(BOOL)flag;
 - (id)initWithHandle:(NSFileHandle *)fileHandle;
 - (void)setLogger:(id<DBLoggerProtocol>)l;
-- (void)setFieldNames: (id)obj andWriteIt: (BOOL)flag;
+- (void)setFieldNames: (id)obj andWriteThem: (BOOL)flag;
 - (void)writeDataSet:(NSArray *)array;
 - (NSString *)formatOneLine:(id)data forHeader:(BOOL) headerFlag;
 - (void)setStringEncoding: (NSStringEncoding) enc;
