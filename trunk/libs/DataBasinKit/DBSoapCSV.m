@@ -46,7 +46,11 @@
   NSString       *qLoc;
   NSMutableArray *sObjects;
   
-  fields = [DBSoap fieldsByParsingQuery:queryString];
+  fields = nil;
+  if (NO)
+    {
+      fields = [DBSoap fieldsByParsingQuery:queryString];
+    }
 
   sObjects = [[NSMutableArray alloc] init];
 
@@ -64,7 +68,15 @@
   batchSize = [sObjects count];
   if (batchSize > 0)
     {
-      [writer setFieldNames: [sObjects objectAtIndex: 0] andWriteIt:YES];
+      if (fields != nil)
+        {
+          [writer setWriteFieldsOrdered:YES];
+          [writer setFieldNames: fields andWriteThem:YES];
+        }
+      else
+        {
+          [writer setFieldNames: [sObjects objectAtIndex: 0] andWriteThem:YES];
+        }
       [p setCurrentDescription:@"Writing"];
       [writer writeDataSet: sObjects];
       [p incrementCurrentValue:[sObjects count]];
@@ -99,7 +111,11 @@
   NSArray *keys;
   NSArray        *fields;
 
-  fields = [DBSoap fieldsByParsingQuery:queryString];
+  fields = nil;
+  if (NO)
+    {
+      fields = [DBSoap fieldsByParsingQuery:queryString];
+    }
 
   [p reset];
   
@@ -143,7 +159,15 @@
   batchSize = [sObjects count];
   if (batchSize > 0)
     {
-      [writer setFieldNames:[sObjects objectAtIndex: 0] andWriteIt:YES];
+ if (fields != nil)
+        {
+          [writer setWriteFieldsOrdered:YES];
+          [writer setFieldNames: fields andWriteThem:YES];
+        }
+      else
+        {
+          [writer setFieldNames: [sObjects objectAtIndex: 0] andWriteThem:YES];
+        }
       [writer writeDataSet: sObjects];
     }
   
@@ -270,7 +294,7 @@
     return;
   
   keys = [[object propertiesOfField: [fields objectAtIndex: 0]] allKeys];
-  [writer setFieldNames:[NSArray arrayWithArray:keys] andWriteIt:YES];
+  [writer setFieldNames:[NSArray arrayWithArray:keys] andWriteThem:YES];
   
   set = [[NSMutableArray alloc] init];
   
