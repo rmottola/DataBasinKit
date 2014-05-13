@@ -1,8 +1,13 @@
+2014-05-13 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoapCSV.m
+	New core that analyzes fieldnames and is capable of extracting them in given order.
+
 2014-05-12 Riccardo Mottola <rm@gnu.org>
 
 	* DBCSVWriter.m
         Fix warning and perhaps wrong +bomLength
-        
+
         * DBSoap.m
         Fix parsing of query which has only one field, make 10.4 compatible.
 
