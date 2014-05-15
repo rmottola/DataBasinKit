@@ -49,9 +49,15 @@
   [fieldNames release];
   [super dealloc];
 }
+
 - (void)setWriteFieldsOrdered:(BOOL)flag
 {
   writeOrdered = flag;
+}
+
+- (BOOL)writeFieldsOrdered
+{
+  return writeOrdered;
 }
 
 - (void)setLogger:(id<DBLoggerProtocol>)l

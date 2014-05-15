@@ -41,6 +41,7 @@
   BOOL writeOrdered;
 }
 
+- (BOOL)writeFieldsOrdered;
 - (void)setWriteFieldsOrdered:(BOOL)flag;
 - (id)initWithHandle:(NSFileHandle *)fileHandle;
 - (void)setLogger:(id<DBLoggerProtocol>)l;

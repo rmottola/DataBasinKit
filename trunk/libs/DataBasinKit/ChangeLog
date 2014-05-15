@@ -1,5 +1,12 @@
 2014-05-13 Riccardo Mottola <rm@gnu.org>
 
+	* DBCSVWriter.h
+	* DBCSVWriter.m
+	* DBSoapCSV.m
+	add writeOrdered accessor and use it.
+
+2014-05-13 Riccardo Mottola <rm@gnu.org>
+
 	* DBSoapCSV.m
 	* DBCSVWriter.h
 	* DBCSVWriter.m
