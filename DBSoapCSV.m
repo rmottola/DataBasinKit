@@ -47,7 +47,7 @@
   NSMutableArray *sObjects;
   
   fields = nil;
-  if (NO)
+  if ([writer writeFieldsOrdered])
     {
       fields = [DBSoap fieldsByParsingQuery:queryString];
     }
@@ -101,20 +101,19 @@
  */
 - (void)queryIdentify :(NSString *)queryString queryAll:(BOOL)all fromReader:(DBCSVReader *)reader toWriter:(DBCSVWriter *)writer withBatchSize:(int)bSize progressMonitor:(id<DBProgressProtocol>)p
 {
-  NSArray *inFieldNames;
-  unsigned inFieldCount;
-  NSArray *dataSet;
+  NSArray        *inFieldNames;
+  NSUInteger      inFieldCount;
+  NSArray        *dataSet;
   NSMutableArray *identifierArray;
   NSMutableArray *sObjects;
-  unsigned i;
-  unsigned batchSize;
-  NSArray *keys;
-  NSArray        *fields;
+  NSUInteger     i;
+  NSUInteger     batchSize;
+  NSArray        *queryFields;
 
-  fields = nil;
-  if (NO)
+  queryFields = nil;
+  if ([writer writeFieldsOrdered])
     {
-      fields = [DBSoap fieldsByParsingQuery:queryString];
+      queryFields = [DBSoap fieldsByParsingQuery:queryString];
     }
 
   [p reset];
@@ -155,14 +154,13 @@
   NS_ENDHANDLER
   
   [p setCurrentDescription:@"Writing data"];
-  keys = nil;
   batchSize = [sObjects count];
   if (batchSize > 0)
     {
- if (fields != nil)
+      if (queryFields != nil)
         {
           [writer setWriteFieldsOrdered:YES];
-          [writer setFieldNames: fields andWriteThem:YES];
+          [writer setFieldNames: queryFields andWriteThem:YES];
         }
       else
         {
