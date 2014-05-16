@@ -229,8 +229,9 @@
     }
 }
 
-/* This methods sets the internal field names forthe header when using ordered object writeout.
-   It is expected to bean array of strings, not of complex objects */
+/*
+  This methods sets the internal field names for the header when using ordered object writeout.
+*/
 - (void)setFieldNames:(id)obj andWriteThem:(BOOL)flag
 {
   NSArray *array;
@@ -256,20 +257,7 @@
   if ([array count] == 0)
     return;
 
-  /* we get the field names which might be a plain array or a set of complex objects */
-  if ([[array objectAtIndex:0] isKindOfClass: [DBSObject class]])
-    {
-      NSLog(@"we have objects");
-    }
-  else if ([[array objectAtIndex:0] isKindOfClass: [NSString class]])
-    {
-      NSLog(@"we have strings");
-    }
-  else
-    {
-      NSLog(@"Unexpected object type in the filed names");
-      return;
-    }
+  NSLog(@"header array is %@", array);
 
   /* if we write the header, fine, else we write at least the BOM */
   if (flag == YES)
@@ -413,7 +401,7 @@
           key = [fieldNames objectAtIndex:i];
           originalKey = nil;
           j = 0;
-          //          NSLog(@"lookingfor -> %@", key);
+	  NSLog(@"lookingfor -> %@", key);
           while (j < [keyOrder count] && originalKey == nil)
             {
               originalKey = [keyOrder objectAtIndex:j];
@@ -421,28 +409,40 @@
                 originalKey = nil;
               j++;
             }
-          //         NSLog(@"original key: %@", originalKey);
+	  NSLog(@"original key: %@", originalKey);
+	  valStr = nil;
           if (headerFlag)
             {
               valStr = [self formatScalarObject: key];
             }
           else
             {
-              id val;
+	      if (originalKey)
+		{
+		  id val;
 
-              val = [dataDict objectForKey: originalKey];
-              if (val)
-                {
-                  valStr = [self formatScalarObject: val];
-                }
-              else
-                {
-                  valStr = @"";
-                }
+		  val = [dataDict objectForKey: originalKey];
+		  if (val)
+		    {
+		      valStr = [self formatScalarObject: val];
+		    }
+		  else
+		    {
+		      /* we found the key but no corresponding value
+			 we insert an empty string to keep the column sequence */
+		      valStr = [self formatScalarObject: @""];
+		    }
+		}
+	      else
+		{
+		  /* we no corresponding key, possibly referencing a null complex object
+		     we insert an empty string to keep the column sequence */
+		  valStr = [self formatScalarObject: @""];
+		}
             }
 
           [theLine appendString:valStr];
-          if (i < [keyOrder count]-1)
+          if (i < [fieldNames count]-1)
             [theLine appendString: separator];
         }
     }
