@@ -1,3 +1,8 @@
+2014-05-16 Riccardo Mottola <rm@gnu.org>
+
+	* DBCSVWriter.m
+	Fix writing of ordered header, in case of sub-objects.
+
 2014-05-13 Riccardo Mottola <rm@gnu.org>
 
 	* DBCSVWriter.h
