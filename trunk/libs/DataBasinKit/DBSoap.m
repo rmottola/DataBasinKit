@@ -646,7 +646,7 @@
       record = [records objectAtIndex:0];
       batchSize = [records count];        
       
-      NSLog(@"records size is: %lu", batchSize);
+      NSLog(@"records size is: %lu", (unsigned long)batchSize);
       
       /* let's get the fields from the keys of the first record */
       keys = [NSMutableArray arrayWithArray:[record allKeys]];
