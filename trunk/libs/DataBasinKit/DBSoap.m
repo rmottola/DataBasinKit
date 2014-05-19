@@ -40,6 +40,7 @@
   NSArray *components;
   NSRange fromPosition;
   NSRange selectPosition;
+  NSUInteger i;
 
   if (query == nil)
     return nil;
@@ -55,26 +56,42 @@
       components = [selectPart componentsSeparatedByString:@","];
 
 
-      if ([components count] > 1)
+      /* if we only have one field, we fake an array to retain the same logic */
+      if ([components count] == 0)
         {
-          NSUInteger i;
-
-          fields = [NSMutableArray arrayWithCapacity:[components count]];
-          for (i = 0; i < [components count]; i++)
-            {
-              NSString *field;
-
-              field = [components objectAtIndex:i];
-              field = [field stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-              [fields addObject:field];
-            }
+          components = [NSArray arrayWithObject:selectPart];
         }
-      else
+
+
+      fields = [NSMutableArray arrayWithCapacity:[components count]];
+      for (i = 0; i < [components count]; i++)
         {
-          fields = [NSMutableArray arrayWithCapacity:[components count]];
-          [fields addObject:[selectPart stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+          NSString *field;
+          NSRange r;
+
+          field = [components objectAtIndex:i];
+          field = [field stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+          /* now we check if the field has aliases */
+          r = [field rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+          if (r.location != NSNotFound)
+            {
+              NSArray *subComponents;
+              NSMutableString *cleanString;
+
+              cleanString = [NSMutableString stringWithString:field];
+              [cleanString replaceOccurrencesOfString:@"\r" withString:@" " options:0  range:NSMakeRange(0, [cleanString length])];
+              [cleanString replaceOccurrencesOfString:@"\n" withString:@" " options:0  range:NSMakeRange(0, [cleanString length])];
+              [cleanString replaceOccurrencesOfString:@"\t" withString:@" " options:0  range:NSMakeRange(0, [cleanString length])];
+              subComponents = [cleanString componentsSeparatedByString:@" "];
+
+              //quick heuristic, get the last field
+              field = [subComponents objectAtIndex:[subComponents count]-1];
+              field = [field stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            }
+          [fields addObject:field];
         }
     }
+
   NSLog(@"fields: %@", fields);
   return [NSArray arrayWithArray:fields];
 }
