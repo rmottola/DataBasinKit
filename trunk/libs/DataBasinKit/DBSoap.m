@@ -33,6 +33,14 @@
 
 @implementation DBSoap
 
+/**
+   <p>Analyzes <em>query</em> and splits the select part into fields.<br>
+   These fields can be used, for example, to predict the output returned by
+   query and queryAll</p>
+   <p>Contains additional logic to work around idiosynchrasies of salesforce.com
+   with handling aggregate queryes. Complex objects are flattened to their names.<br>
+   E.g. MyObject1__r.MyObject2__r.Field__c returns Field__c.
+ */
 + (NSArray *)fieldsByParsingQuery:(NSString *)query
 {
   NSMutableArray *fields;
@@ -52,9 +60,22 @@
   /* we assume that we always have select and from in the query */
   if (fromPosition.location != NSNotFound && selectPosition.location != NSNotFound)
     {
-      selectPart = [query substringWithRange:NSMakeRange([@"select " length], fromPosition.location - [@"select " length])];
-      components = [selectPart componentsSeparatedByString:@","];
+      BOOL hasCount;
+      NSMutableString *cleansedSelectPart;
 
+      selectPart = [query substringWithRange:NSMakeRange([@"select " length], fromPosition.location - [@"select " length])];
+
+      /* we replace certain characters with space */
+      cleansedSelectPart = [NSMutableString stringWithString:selectPart];
+      [cleansedSelectPart replaceOccurrencesOfString:@"\r" withString:@" " options:0  range:NSMakeRange(0, [cleansedSelectPart length])];
+      [cleansedSelectPart replaceOccurrencesOfString:@"\n" withString:@" " options:0  range:NSMakeRange(0, [cleansedSelectPart length])];
+      [cleansedSelectPart replaceOccurrencesOfString:@"\t" withString:@" " options:0  range:NSMakeRange(0, [cleansedSelectPart length])];
+      
+      /* now we do some white-space coalescing */
+      while ([cleansedSelectPart replaceOccurrencesOfString:@"  " withString:@" " options:0 range:NSMakeRange(0, [cleansedSelectPart length])] > 0);
+
+      /* now we trust the string enough and get the sngle comma-separated components */
+      components = [cleansedSelectPart componentsSeparatedByString:@","];
 
       /* if we only have one field, we fake an array to retain the same logic */
       if ([components count] == 0)
@@ -62,7 +83,19 @@
           components = [NSArray arrayWithObject:selectPart];
         }
 
+      /* now we look for count, to check if it is an aggregate query */
+      hasCount = NO;
+      for (i = 0; i < [components count]; i++)
+        {
+          NSString *field;
 
+          field = [components objectAtIndex:i];
+          field = [field stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+          if ([field rangeOfString:@"count" options:NSCaseInsensitiveSearch].location != NSNotFound)
+            hasCount = YES;
+        }
+
+      NSLog(@"Does query have count? %d", hasCount);
       fields = [NSMutableArray arrayWithCapacity:[components count]];
       for (i = 0; i < [components count]; i++)
         {
@@ -71,23 +104,81 @@
 
           field = [components objectAtIndex:i];
           field = [field stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-          /* now we check if the field has aliases */
+
+          /* now we safely if the field has aliases */
           r = [field rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
           if (r.location != NSNotFound)
             {
               NSArray *subComponents;
-              NSMutableString *cleanString;
 
-              cleanString = [NSMutableString stringWithString:field];
-              [cleanString replaceOccurrencesOfString:@"\r" withString:@" " options:0  range:NSMakeRange(0, [cleanString length])];
-              [cleanString replaceOccurrencesOfString:@"\n" withString:@" " options:0  range:NSMakeRange(0, [cleanString length])];
-              [cleanString replaceOccurrencesOfString:@"\t" withString:@" " options:0  range:NSMakeRange(0, [cleanString length])];
-              subComponents = [cleanString componentsSeparatedByString:@" "];
+              subComponents = [field componentsSeparatedByString:@" "];
 
-              //quick heuristic, get the last field
-              field = [subComponents objectAtIndex:[subComponents count]-1];
-              field = [field stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+              if([[subComponents objectAtIndex:0] caseInsensitiveCompare:@"count"] == NSOrderedSame)
+                {
+                  /* we are parsing something like "count (id) c" */
+                  if ([[subComponents objectAtIndex:1] isEqualToString:@"()"])
+                    {
+                      if ([subComponents count] == 2)
+                        {
+                          field = @"count"; // special case
+                        }
+                      else
+                        {
+                          field = [subComponents objectAtIndex:2];
+                        }
+                    }
+                  else if ([subComponents count] == 3)
+                    {
+                      field = [subComponents objectAtIndex:2];
+                    }
+                  else
+                    {
+                      NSLog(@"[DBSoap fieldsByParsingQuery] unexpected elements while parsing: %@", field);
+                    }
+                }
+              else if([[subComponents objectAtIndex:0] rangeOfString:@"count("].location != NSNotFound)
+                {
+                  /* we are parsing something like "count( id )" */
+                  if ([[subComponents objectAtIndex:[subComponents count] - 1] isEqualToString:@")"])
+                    {
+                      field = @"Expr0"; // special case
+                    }
+                  else
+                    {
+                      field = [subComponents objectAtIndex:[subComponents count] -1];
+                    }
+                }
+              else
+                {
+                  NSLog(@"[DBSoap fieldsByParsingQuery] unexpected elements while parsing: %@", field);
+                }
             }
+          else if (hasCount)
+            {
+              /* the field is not aliased and we know we have an aggregate query, count () separated by space was handled above
+                 salesforce returns Expr0 for count(id) but count for count()
+               */
+              NSLog(@"no spaces, but we have count, the field is: %@", field);
+              if ([field caseInsensitiveCompare:@"count()"] == NSOrderedSame)
+                {
+                  field = @"count";
+                }
+              else if ([field rangeOfString:@"count("].location != NSNotFound)
+                {
+                  field = @"Expr0";
+                }
+              else
+                {
+                  NSRange dotRange;
+
+                  dotRange = [field rangeOfString:@"." options:NSBackwardsSearch];
+                  if (dotRange.location != NSNotFound)
+                    {
+                      field = [field substringWithRange:NSMakeRange(dotRange.location + 1, [field length]-dotRange.location-1)];
+                    }
+                }
+            }
+
           [fields addObject:field];
         }
     }
