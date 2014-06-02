@@ -50,6 +50,7 @@
   if ([writer writeFieldsOrdered])
     {
       fields = [DBSoap fieldsByParsingQuery:queryString];
+      [logger log: LogDebug :@"[DBSoapCSV query] query parsed fields: %@\n", fields];
     }
 
   sObjects = [[NSMutableArray alloc] init];
@@ -114,6 +115,7 @@
   if ([writer writeFieldsOrdered])
     {
       queryFields = [DBSoap fieldsByParsingQuery:queryString];
+      [logger log: LogDebug :@"[DBSoapCSV queryIdentify] query parsed fields: %@\n", queryFields];
     }
 
   [p reset];
