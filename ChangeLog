@@ -1,3 +1,8 @@
+2014-06-03 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.m
+        Try to parse count() and count(id)
+
 2014-05-19 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m
