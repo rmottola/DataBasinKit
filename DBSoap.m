@@ -60,7 +60,7 @@
   /* we assume that we always have select and from in the query */
   if (fromPosition.location != NSNotFound && selectPosition.location != NSNotFound)
     {
-      BOOL hasCount;
+      BOOL hasAggregate;
       NSMutableString *cleansedSelectPart;
 
       selectPart = [query substringWithRange:NSMakeRange([@"select " length], fromPosition.location - [@"select " length])];
@@ -83,19 +83,12 @@
           components = [NSArray arrayWithObject:selectPart];
         }
 
-      /* now we look for count, to check if it is an aggregate query */
-      hasCount = NO;
-      for (i = 0; i < [components count]; i++)
-        {
-          NSString *field;
+      /* now we look for (, to check if it is an aggregate query */
+      hasAggregate = NO;
+      if ([cleansedSelectPart rangeOfString:@"(" options:NSCaseInsensitiveSearch].location != NSNotFound)
+         hasAggregate = YES;
 
-          field = [components objectAtIndex:i];
-          field = [field stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-          if ([field rangeOfString:@"count" options:NSCaseInsensitiveSearch].location != NSNotFound)
-            hasCount = YES;
-        }
-
-      NSLog(@"Does query have count? %d", hasCount);
+      NSLog(@"Does query have aggregate? %d", hasAggregate);
       fields = [NSMutableArray arrayWithCapacity:[components count]];
       for (i = 0; i < [components count]; i++)
         {
@@ -153,7 +146,7 @@
                   NSLog(@"[DBSoap fieldsByParsingQuery] unexpected elements while parsing: %@", field);
                 }
             }
-          else if (hasCount)
+          else if (hasAggregate)
             {
               /* the field is not aliased and we know we have an aggregate query, count () separated by space was handled above
                  salesforce returns Expr0 for count(id) but count for count()
