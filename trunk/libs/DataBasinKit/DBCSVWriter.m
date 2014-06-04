@@ -360,6 +360,12 @@
                   [dataDict setObject:value forKey:key];
                   [keyOrder addObject:key];
 		}
+	      else if ([value isKindOfClass: [NSCalendarDate class]])
+		{
+		  // FIXME Date Handling could allow more options
+                  [dataDict setObject:[value description] forKey:key];
+                  [keyOrder addObject:key];
+		}
 	      else if ([value isKindOfClass: [NSDictionary class]])
 		{
 		  // NSLog(@"Dictionary");
@@ -367,7 +373,7 @@
 		}
 	      else
 		{
-		  NSLog(@"unknown class for object: %@", value);
+		  NSLog(@"unknown class for object %@ of class %@", value, [value class]);
 		}
 	    }
 	}
