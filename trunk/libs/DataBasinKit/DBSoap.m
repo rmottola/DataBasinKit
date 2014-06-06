@@ -62,7 +62,9 @@
     {
       BOOL hasAggregate;
       NSMutableString *cleansedSelectPart;
+      NSUInteger exprProgressive; /* to enumerate Expr0, Expr1... */
 
+      exprProgressive = 0;
       selectPart = [query substringWithRange:NSMakeRange([@"select " length], fromPosition.location - [@"select " length])];
 
       /* we replace certain characters with space */
@@ -101,76 +103,76 @@
           /* now we safely if the field has aliases */
           r = [field rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
           if (r.location != NSNotFound)
-            {
+            { /* alias */
               NSArray *subComponents;
+	      NSRange rParRange; // look for the right parenthesis
 
               subComponents = [field componentsSeparatedByString:@" "];
+	      rParRange = [field rangeOfString:@")"];
 
-              if([[subComponents objectAtIndex:0] caseInsensitiveCompare:@"count"] == NSOrderedSame)
-                {
-                  /* we are parsing something like "count (id) c" */
-                  if ([[subComponents objectAtIndex:1] isEqualToString:@"()"])
-                    {
-                      if ([subComponents count] == 2)
-                        {
-                          field = @"count"; // special case
-                        }
-                      else
-                        {
-                          field = [subComponents objectAtIndex:2];
-                        }
-                    }
-                  else if ([subComponents count] == 3)
-                    {
-                      field = [subComponents objectAtIndex:2];
-                    }
-                  else
-                    {
-                      NSLog(@"[DBSoap fieldsByParsingQuery] unexpected elements while parsing: %@", field);
-                    }
-                }
-              else if([[subComponents objectAtIndex:0] rangeOfString:@"count("].location != NSNotFound)
-                {
-                  /* we are parsing something like "count( id )" */
-                  if ([[subComponents objectAtIndex:[subComponents count] - 1] isEqualToString:@")"])
-                    {
-                      field = @"Expr0"; // special case
-                    }
-                  else
-                    {
-                      field = [subComponents objectAtIndex:[subComponents count] -1];
-                    }
-                }
-              else
-                {
-                  NSLog(@"[DBSoap fieldsByParsingQuery] unexpected elements while parsing: %@", field);
-                }
-            }
-          else if (hasAggregate)
-            {
-              /* the field is not aliased and we know we have an aggregate query, count () separated by space was handled above
-                 salesforce returns Expr0 for count(id) but count for count()
-               */
-              NSLog(@"no spaces, but we have count, the field is: %@", field);
-              if ([field caseInsensitiveCompare:@"count()"] == NSOrderedSame)
-                {
-                  field = @"count";
-                }
-              else if ([field rangeOfString:@"count("].location != NSNotFound)
-                {
-                  field = @"Expr0";
-                }
-              else
-                {
-                  NSRange dotRange;
+	      if (rParRange.location != NSNotFound)
+		{
+		  NSString *lastComponent;
+		  NSRange leftPar, rightPar;
 
-                  dotRange = [field rangeOfString:@"." options:NSBackwardsSearch];
-                  if (dotRange.location != NSNotFound)
-                    {
-                      field = [field substringWithRange:NSMakeRange(dotRange.location + 1, [field length]-dotRange.location-1)];
-                    }
-                }
-            }
+		  NSLog(@"we have an aggregate in %@", field);
+		  lastComponent = [subComponents objectAtIndex:[subComponents count]-1];
+		  /* now we try to understand if the last component is:
+		     - an alias
+		     - () of count()
+		     - ) of function(id)
+		  */
+		  leftPar = [lastComponent rangeOfString:@")"];
+		  rightPar = [lastComponent rangeOfString:@")"];
+		  if (rightPar.location != NSNotFound) // we have no alias
+		    {
+		      if([lastComponent rangeOfString:@"()"].location != NSNotFound)
+			{
+			  /* old style count */
+			  field = @"count";
+			}
+		      else
+			{
+			  field = [NSString stringWithFormat:@"Expr%lu", (unsigned long)exprProgressive];
+			  exprProgressive++;
+			}
+		    }
+		  else
+		    {
+		      field = lastComponent;
+		    }
+		}
+	      else
+		{
+		  NSLog(@"Error, white space but no aggregate function found");
+		}
+	    }
+	  else
+	    { /* no alias */
+	      /* the field is not aliased and we know we have an aggregate query, count () separated by space was handled above
+		 salesforce returns Expr0 for count(id) but count for count()
+	      */
+	      NSLog(@"no spaces, but we have count, the field is: %@", field);
+	      if ([field caseInsensitiveCompare:@"count()"] == NSOrderedSame)
+		{
+		  field = @"count";
+		}
+	      else if ([field rangeOfString:@")"].location != NSNotFound)
+		{
+		  field = [NSString stringWithFormat:@"Expr%lu", (unsigned long)exprProgressive];
+		  exprProgressive++;
+		}
+	      else
+		{
+		  NSRange dotRange;
+		      
+		  dotRange = [field rangeOfString:@"." options:NSBackwardsSearch];
+		  if (dotRange.location != NSNotFound)
+		    {
+		      field = [field substringWithRange:NSMakeRange(dotRange.location + 1, [field length]-dotRange.location-1)];
+		    }
+		}
+	    }
 
           [fields addObject:field];
         }
