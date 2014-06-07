@@ -835,9 +835,12 @@
   NSString *identifier;
   NSString *queryFirstPart;
   NSString *queryOptionsPart;
-  NSUInteger limitLocation;
+  NSUInteger groupByLocation;
   NSUInteger orderByLocation;
+  NSUInteger limitLocation;
   NSUInteger optionsLocation;
+
+  /* SELECT fieldList FROM object WHERE condition GROUP BY list ORDER BY list LIMIT ? */
 
   multiKey = NO;
   identifier = nil;
@@ -868,9 +871,17 @@
      batchable = YES;
   
   optionsLocation = NSNotFound;
-  limitLocation = [queryString rangeOfString: @"LIMIT" options:NSCaseInsensitiveSearch].location;
+  groupByLocation = [queryString rangeOfString: @"GROUP BY" options:NSCaseInsensitiveSearch].location;
   orderByLocation = [queryString rangeOfString: @"ORDER BY" options:NSCaseInsensitiveSearch].location;
-  if (limitLocation != NSNotFound || orderByLocation != NSNotFound)
+
+  if (orderByLocation != NSNotFound)
+    optionsLocation = orderByLocation;
+
+  if (groupByLocation != NSNotFound)
+    optionsLocation = groupByLocation;
+
+  limitLocation = [queryString rangeOfString: @"LIMIT" options:NSCaseInsensitiveSearch].location;
+  if (limitLocation != NSNotFound || optionsLocation != NSNotFound)
     {
       if (batchable)
         {
@@ -878,18 +889,13 @@
           return;
         }
 
-
-
-      if (orderByLocation != NSNotFound)
-        optionsLocation = orderByLocation;
-
       if (limitLocation != NSNotFound)
         {
-          if (orderByLocation != NSNotFound)
+          if (optionsLocation != NSNotFound)
             {
-              if  (orderByLocation > limitLocation)
+              if  (optionsLocation > limitLocation)
                 {
-                  [logger log: LogStandard: @"[DBSoap queryIdentify] LIMIT specifier found before ORDER BY, ignoring\n"];
+                  [logger log: LogStandard: @"[DBSoap queryIdentify] LIMIT specifier found before ORDER BY or GROUP BY, ignoring\n"];
                   optionsLocation = limitLocation;
                 }  
             }
@@ -966,7 +972,7 @@
 	      [completeQuery appendString: @" )"];
 	    }
 
-          /* append options (ORDER BY, LIMIT) to clause if present */
+          /* append options (GROUP BY, ORDER BY, LIMIT) to clause if present */
           if (optionsLocation != NSNotFound)
             {
               [completeQuery appendString: @" "];
