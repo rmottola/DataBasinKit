@@ -1,5 +1,10 @@
 2014-06-07 Riccardo Mottola <rm@gnu.org>
 
+	* DBSoap.m
+	Fix handling of complex fied in non-aggregate queries.
+
+2014-06-07 Riccardo Mottola <rm@gnu.org>
+
 	* DBSoap.m (queryIdentify)
 	Support also GROUP BY in options in queryIdentify.
 
