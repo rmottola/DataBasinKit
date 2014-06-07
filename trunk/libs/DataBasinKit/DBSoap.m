@@ -162,7 +162,7 @@
 		  field = [NSString stringWithFormat:@"Expr%lu", (unsigned long)exprProgressive];
 		  exprProgressive++;
 		}
-	      else
+	      else if (hasAggregate)
 		{
 		  NSRange dotRange;
 		      
@@ -177,7 +177,6 @@
           [fields addObject:field];
         }
     }
-
   NSLog(@"fields: %@", fields);
   return [NSArray arrayWithArray:fields];
 }
