@@ -407,7 +407,7 @@
           key = [fieldNames objectAtIndex:i];
           originalKey = nil;
           j = 0;
-	  NSLog(@"lookingfor -> %@", key);
+	  //NSLog(@"lookingfor -> %@", key);
           while (j < [keyOrder count] && originalKey == nil)
             {
               originalKey = [keyOrder objectAtIndex:j];
@@ -415,7 +415,7 @@
                 originalKey = nil;
               j++;
             }
-	  NSLog(@"original key: %@", originalKey);
+	  //NSLog(@"original key: %@", originalKey);
 	  valStr = nil;
           if (headerFlag)
             {
