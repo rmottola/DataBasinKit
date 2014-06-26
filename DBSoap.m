@@ -949,9 +949,14 @@
 	{
 	  if (!multiKey)
 	    {
+              NSString *escapedKeyVal;
+
+              /* we need to escape ' or it conflicts with SOQL string delimiters */
+              escapedKeyVal = [currKeyString stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"];
+
 	      [completeQuery appendString: identifier];
 	      [completeQuery appendString: @" = '"];
-	      [completeQuery appendString: currKeyString];
+	      [completeQuery appendString: escapedKeyVal];
 	      [completeQuery appendString: @"'"];
 	    }
 	  else
@@ -961,11 +966,16 @@
 	      [completeQuery appendString: @"( "];
 	      for (k = 0; k < [currKeyArray count]; k++)
 		{
+                  NSString *escapedKeyVal;
+
+                  /* we need to escape ' or it conflicts with SOQL string delimiters */
+                  escapedKeyVal = [[currKeyArray objectAtIndex: k] stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"];
+
 		  if (k > 0)
 		    [completeQuery appendString: @" AND "];
 		  [completeQuery appendString: [identifiers objectAtIndex: k]];
 		  [completeQuery appendString: @" = '"];
-		  [completeQuery appendString: [currKeyArray objectAtIndex: k]];
+		  [completeQuery appendString: escapedKeyVal];
 		  [completeQuery appendString: @"'"];
 		}
 	      [completeQuery appendString: @" )"];
@@ -989,8 +999,13 @@
 	      /* we always stay inside the maximum soql query size and if we have a batch limit we cap on that */
 	      while (((i < [fromArray count]) && ([completeQuery length] < MAX_SOQL_SIZE-20)) && (autoBatch || (b < batchSize)))
 		{
+                  NSString *escapedKeyVal;
+
+                  /* we need to escape ' or it conflicts with SOQL string delimiters */
+                  escapedKeyVal = [[fromArray objectAtIndex: i] stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"];
+
 		  [completeQuery appendString: @"'"];
-		  [completeQuery appendString: [fromArray objectAtIndex: i]];
+		  [completeQuery appendString: escapedKeyVal];
 		  [completeQuery appendString: @"',"];
 		  i++;
 		  b++;
@@ -1011,11 +1026,16 @@
 		  [completeQuery appendString: @"( "];
 		  for (k = 0; k < [currKeyArray count]; k++)
 		    {
+                      NSString *escapedKeyVal;
+
+                      /* we need to escape ' or it conflicts with SOQL string delimiters */
+                      escapedKeyVal = [[[fromArray objectAtIndex: i] objectAtIndex: k] stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"];
+
 		      if (k > 0)
 			[completeQuery appendString: @" AND "];
 		      [completeQuery appendString: [identifiers objectAtIndex: k]];
 		      [completeQuery appendString: @" = '"];
-		      [completeQuery appendString: [[fromArray objectAtIndex: i] objectAtIndex: k]];
+		      [completeQuery appendString: escapedKeyVal];
 		      [completeQuery appendString: @"'"];
 		    }
 		  [completeQuery appendString: @" ) OR "];
