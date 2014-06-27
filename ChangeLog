@@ -1,3 +1,8 @@
+2014-06-27 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.m (create, update)
+	Catch time out  GWSCoderError and throw an exception.
+
 2014-06-26 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m
