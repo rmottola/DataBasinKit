@@ -1113,8 +1113,9 @@
     NSMutableDictionary *queryParmDict;
     NSDictionary        *result;
     NSDictionary        *queryFault;
+    NSDictionary        *queryError;
    
-    NSLog(@"inner cycle: %d", batchCounter);
+    //NSLog(@"inner cycle: %d", batchCounter);
     sObj = [NSMutableDictionary dictionaryWithCapacity: 2];
     [sObj setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
     sObjKeyOrder = [NSMutableArray arrayWithCapacity: 2];
@@ -1162,7 +1163,12 @@
 				    order : nil
 				  timeout : standardTimeoutSec];
   
-  
+        queryError = [resultDict objectForKey:@"GWSCoderError"];
+        if (queryError != nil)
+          {
+            [logger log: LogStandard: @"[DBSoap create] Error:%@\n", queryError];
+            [[NSException exceptionWithName:@"DBException" reason:@"Coder Error, check log" userInfo:nil] raise];
+          }
 	queryFault = [resultDict objectForKey:@"GWSCoderFault"];
 	if (queryFault != nil)
 	  {
@@ -1318,6 +1324,7 @@
     NSDictionary        *queryResult;
     NSDictionary        *result;
     NSDictionary        *queryFault;
+    NSDictionary        *queryError;
 
     sObj = [NSMutableDictionary dictionaryWithCapacity: 2];
     [sObj setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
@@ -1363,7 +1370,13 @@
 			       parameters : parmsDict
 				    order : nil
 				  timeout : standardTimeoutSec];
-  
+        NSLog(@"resultDict: %@", resultDict);
+        queryError = [resultDict objectForKey:@"GWSCoderError"];
+        if (queryError != nil)
+          {
+            [logger log: LogStandard: @"[DBSoap update] Error:%@\n", queryError];
+            [[NSException exceptionWithName:@"DBException" reason:@"Coder Error, check log" userInfo:nil] raise];
+          }
 	queryFault = [resultDict objectForKey:@"GWSCoderFault"];
 	if (queryFault != nil)
 	  {
@@ -1421,7 +1434,7 @@
                     message = [errors objectForKey:@"message"];
                     code = [errors objectForKey:@"statusCode"];
                   }
-                //                NSLog(@"result: %@ -> %d, %@: %@ (%@)", objId, success, code, message, r);
+                //NSLog(@"result: %@ -> %d, %@: %@ (%@)", objId, success, code, message, r);
 		if (success)
 		  {
 		    rowDict = [NSDictionary dictionaryWithObjectsAndKeys:

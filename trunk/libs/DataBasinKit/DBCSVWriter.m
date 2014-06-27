@@ -283,6 +283,9 @@
   int i;
   int setCount;
 
+  if (array == nil)
+    return;
+
   setCount = [array count];
   for (i = 0; i < setCount; i++)
     {
@@ -313,7 +316,10 @@
   unsigned            i;
   id                  obj;
   NSMutableArray      *keyOrder;
-  NSMutableDictionary *dataDict;  
+  NSMutableDictionary *dataDict;
+
+  if (data == nil)
+    return nil;
 
   /* if we have just a single object, we fake an array */
   if([data isKindOfClass: [NSArray class]])
