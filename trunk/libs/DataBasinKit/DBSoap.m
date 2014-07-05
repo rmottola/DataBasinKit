@@ -31,6 +31,41 @@
 #import "DBProgressProtocol.h"
 #import "DBLoggerProtocol.h"
 
+#if defined(__APPLE__) && (MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_4)
+
+@interface NSString (AdditionsReplacement)
+- (NSString *)stringByReplacingOccurrencesOfString:(NSString *)target withString:(NSString *)replacement;
+@end
+
+@implementation NSString (AdditionsReplacement)
+- (NSString *)stringByReplacingOccurrencesOfString:(NSString *)target withString:(NSString *)replacement
+{
+  NSRange rT;
+  NSString *newS;
+  
+  newS = [NSString stringWithString:self];
+  rT = [newS rangeOfString:target];
+  while (rT.location != NSNotFound)
+    {
+      NSString *s;
+      NSRange remainingSubrange;
+      s = [newS substringToIndex:rT.location];
+
+      if (replacement)
+        s = [s stringByAppendingString:replacement];
+      s = [s stringByAppendingString:[newS substringFromIndex:rT.location + [target length]]];
+      newS = s;
+      remainingSubrange = NSMakeRange(rT.location + [replacement length],  [newS length] - (rT.location + [replacement length]) );
+      rT = [newS rangeOfString:target options:0 range:remainingSubrange];
+    }
+  return newS;
+}
+@end
+
+#endif
+
+
+
 @implementation DBSoap
 
 /**
