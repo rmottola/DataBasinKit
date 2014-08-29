@@ -110,9 +110,29 @@
 
 - (void)dealloc
 {
+  [qualifier release];
+  [separator release];
   [linesArray release];
   [fieldNames release];
   [super dealloc];
+}
+
+- (void)setQualifier: (NSString *)q
+{
+  if (qualifier != q)
+    {
+      [qualifier release];
+      qualifier = [q retain];
+    }
+}
+
+- (void)setSeparator: (NSString *)sep
+{
+  if (separator != sep)
+    {
+      [separator release];
+      separator = [sep retain];
+    }
 }
 
 - (NSArray *)fieldNames

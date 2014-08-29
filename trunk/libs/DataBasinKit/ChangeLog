@@ -1,3 +1,11 @@
+2014-08-29 Riccardo Mottola <rm@gnu.org>
+
+	* DBCSVReader.h
+	* DBCSVReader.m
+	* DBCSVWriter.h
+	* DBCSVWriter.m
+	Add setters for Qualifiers and Separators.
+
 2014-06-27 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m (create, update)
