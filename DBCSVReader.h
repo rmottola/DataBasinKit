@@ -1,4 +1,4 @@
-/*
+/* -*- mode: objc -*-
   Project: DataBasin
 
   Copyright (C) 2009-2014 Free Software Foundation
@@ -48,6 +48,8 @@
 - (void)setLogger:(id<DBLoggerProtocol>)l;
 - (id)initWithPath:(NSString *)filePath withLogger:(id<DBLoggerProtocol>)l;
 - (id)initWithPath:(NSString *)filePath byParsingHeaders:(BOOL)parseHeader withLogger:(id<DBLoggerProtocol>)l;
+- (void)setQualifier: (NSString *)q;
+- (void)setSeparator: (NSString *)sep;
 - (NSArray *)getFieldNames:(NSString *)firstLine;
 - (NSArray *)fieldNames;
 - (NSArray *)readDataSet;

@@ -1,4 +1,4 @@
-/*
+/* -*- mode: objc -*-
    Project: DataBasin
 
    Copyright (C) 2009-2014 Free Software Foundation
@@ -41,6 +41,8 @@
   BOOL writeOrdered;
 }
 
+- (void)setQualifier: (NSString *)q;
+- (void)setSeparator: (NSString *)sep;
 - (BOOL)writeFieldsOrdered;
 - (void)setWriteFieldsOrdered:(BOOL)flag;
 - (id)initWithHandle:(NSFileHandle *)fileHandle;

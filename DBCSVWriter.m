@@ -46,6 +46,8 @@
 
 - (void)dealloc
 {
+  [qualifier release];
+  [separator release];
   [fieldNames release];
   [super dealloc];
 }
@@ -73,6 +75,24 @@
 - (BOOL)isQualified
 {
   return isQualified;
+}
+
+- (void)setQualifier: (NSString *)q
+{
+  if (qualifier != q)
+    {
+      [qualifier release];
+      qualifier = [q retain];
+    }
+}
+
+- (void)setSeparator: (NSString *)sep
+{
+  if (separator != sep)
+    {
+      [separator release];
+      separator = [sep retain];
+    }
 }
 
 - (void)setStringEncoding: (NSStringEncoding) enc
