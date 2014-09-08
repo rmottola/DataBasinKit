@@ -48,6 +48,7 @@
 - (void)setLogger:(id<DBLoggerProtocol>)l;
 - (id)initWithPath:(NSString *)filePath withLogger:(id<DBLoggerProtocol>)l;
 - (id)initWithPath:(NSString *)filePath byParsingHeaders:(BOOL)parseHeader withLogger:(id<DBLoggerProtocol>)l;
+- (void)parseHeaders;
 - (void)setQualifier: (NSString *)q;
 - (void)setSeparator: (NSString *)sep;
 - (NSArray *)getFieldNames:(NSString *)firstLine;

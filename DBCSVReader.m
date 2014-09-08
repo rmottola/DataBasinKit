@@ -30,16 +30,10 @@
 
 - (id)initWithPath:(NSString *)filePath withLogger:(id<DBLoggerProtocol>)l
 {
-  if ((self = [super init]))
+  if ((self = [self initWithPath:filePath byParsingHeaders:YES withLogger:l]))
     {
-      [self initWithPath:filePath byParsingHeaders:YES withLogger:l];
     }
   return self;
-}
-
-- (void)setLogger:(id<DBLoggerProtocol>)l
-{
-  logger = l;
 }
 
 - (id)initWithPath:(NSString *)filePath byParsingHeaders:(BOOL)parseHeader withLogger:(id<DBLoggerProtocol>)l
@@ -51,19 +45,12 @@
       NSRange firstCRRange;
 
       logger = l;
-      isQualified = NO;
-      qualifier = @"\"";
-      separator = @",";
       newLine = @"\n";
       currentLine = 0;
       fileContentString = [NSString stringWithContentsOfFile:filePath];
       [logger log:LogStandard :@"[DBCVSReader initWithPath] analyzing file\n"];
       if (fileContentString)
       {
-	if ([[fileContentString substringToIndex:[qualifier length]] isEqualToString: qualifier])
-	  isQualified = YES;
-	[logger log:LogStandard :@"[DBCVSReader initWithPath] Is file qualified? %d\n", isQualified];
-
 	firstNLRange = [fileContentString rangeOfString:@"\n"];
 	firstCRRange = [fileContentString rangeOfString:@"\r"];
 
@@ -101,8 +88,13 @@
 	  }
 
 	linesArray = [[fileContentString componentsSeparatedByString:newLine] retain];
-	if(parseHeader)
-	  fieldNames = [[NSArray arrayWithArray:[self getFieldNames:[self readLine]]] retain];
+        [self setQualifier:@"\""];
+        [self setSeparator:@","];
+        if (parseHeader)
+          {
+            [self parseHeaders];
+            currentLine++;
+          }
       }
    }
   return self;
@@ -117,12 +109,23 @@
   [super dealloc];
 }
 
+
+- (void)setLogger:(id<DBLoggerProtocol>)l
+{
+  logger = l;
+}
+
+
 - (void)setQualifier: (NSString *)q
 {
   if (qualifier != q)
     {
+      isQualified = NO;
       [qualifier release];
       qualifier = [q retain];
+      if ([[[linesArray objectAtIndex:0] substringToIndex:[qualifier length]] isEqualToString: qualifier])
+        isQualified = YES;
+      [logger log:LogStandard :@"[DBCVSReader initWithPath] Is file qualified? %d\n", isQualified];
     }
 }
 
@@ -140,6 +143,9 @@
   return fieldNames;
 }
 
+/**
+   Returns an array with the field names. parseHeaders needs to be called once before.
+ */
 - (NSArray *)getFieldNames:(NSString *)firstLine
 {
   NSArray *record;
@@ -148,6 +154,16 @@
     
   [logger log:LogDebug :@"[DBCVSReader getFieldNames] header %@\n", record];
   return record;
+}
+
+/**
+   Extracts the field names from the first line. Needs to be (re)called after field separator
+   and qualifier characters are set.
+ */
+- (void)parseHeaders
+{
+  [fieldNames release];
+  fieldNames = [[NSArray arrayWithArray:[self getFieldNames:[self readLine]]] retain];
 }
 
 - (NSArray *)readDataSet
@@ -160,6 +176,7 @@
     {
       NSArray *record;
       
+      currentLine++;
       record = [self decodeOneLine:line];
 //      NSLog(@"record %@", record);
       if (record != nil)
@@ -283,7 +300,7 @@
 {
   if (currentLine < [linesArray count])
     {
-      return [linesArray objectAtIndex:currentLine++];
+      return [linesArray objectAtIndex:currentLine];
     }
   return nil;
 }
