@@ -138,22 +138,12 @@
     }
 }
 
-- (NSArray *)fieldNames
-{
-  return fieldNames;
-}
-
 /**
    Returns an array with the field names. parseHeaders needs to be called once before.
  */
-- (NSArray *)getFieldNames:(NSString *)firstLine
+- (NSArray *)fieldNames
 {
-  NSArray *record;
-
-  record = [self decodeOneLine:firstLine];
-    
-  [logger log:LogDebug :@"[DBCVSReader getFieldNames] header %@\n", record];
-  return record;
+  return fieldNames;
 }
 
 /**
@@ -163,7 +153,8 @@
 - (void)parseHeaders
 {
   [fieldNames release];
-  fieldNames = [[NSArray arrayWithArray:[self getFieldNames:[self readLine]]] retain];
+  fieldNames = [[NSArray arrayWithArray:[self decodeOneLine:[linesArray objectAtIndex:0]]] retain];
+  [logger log:LogDebug :@"[DBCVSReader fieldNames]  %@\n", fieldNames];
 }
 
 - (NSArray *)readDataSet
