@@ -51,7 +51,6 @@
 - (void)parseHeaders;
 - (void)setQualifier: (NSString *)q;
 - (void)setSeparator: (NSString *)sep;
-- (NSArray *)getFieldNames:(NSString *)firstLine;
 - (NSArray *)fieldNames;
 - (NSArray *)readDataSet;
 - (NSArray *)decodeOneLine:(NSString *)line;
