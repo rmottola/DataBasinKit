@@ -946,6 +946,7 @@
   else
     {
       queryFirstPart = queryString;
+      queryOptionsPart = nil;
     }
 
   i = 0;
