@@ -229,6 +229,7 @@
       queryTimeoutSec = 180;
       
       upBatchSize = 1;
+      downBatchSize = 500;
       obj = [defaults objectForKey:@"UpBatchSize"];
       if (obj)
 	{
@@ -302,9 +303,8 @@
 
   [service setURL:url];
   
-//  [service setDebug:YES];
-  
-  
+  //  [service setDebug:YES];
+
   /* prepare the parameters */
   loginParmDict = [NSMutableDictionary dictionaryWithCapacity: 3];
   [loginParmDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
@@ -438,6 +438,7 @@
 {
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
+  NSMutableDictionary   *queryOptionsDict;
   NSMutableDictionary   *parmsDict;
   NSMutableDictionary   *queryParmDict;
   NSDictionary          *resultDict;
@@ -453,6 +454,7 @@
   NSString              *sizeStr;
   unsigned long         size;
   BOOL                  isCountQuery;
+  NSString              *requestName;
   
   /* if the destination array is nil, exit */
   if (objects == nil)
@@ -469,9 +471,14 @@
   sessionHeaderDict = [NSMutableDictionary dictionaryWithCapacity: 2];
   [sessionHeaderDict setObject: sessionId forKey: @"sessionId"];
   [sessionHeaderDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
+
+  queryOptionsDict = [NSMutableDictionary dictionaryWithCapacity: 1];
+  [queryOptionsDict setObject: [NSNumber numberWithInt:downBatchSize] forKey: @"batchSize"];
+  [queryOptionsDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
   
-  headerDict = [NSMutableDictionary dictionaryWithCapacity: 2];
+  headerDict = [NSMutableDictionary dictionaryWithCapacity: 3];
   [headerDict setObject: sessionHeaderDict forKey: @"SessionHeader"];
+  [headerDict setObject: queryOptionsDict forKey: @"QueryOptions"];
   [headerDict setObject: GWSSOAPUseLiteral forKey: GWSSOAPUseKey];
   
   /* prepare the parameters */
@@ -482,25 +489,18 @@
   parmsDict = [NSMutableDictionary dictionaryWithCapacity: 1];
   
   
-  /* make the query */  
+  /* make the query */
+  requestName = @"query";
   if (all)
-    {
-      [parmsDict setObject: queryParmDict forKey: @"queryAll"];
-      [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];
-      resultDict = [service invokeMethod: @"queryAll"
-			     parameters : parmsDict
-				  order : nil
-				timeout : queryTimeoutSec];
-    }
-  else
-    {
-      [parmsDict setObject: queryParmDict forKey: @"query"];
-      [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];
-      resultDict = [service invokeMethod: @"query"
-			     parameters : parmsDict
-				  order : nil
-				timeout : queryTimeoutSec];
-    }
+    requestName = @"queryAll";
+
+  [parmsDict setObject: queryParmDict forKey: requestName];
+  [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];
+  resultDict = [service invokeMethod: @"queryAll"
+                         parameters : parmsDict
+                              order : nil
+                            timeout : queryTimeoutSec];
+  
   [logger log: LogDebug: @"[DBSoap query] result: %@\n", resultDict];
   coderError = [resultDict objectForKey:@"GWSCoderError"];
   if (coderError != nil)
@@ -681,6 +681,7 @@
 - (NSString *)queryMore :(NSString *)locator toArray:(NSMutableArray *)objects
 {
   NSMutableDictionary   *headerDict;
+  NSMutableDictionary   *queryOptionsDict;
   NSMutableDictionary   *sessionHeaderDict;
   NSMutableDictionary   *parmsDict;
   NSMutableDictionary   *queryParmDict;
@@ -705,8 +706,13 @@
   [sessionHeaderDict setObject: sessionId forKey: @"sessionId"];
   [sessionHeaderDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
 
+  queryOptionsDict = [NSMutableDictionary dictionaryWithCapacity: 1];
+  [queryOptionsDict setObject: [NSNumber numberWithInt:downBatchSize] forKey: @"batchSize"];
+  [queryOptionsDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
+
   headerDict = [NSMutableDictionary dictionaryWithCapacity: 2];
   [headerDict setObject: sessionHeaderDict forKey: @"SessionHeader"];
+  [headerDict setObject: queryOptionsDict forKey: @"QueryOptions"];
   [headerDict setObject: GWSSOAPUseLiteral forKey: GWSSOAPUseKey];
 
   /* prepare the parameters */

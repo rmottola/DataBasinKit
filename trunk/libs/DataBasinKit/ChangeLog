@@ -1,3 +1,9 @@
+2014-10-10 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.h
+	* DBSoap.m
+	Add sending query size in query/queryMore
+
 2014-09-09 Riccardo Mottola <rm@gnu.org>
 
 	* DBCSVReader.h
