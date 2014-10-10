@@ -38,6 +38,8 @@
 #define MAX_SOQL_SIZE 9000
 #define MAX_BATCH_SIZE 200
 
+#define CLIENT_NAME @"DataBasin"
+
 @class DBSObject;
 @protocol DBProgressProtocol;
 @protocol DBLoggerProtocol;
@@ -60,6 +62,9 @@
 
   /* create, update, upsert batch size */
   unsigned upBatchSize;
+
+  /* query batch size */
+  unsigned downBatchSize;
 
   /** Timeout in seconds, for generic methods */
   unsigned standardTimeoutSec;
