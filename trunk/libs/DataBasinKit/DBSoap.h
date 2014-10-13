@@ -60,10 +60,10 @@
   /* list of all object names, custom and not */
   NSMutableArray  *sObjectNamesList;
 
-  /* create, update, upsert batch size */
+  /** create, update, upsert batch size */
   unsigned upBatchSize;
 
-  /* query batch size */
+  /** query batch size */
   unsigned downBatchSize;
 
   /** Timeout in seconds, for generic methods */
@@ -79,6 +79,7 @@
 - (void)setLogger: (id<DBLoggerProtocol>)l;
 - (id<DBLoggerProtocol>)logger;
 - (void)setUpBatchSize:(unsigned)size;
+- (void)setDownBatchSize:(unsigned)size;
 - (NSMutableArray *)queryFull :(NSString *)queryString queryAll:(BOOL)all progressMonitor:(id<DBProgressProtocol>)p;
 - (NSString *)query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p;
 - (NSString *)queryMore :(NSString *)locator toArray:(NSMutableArray *)objects;

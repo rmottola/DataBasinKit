@@ -255,10 +255,18 @@
   return logger;
 }
 
+/** sets the size of the batches in which recors are inserted, updated or deleted */
 - (void)setUpBatchSize:(unsigned)size
 {
   upBatchSize = size;
 }
+
+/** Set the maximum suggested query size (download). Maximum effective is 2000, standard is 500. */
+- (void)setDownBatchSize:(unsigned)size
+{
+  downBatchSize = size;
+}
+
 
 /**<p>executes login</p>
    <p><i>url</i> specifies the URL of the endpoint</p>
