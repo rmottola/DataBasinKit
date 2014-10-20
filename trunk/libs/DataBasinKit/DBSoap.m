@@ -148,7 +148,7 @@
 	      if (rParRange.location != NSNotFound)
 		{
 		  NSString *lastComponent;
-		  NSRange leftPar, rightPar;
+		  NSRange rightPar;
 
 		  NSLog(@"we have an aggregate in %@", field);
 		  lastComponent = [subComponents objectAtIndex:[subComponents count]-1];
@@ -157,7 +157,6 @@
 		     - () of count()
 		     - ) of function(id)
 		  */
-		  leftPar = [lastComponent rangeOfString:@")"];
 		  rightPar = [lastComponent rangeOfString:@")"];
 		  if (rightPar.location != NSNotFound) // we have no alias
 		    {
