@@ -215,6 +215,16 @@
   return [NSArray arrayWithArray:fields];
 }
 
++ (NSURL *)loginURLProduction
+{
+  return [NSURL URLWithString:@"https://www.salesforce.com/services/Soap/u/25.0"];
+}
+
++ (NSURL *)loginURLTest
+{
+  return [NSURL URLWithString:@"https://test.salesforce.com/services/Soap/u/25.0"];
+}
+
 - (id)init
 {
   if ((self = [super init]))
@@ -308,6 +318,14 @@
   /* set the SOAP action to an empty string, salesforce likes that more */
   [service setSOAPAction:@"\"\""];
 
+  if (!useHttps && [[url scheme] isEqualTo:@"https"])
+    {
+      if (!useHttps)
+        url = [[NSURL alloc] initWithScheme:@"http" host:[url host] path:[url path]];
+      else
+        url = [[NSURL alloc] initWithScheme:@"https" host:[url host] path:[url path]];
+      [url autorelease];
+    }
   [service setURL:url];
   
   //  [service setDebug:YES];

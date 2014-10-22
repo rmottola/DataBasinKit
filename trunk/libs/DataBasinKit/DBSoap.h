@@ -74,6 +74,9 @@
 }
 
 + (NSArray *)fieldsByParsingQuery:(NSString *)query;
++ (NSURL *)loginURLProduction;
++ (NSURL *)loginURLTest;
+
 
 - (void)login :(NSURL *)url :(NSString *)userName :(NSString *)password :(BOOL)useHttps;
 - (void)setLogger: (id<DBLoggerProtocol>)l;
