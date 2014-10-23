@@ -218,13 +218,13 @@
 /** Returns the standard URL for login into production, https. Use this as login: parameter */
 + (NSURL *)loginURLProduction
 {
-  return [NSURL URLWithString:@"https://www.salesforce.com/services/Soap/u/25.0"];
+  return [NSURL URLWithString:@"https://www.salesforce.com/services/Soap/u/30.0"];
 }
 
 /** Returns the standard URL for login into sandbox, https. Use this as login: parameter */
 + (NSURL *)loginURLTest
 {
-  return [NSURL URLWithString:@"https://test.salesforce.com/services/Soap/u/25.0"];
+  return [NSURL URLWithString:@"https://test.salesforce.com/services/Soap/u/30.0"];
 }
 
 - (id)init
