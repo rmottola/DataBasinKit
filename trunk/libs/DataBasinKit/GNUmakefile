@@ -15,6 +15,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 #
 VERSION = 0.8
 FRAMEWORK_NAME = DataBasinKit
+PACKAGE_NAME = DataBasinKit
 DataBasinKit_CURRENT_VERSION_NAME = 0.8
 DataBasinKit_DEPLOY_WITH_CURRENT_VERSION = yes
 
