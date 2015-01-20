@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2014 Free Software Foundation
+  Copyright (C) 2008-2015 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -886,10 +886,10 @@
   <p>the parameter <em>withBatchSize</em> selects the querying behaviour:
   <ul>
   <li>&lgt; 0:Auto-sizing of the batch, the maximum query size is formed</li>
-  <li>0, 1: A single element is queried with, making the clause Field = 'value'</li>
+  <li>0, 1: A single element is queried with =, making the clause Field = 'value'</li>
   <li>&gt 1: The given batch size is used in a clause like Field in ('value1', 'value2', ... )</li>
   </ul>
-  <p>A limit N specification is supported (only with batch of size 1)</p>
+  <p>A LIMIT N or GROUP BY specification is supported, but only with batch of size 1</p>
  */
 - (void)queryIdentify :(NSString *)queryString with: (NSArray *)identifiers queryAll:(BOOL)all fromArray:(NSArray *)fromArray toArray:(NSMutableArray *)outArray withBatchSize:(int)batchSize progressMonitor:(id<DBProgressProtocol>)p
 {
@@ -953,6 +953,7 @@
       if (batchable)
         {
           [logger log: LogStandard: @"[DBSoap queryIdentify] option specifier incompatible with batch size > 1\n"];
+          [[NSException exceptionWithName:@"DBException" reason:@"Query Identify: Option specifier incompatible with batch size > 1" userInfo:nil] raise];
           return;
         }
 

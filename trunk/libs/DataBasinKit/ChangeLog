@@ -1,3 +1,8 @@
+2015-01-20 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.m (queryIdentify)
+	Throw exception instead of just logging if batch size is specified win an incompatible query.
+
 2014-10-10 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.h
