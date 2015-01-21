@@ -1,3 +1,8 @@
+2015-01-21 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.m (identifyObjectById)
+	Use keyPrefix accessor, do not compare against nil objects.
+
 2015-01-20 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m (queryIdentify)

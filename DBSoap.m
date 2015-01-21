@@ -1625,9 +1625,16 @@
       for (j = 0; j < [propertiesArray count]; j++)
 	{
 	  NSString *key;
+          NSString *value;
 	  
 	  key = [propertiesArray objectAtIndex:j];
-	  [propertiesDict setObject: [sObj objectForKey: key] forKey: key];
+          value = [sObj objectForKey: key];
+          
+          /* we skip certain values */
+          if ([key isEqualToString:@"keyPrefix"] && [value isEqualToString:@""])
+            value = nil;
+          if (value)
+	    [propertiesDict setObject:value  forKey: key];
 	}
       dbObj = [[DBSObject alloc] init];
       [dbObj setObjectProperties: propertiesDict];
@@ -1820,7 +1827,7 @@
           record = [recordTypeObjs objectAtIndex:i];
           mDict = [NSMutableDictionary dictionaryWithDictionary: record];
           [mDict removeObjectForKey:@"GWSCoderOrder"];
-          NSLog(@"record-type from object: %@", mDict);
+//          NSLog(@"record-type from object: %@", mDict);
           devName = nil;
           /* we check for the master record type, for which the code is hardcoded by SF */
           if ([[mDict objectForKey:@"recordTypeId"] isEqualToString:@"012000000000000AAA"])
@@ -1918,8 +1925,6 @@
       /* did we fill a batch or did we reach the end? */
       if (batchCounter == MAX_BATCH_SIZE || !idStr)
 	{
-          //	  [logger log: LogDebug :@"[DBSoapNSLog delete ] batch obj-> %@\n", batchObjArray];
-	  
 	  /* prepare the parameters */
 	  queryParmDict = [NSMutableDictionary dictionaryWithCapacity: 2];
 	  [queryParmDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
@@ -2016,6 +2021,10 @@
   return [resultArray autorelease];
 }
 
+/** <p>Given an ID tries to matches the keyPrefix to identify which kind of Object it is.<br>
+  History objects can't be identified, they don't have a keyPrefix.</p>
+  <p>Returns the Developer Name of the object</p>
+ */
 - (NSString *)identifyObjectById:(NSString *)sfId
 {
   NSString *devName;
@@ -2032,7 +2041,10 @@
     return nil;
 
   if (!([sfId length] == 15 || [sfId length] == 18))
-    return nil;
+    {
+      [logger log: LogInformative :@"[DBSoap identifyObjectById] Invalid SF Id: %@\n", sfId];
+      return nil;
+    }
 
   prefixToIdentify = [sfId substringToIndex: 3];
   [logger log: LogInformative :@"[DBSoap identifyObjectById] identify: %@\n", prefixToIdentify];
@@ -2043,8 +2055,8 @@
   enu = [sObjectList objectEnumerator];
   while (!found && (tempObj = [enu nextObject]))
     {
-      [logger log: LogDebug :@"[DBSoap identifyObjectById] compare to: %@\n", [[tempObj objectProperties] objectForKey: @"keyPrefix"]];
-      if ([[[tempObj objectProperties] objectForKey: @"keyPrefix"] isEqualToString: prefixToIdentify])
+      [logger log: LogDebug :@"[DBSoap identifyObjectById] compare to: %@\n", [tempObj keyPrefix]];
+      if ([tempObj keyPrefix] && [[tempObj keyPrefix] isEqualToString: prefixToIdentify])
 	{
 	  name = [tempObj name];
 	  found = YES;
