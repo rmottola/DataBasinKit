@@ -2036,6 +2036,7 @@
 
   devName = nil;
   found = NO;
+  name = nil;
 
   if (sfId == nil)
     return nil;
