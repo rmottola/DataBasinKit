@@ -192,7 +192,7 @@
 /* Begin PBXProject section */
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = 85125AC919155DE2000E6004 /* Build configuration list for PBXProject "DataBasinKit" */;
+			buildConfigurationList = 85125AC919155DE2000E6004 /* Build configuration list for PBXProject "DataBasinKit-Tiger" */;
 			hasScannedForEncodings = 1;
 			mainGroup = 0867D691FE84028FC02AAC07 /* DataBasinKit */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
@@ -335,7 +335,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
 		};
-		85125AC919155DE2000E6004 /* Build configuration list for PBXProject "DataBasinKit" */ = {
+		85125AC919155DE2000E6004 /* Build configuration list for PBXProject "DataBasinKit-Tiger" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				85125ACA19155DE2000E6004 /* Development */,

@@ -171,22 +171,6 @@ converting it if necessary.</p>
 
 - (NSString *)name
 {
-  /*
-  NSString *name;
-
-  name = nil;
-  if ([[self type] isEqualToString:@"Contract"])
-    name = [recordValues objectForKey: @"ContractNumber"];
-  else if ([[self type] isEqualToString:@"Case"])
-    name = [recordValues objectForKey: @"CaseNumber"];
-  else
-    name = [recordValues objectForKey: @"Name"];
-
-  if (name == nil)
-    name = [objectProperties objectForKey: @"name"];
-
-  return name;
-  */
   return [objectProperties objectForKey: @"name"];
 }
 
