@@ -2,7 +2,7 @@
  Project: DataBasin
  DBSobject.h
  
- Copyright (C) 2010-2014 Free Software Foundation
+ Copyright (C) 2010-2015 Free Software Foundation
  
  Author: Riccardo Mottola
  
@@ -73,11 +73,14 @@
 /** shortcut to return the property "name" */
 - (NSString *)name;
 
+  /** shortcut to return the property "type" */
+- (NSString *)type;
+
 /** shortcut to return the property "label" */
 - (NSString *)label;
 
-/** shortcut to return the property "" */
-- (NSString *)label;
+/** shortcut to return the property "keyPrefix" */
+- (NSString *)keyPrefix;
 
 - (void)setProperties: (NSDictionary *)properties forField: (NSString *)field;
 - (NSDictionary *)propertiesOfField: (NSString *)field;
