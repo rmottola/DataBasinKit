@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2012 Free Software Foundation
+  Copyright (C) 2012-2015 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -38,7 +38,7 @@
 /** increments the current value by given amount */
 -(void)incrementCurrentValue:(unsigned long)amount;
 
-/** reinitializes internal status (current, maxmimum and percentage */
+/** reinitializes internal status (current, maxmimum and percentage) */
 -(void)reset;
 
 /** Forces completion */
@@ -46,5 +46,11 @@
 
 /** Sets a description of the current phase */
 -(void)setCurrentDescription:(NSString *)desc;
+
+/** if the process the progress is associated should stop */
+-(BOOL)shouldStop;
+
+/** marks if the process associated should stop */
+-(void)setShouldStop:(BOOL)flag;
 
 @end

@@ -1,5 +1,10 @@
 2015-04-14 Riccardo Mottola <rm@gnu.org>
 
+	* DBProgressProtocol.h
+	Methods for telling the associate process to stop.
+
+2015-04-14 Riccardo Mottola <rm@gnu.org>
+
 	* DBSoap.h
 	* DBSoap.m
 	Provide isBusy to determine if any of the queries are running, protect all public APIs with a lock and call the equivalent internal unprotected ones.
