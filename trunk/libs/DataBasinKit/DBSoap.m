@@ -65,7 +65,6 @@
 #endif
 
 
-
 @implementation DBSoap
 
 /**
@@ -235,6 +234,9 @@
       id obj;
 
       defaults = [NSUserDefaults standardUserDefaults];
+    
+      lockBusy = [[NSRecursiveLock alloc] init];
+      busyCount = 0;
       
       standardTimeoutSec = 60;
       queryTimeoutSec = 180;
@@ -299,6 +301,10 @@
   NSDictionary          *userInfoResult;
   NSDictionary          *queryFault;
 
+
+  [lockBusy lock];
+  busyCount++;
+  [lockBusy unlock];
 
   defs = [NSUserDefaults standardUserDefaults];
   [defs registerDefaults:
@@ -432,36 +438,15 @@
   [service setURL:serverUrl];
 
   [sessionId retain];
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
 }
 
 
-/** <p>Execute SOQL query <i>queryString</i> and returns the resulting DBSObjects as an array.</p>
-  <p>This method will query all resulting objects of the query, repeatedly querying again if necessary depending on the batch size.</p>
-  <p>Returns exception</p>
-*/
-- (NSMutableArray *)queryFull :(NSString *)queryString queryAll:(BOOL)all progressMonitor:(id<DBProgressProtocol>)p
-{
-  NSString       *qLoc;
-  NSMutableArray *sObjects;
-  
-  sObjects = [[NSMutableArray alloc] init];
 
-  qLoc = [self query: queryString queryAll:all toArray: sObjects progressMonitor:p];
-  [logger log: LogInformative: @"[DBSoap queryFull]: query locator after first query: %@\n", qLoc];
-  while (qLoc != nil)
-    qLoc = [self queryMore: qLoc toArray: sObjects];
-  
-  [sObjects autorelease];
-  return sObjects;
-}
-
-
-/** <p>execute SOQL query and write the resulting DBSObjects into the <i>objects</i> array
-  which must be valid and allocated. </p>
-  <p>If the query locator is returned,  a query more has to be executed.</p>
-  <p>Returns exception</p>
-*/
-- (NSString *)query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p
+- (NSString *)_query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p
 {
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
@@ -482,7 +467,7 @@
   unsigned long         size;
   BOOL                  isCountQuery;
   NSString              *requestName;
-  
+
   /* if the destination array is nil, exit */
   if (objects == nil)
     return nil;
@@ -697,15 +682,13 @@
       queryLocator = [result objectForKey:@"queryLocator"];
       [logger log: LogDebug: @"[DBSoap query] should do query more, queryLocator: %@\n", queryLocator];
     }
+  
   return queryLocator;
 }
 
 
-/** <p>Execute SOQL query more and write the resulting DBSObjectes into the <i>objects</i> array
-    which must be valid and allocated, continuing from the given query locator <i>locator</i>. </p>
-    <p>If the query locator is returned,  a query more has to be executed.</p>
-*/
-- (NSString *)queryMore :(NSString *)locator toArray:(NSMutableArray *)objects
+
+- (NSString *)_queryMore :(NSString *)locator toArray:(NSMutableArray *)objects
 {
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *queryOptionsDict;
@@ -727,7 +710,7 @@
   /* if the destination array is nil, exit */
   if (objects == nil)
     return nil;
-
+  
   /* prepare the header */
   sessionHeaderDict = [NSMutableDictionary dictionaryWithCapacity: 2];
   [sessionHeaderDict setObject: sessionId forKey: @"sessionId"];
@@ -875,23 +858,32 @@
       queryLocator = [result objectForKey:@"queryLocator"];
       [logger log: LogDebug: @"[DBSoap queryMore] should do query more, queryLocator: %@\n", queryLocator];
     }
+
   return queryLocator;
 }
 
-/**
-  <p>execute a the given query on the objects given in the fromArray.<br>
-  The selection clause is automatically generated to identify the object by the field passed in the array. Only if the field is an unique identifier 
-  the result is a single record, else, more records are returned.<br>
-  The Where clause is either automatically generated if none is present or, if Where is already present, it is appended with an AND operator</p>
-  <p>the parameter <em>withBatchSize</em> selects the querying behaviour:
-  <ul>
-  <li>&lgt; 0:Auto-sizing of the batch, the maximum query size is formed</li>
-  <li>0, 1: A single element is queried with =, making the clause Field = 'value'</li>
-  <li>&gt 1: The given batch size is used in a clause like Field in ('value1', 'value2', ... )</li>
-  </ul>
-  <p>A LIMIT N or GROUP BY specification is supported, but only with batch of size 1</p>
- */
-- (void)queryIdentify :(NSString *)queryString with: (NSArray *)identifiers queryAll:(BOOL)all fromArray:(NSArray *)fromArray toArray:(NSMutableArray *)outArray withBatchSize:(int)batchSize progressMonitor:(id<DBProgressProtocol>)p
+
+- (NSMutableArray *)_queryFull :(NSString *)queryString queryAll:(BOOL)all progressMonitor:(id<DBProgressProtocol>)p
+{
+  NSString       *qLoc;
+  NSMutableArray *sObjects;
+  
+  
+  sObjects = [[NSMutableArray alloc] init];
+  
+  qLoc = [self _query: queryString queryAll:all toArray: sObjects progressMonitor:p];
+  [logger log: LogInformative: @"[DBSoap queryFull]: query locator after first query: %@\n", qLoc];
+  while (qLoc != nil)
+    qLoc = [self _queryMore: qLoc toArray: sObjects];
+  
+  [sObjects autorelease];
+  
+  return sObjects;
+}
+
+
+
+- (void)_queryIdentify :(NSString *)queryString with: (NSArray *)identifiers queryAll:(BOOL)all fromArray:(NSArray *)fromArray toArray:(NSMutableArray *)outArray withBatchSize:(int)batchSize progressMonitor:(id<DBProgressProtocol>)p
 {
   unsigned i;
   unsigned j;
@@ -908,7 +900,6 @@
   NSUInteger optionsLocation;
 
   /* SELECT fieldList FROM object WHERE condition GROUP BY list ORDER BY list LIMIT ? */
-
   multiKey = NO;
   identifier = nil;
   if ([identifiers count] > 1)
@@ -1121,7 +1112,7 @@
       [logger log: LogDebug: @"[DBSoap queryIdentify] query: %@\n", completeQuery];
 
       /* since we might get back more records for each object to identify, we need to use query more */
-      resArray = [self queryFull:completeQuery queryAll:all progressMonitor:nil];
+      resArray = [self _queryFull:completeQuery queryAll:all progressMonitor:nil];
  
       for (j = 0; j < [resArray count]; j++)
 	[outArray addObject: [resArray objectAtIndex: j]];
@@ -1131,11 +1122,9 @@
     }
 }
 
-/**
-  insert an array of DBSObjects.<br>
-  The objects in the array shall all be of the same type.
- */
-- (NSMutableArray *)create :(NSString *)objectName fromArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p
+
+
+- (NSMutableArray *)_create :(NSString *)objectName fromArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p
 {
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
@@ -1148,7 +1137,7 @@
   DBSObject             *sObject;
   unsigned              batchCounter;
   NSUInteger            totalCounter;
-  NSMutableArray      *resultArray;
+  NSMutableArray       *resultArray;
 
   if ([objects count] == 0)
     return nil;
@@ -1335,17 +1324,14 @@
   [queryObjectsArray release];
   [sessionHeaderDict release];
   [headerDict release];
+
   return [resultArray autorelease];
 }
 
 
-/**
-  <p>Update an array of DBSObjects.<br>
-  The objects in the array shall all be of the same type.
-  </p>
-  <p>The batch size sent is determined by the upBatchSize property of the class</p>
- */
-- (NSMutableArray *)update :(NSString *)objectName fromArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p
+
+
+- (NSMutableArray *)_update :(NSString *)objectName fromArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p
 {
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
@@ -1542,14 +1528,15 @@
   [queryObjectsArray release];
   [sessionHeaderDict release];
   [headerDict release];
+
   return [resultArray autorelease];
 }
 
 
 
 
-/** runs a describe global to retrieve all all the objects and returns an array of DBSobjects */
-- (NSArray *)describeGlobal
+
+- (NSArray *)_describeGlobal
 {
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
@@ -1645,6 +1632,8 @@
   return [NSArray arrayWithArray: objectList];
 }
 
+
+
 /* returns the currently stored list of object names
    if the list is nil, a describe global will be run to obtain it */
 - (NSArray *)sObjects
@@ -1689,7 +1678,7 @@
 }
 
 
-- (DBSObject *)describeSObject: (NSString *)objectType
+- (DBSObject *)_describeSObject: (NSString *)objectType
 {
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
@@ -1803,7 +1792,7 @@
       [queryString appendString: objectType];
       [queryString appendString: @"'"];
       NS_DURING
-        rtArray2 = [self queryFull:queryString queryAll:NO progressMonitor:nil];
+        rtArray2 = [self _queryFull:queryString queryAll:NO progressMonitor:nil];
       NS_HANDLER
         NSLog(@"Exception during record-type sub-query, %@", queryString);
       rtArray2 = nil;
@@ -1868,7 +1857,7 @@
 }
 
 
-- (NSMutableArray *)delete :(NSArray *)array progressMonitor:(id<DBProgressProtocol>)p;
+- (NSMutableArray *)_delete :(NSArray *)array progressMonitor:(id<DBProgressProtocol>)p;
 {
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
@@ -2021,11 +2010,9 @@
   return [resultArray autorelease];
 }
 
-/** <p>Given an ID tries to matches the keyPrefix to identify which kind of Object it is.<br>
-  History objects can't be identified, they don't have a keyPrefix.</p>
-  <p>Returns the Developer Name of the object</p>
- */
-- (NSString *)identifyObjectById:(NSString *)sfId
+
+
+- (NSString *)_identifyObjectById:(NSString *)sfId
 {
   NSString *devName;
   NSEnumerator *enu;
@@ -2074,6 +2061,28 @@
   return devName;
 }
 
+
+/** <p>Given an ID tries to matches the keyPrefix to identify which kind of Object it is.<br>
+ History objects can't be identified, they don't have a keyPrefix.</p>
+ <p>Returns the Developer Name of the object</p>
+ */
+- (NSString *)identifyObjectById:(NSString *)sfId
+{
+  NSString *str;
+  
+  [lockBusy lock];
+  busyCount++;
+  [lockBusy unlock];
+  
+  str = [self _identifyObjectById:sfId];
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+  
+  return str;
+}
+
 /* accessors*/
 - (NSString *) sessionId
 {
@@ -2115,12 +2124,268 @@
   return queryTimeoutSec;
 }
 
+- (BOOL)isBusy
+{
+  return busyCount > 0;
+}
+
+
 - (void)dealloc
 {
+  [lockBusy release];
+
   [sessionId release];
   [userInfo release];
   [service release];
   [super dealloc];
 }
+
+
+/* ------- public exposed API, which test for lock and invoke internal implementations */
+
+/** <p>execute SOQL query and write the resulting DBSObjects into the <i>objects</i> array
+ which must be valid and allocated. </p>
+ <p>If the query locator is returned,  a query more has to be executed.</p>
+ <p>Returns exception</p>
+ */
+- (NSString *)query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p
+{
+  NSString *queryLocator;
+  
+  [lockBusy lock];
+  if (busyCount)
+    {
+      [logger log: LogStandard :@"[DBSoap query] called but busy\n"];
+      [lockBusy unlock];
+      return nil;
+    }
+  busyCount++;
+  [lockBusy unlock];
+  
+  queryLocator = [self _query:queryString queryAll:all toArray:objects progressMonitor:p];
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+  
+  return queryLocator;
+}
+
+/** <p>Execute SOQL query <i>queryString</i> and returns the resulting DBSObjects as an array.</p>
+ <p>This method will query all resulting objects of the query, repeatedly querying again if necessary depending on the batch size.</p>
+ <p>Returns exception</p>
+ */
+- (NSMutableArray *)queryFull :(NSString *)queryString queryAll:(BOOL)all progressMonitor:(id<DBProgressProtocol>)p
+{
+  NSMutableArray *result;
+  
+  [lockBusy lock];
+  if (busyCount)
+    {
+      [logger log: LogStandard :@"[DBSoap queryFull] called but busy\n"];
+      [lockBusy unlock];
+      return nil;
+    }
+  busyCount++;
+  [lockBusy unlock];
+  
+  result = [self _queryFull:queryString queryAll:all progressMonitor:p];
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+  return result;
+}
+
+/**
+ <p>execute a the given query on the objects given in the fromArray.<br>
+ The selection clause is automatically generated to identify the object by the field passed in the array. Only if the field is an unique identifier 
+ the result is a single record, else, more records are returned.<br>
+ The Where clause is either automatically generated if none is present or, if Where is already present, it is appended with an AND operator</p>
+ <p>the parameter <em>withBatchSize</em> selects the querying behaviour:
+ <ul>
+ <li>&lgt; 0:Auto-sizing of the batch, the maximum query size is formed</li>
+ <li>0, 1: A single element is queried with =, making the clause Field = 'value'</li>
+ <li>&gt 1: The given batch size is used in a clause like Field in ('value1', 'value2', ... )</li>
+ </ul>
+ <p>A LIMIT N or GROUP BY specification is supported, but only with batch of size 1</p>
+ */
+- (void)queryIdentify :(NSString *)queryString with: (NSArray *)identifiers queryAll:(BOOL)all fromArray:(NSArray *)fromArray toArray:(NSMutableArray *)outArray withBatchSize:(int)batchSize progressMonitor:(id<DBProgressProtocol>)p
+{
+  [lockBusy lock];
+  if (busyCount)
+    {
+      [logger log: LogStandard :@"[DBSoap queryIdentify] called but busy\n"];
+      [lockBusy unlock];
+      return;
+    }
+  busyCount++;
+  [lockBusy unlock];
+  
+  [self _queryIdentify:queryString with:identifiers queryAll:all fromArray:fromArray toArray:outArray withBatchSize:batchSize progressMonitor:p];
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+}
+
+
+/** <p>Execute SOQL query more and write the resulting DBSObjectes into the <i>objects</i> array
+ which must be valid and allocated, continuing from the given query locator <i>locator</i>. </p>
+ <p>If the query locator is returned,  a query more has to be executed.</p>
+ */
+- (NSString *)queryMore :(NSString *)locator toArray:(NSMutableArray *)objects
+{
+  NSString *queryLocator;
+  
+  [lockBusy lock];
+  if (busyCount)
+    {
+      [logger log: LogStandard :@"[DBSoap queryMore] called but busy\n"];
+      [lockBusy unlock];
+      return nil;
+    }
+  busyCount++;
+  [lockBusy unlock];
+  
+  queryLocator = [self _queryMore:locator toArray:objects];
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+  
+  return queryLocator;
+}
+
+/**
+ insert an array of DBSObjects.<br>
+ The objects in the array shall all be of the same type.
+ */
+- (NSMutableArray *)create :(NSString *)objectName fromArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p
+{
+  NSMutableArray *resultArray;
+  
+  [lockBusy lock];
+  if (busyCount)
+    {
+      [logger log: LogStandard :@"[DBSoap create] called but busy\n"];
+      [lockBusy unlock];
+      return nil;
+    }
+  busyCount++;
+  [lockBusy unlock];
+  
+  resultArray = [self _create:objectName fromArray:objects progressMonitor:p];
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+  
+  return resultArray;
+}
+
+
+/**
+ <p>Update an array of DBSObjects.<br>
+ The objects in the array shall all be of the same type.
+ </p>
+ <p>The batch size sent is determined by the upBatchSize property of the class</p>
+ */
+- (NSMutableArray *)update :(NSString *)objectName fromArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p
+{
+  NSMutableArray *resultArray;
+  
+  [lockBusy lock];
+  if (busyCount)
+    {
+      [logger log: LogStandard :@"[DBSoap update] called but busy\n"];
+      [lockBusy unlock];
+      return nil;
+    }
+  busyCount++;
+  [lockBusy unlock];
+  
+  resultArray = [self _update:objectName fromArray:objects progressMonitor:p];
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+  
+  return resultArray;
+}
+
+
+/** Delete the contents of array, which can be either strings of IDs or DBSObjects */
+- (NSMutableArray *)delete :(NSArray *)array progressMonitor:(id<DBProgressProtocol>)p;
+{
+  NSMutableArray *resArray;
+  
+  [lockBusy lock];
+  if (busyCount)
+    {
+      [logger log: LogStandard :@"[DBSoap delete] called but busy\n"];
+      [lockBusy unlock];
+      return nil;
+    }
+  busyCount++;
+  [lockBusy unlock];
+  
+  resArray = [self _delete:array progressMonitor:p];
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+  
+  return resArray;
+}
+
+/** runs a describe global to retrieve all all the objects and returns an array of DBSobjects */
+- (NSArray *)describeGlobal
+{
+  NSArray *objects;
+  
+  [lockBusy lock];
+  if (busyCount)
+    {
+      [logger log: LogStandard :@"[DBSoap describeGlobal] called but busy\n"];
+      [lockBusy unlock];
+      return nil;
+    }
+  busyCount++;
+  [lockBusy unlock];
+  
+  objects = [self _describeGlobal];
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+  
+  return objects;
+}
+
+- (DBSObject *)describeSObject: (NSString *)objectType
+{
+  DBSObject *sObj;
+  
+  [lockBusy lock];
+  if (busyCount)
+    {
+      [logger log: LogStandard :@"[DBSoap describeSObject] called but busy\n"];
+      [lockBusy unlock];
+      return nil;
+    }
+  busyCount++;
+  [lockBusy unlock];
+  
+  sObj = [self _describeSObject:objectType];
+  
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+  
+  return sObj;
+}
+
 
 @end
