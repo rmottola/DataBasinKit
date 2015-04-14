@@ -1664,12 +1664,12 @@
 }
 
 /** Force an udpate to the currently stored object  list */
-- (void)updateObjects
+- (void)_updateObjects
 {
   unsigned i;
-
+  
   [sObjectList release];
-  sObjectList = [[self describeGlobal] retain];
+  sObjectList = [[self _describeGlobal] retain];
 
   [sObjectNamesList release];
   sObjectNamesList = [[NSMutableArray arrayWithCapacity:1] retain];
@@ -2037,7 +2037,7 @@
   prefixToIdentify = [sfId substringToIndex: 3];
   [logger log: LogInformative :@"[DBSoap identifyObjectById] identify: %@\n", prefixToIdentify];
   if (sObjectList == nil)
-    [self updateObjects];
+    [self _updateObjects];
 
   [logger log: LogDebug :@"[DBSoap identifyObjectById] in %u objects\n", [sObjectList count]];
   enu = [sObjectList objectEnumerator];
@@ -2062,26 +2062,6 @@
 }
 
 
-/** <p>Given an ID tries to matches the keyPrefix to identify which kind of Object it is.<br>
- History objects can't be identified, they don't have a keyPrefix.</p>
- <p>Returns the Developer Name of the object</p>
- */
-- (NSString *)identifyObjectById:(NSString *)sfId
-{
-  NSString *str;
-  
-  [lockBusy lock];
-  busyCount++;
-  [lockBusy unlock];
-  
-  str = [self _identifyObjectById:sfId];
-  
-  [lockBusy lock];
-  busyCount--;
-  [lockBusy unlock];
-  
-  return str;
-}
 
 /* accessors*/
 - (NSString *) sessionId
@@ -2387,5 +2367,51 @@
   return sObj;
 }
 
+/** Force an udpate to the currently stored object  list */
+- (void)updateObjects
+{
+  [lockBusy lock];
+  if (busyCount)
+    {
+      [logger log: LogStandard :@"[DBSoap updateObjects] called but busy\n"];
+      [lockBusy unlock];
+      return;
+    }
+  busyCount++;
+  [lockBusy unlock];
+  
+  [self _updateObjects];
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+}
+
+/** <p>Given an ID tries to matches the keyPrefix to identify which kind of Object it is.<br>
+ History objects can't be identified, they don't have a keyPrefix.</p>
+ <p>Returns the Developer Name of the object</p>
+ */
+- (NSString *)identifyObjectById:(NSString *)sfId
+{
+  NSString *str;
+  
+  [lockBusy lock];
+  if (busyCount)
+    {
+      [logger log: LogStandard :@"[DBSoap identifyObjectById] called but busy\n"];
+      [lockBusy unlock];
+      return nil;
+    }  
+  busyCount++;
+  [lockBusy unlock];
+  
+  str = [self _identifyObjectById:sfId];
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+  
+  return str;
+}
 
 @end
