@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2014 Free Software Foundation
+  Copyright (C) 2008-2015 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -80,7 +80,7 @@
 + (NSArray *)fieldsByParsingQuery:(NSString *)query;
 + (NSURL *)loginURLProduction;
 + (NSURL *)loginURLTest;
-
++ (GWSService *)gwserviceForDBSoap;
 
 - (void)login :(NSURL *)url :(NSString *)userName :(NSString *)password :(BOOL)useHttps;
 - (void)setLogger: (id<DBLoggerProtocol>)l;
@@ -103,9 +103,12 @@
 - (NSString *)identifyObjectById:(NSString *)sfId;
 
 - (NSString *) sessionId;
+- (void) setSessionId:(NSString *)session;
 - (NSString *) serverUrl;
+- (void) setServerUrl:(NSString *)urlStr;
 - (BOOL) passwordExpired;
 - (NSDictionary *) userInfo;
+- (void)setService:(GWSService *)serv;
 
 - (void)setStandardTimeout:(unsigned)sec;
 - (void)setQueryTimeout:(unsigned)sec;

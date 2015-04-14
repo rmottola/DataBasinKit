@@ -226,6 +226,32 @@
   return [NSURL URLWithString:@"https://test.salesforce.com/services/Soap/u/30.0"];
 }
 
+/** returns a GWSerivce inited usefully for DBSoap */
++ (GWSService *)gwserviceForDBSoap
+{
+  GWSService    *gws;
+  GWSSOAPCoder *coder;
+
+  /* initialize the coder */
+  coder = [GWSSOAPCoder new];
+  
+  /* salesforce WSDL specifies it to be literal */
+  [coder setUseLiteral:YES];
+  
+  
+  gws = [[GWSService alloc] init];
+  
+  [gws setCoder:coder];
+  [coder release];
+  
+  /* set the SOAP action to an empty string, salesforce likes that more */
+  [gws setSOAPAction:@"\"\""];
+  
+  
+  return [gws autorelease];
+}
+
+
 - (id)init
 {
   if ((self = [super init]))
@@ -288,7 +314,6 @@
  */
 - (void)login :(NSURL *)url :(NSString *)userName :(NSString *)password :(BOOL)useHttps
 {
-  GWSSOAPCoder          *coder;
   NSUserDefaults        *defs;
   NSMutableArray        *orderArray;
   NSMutableDictionary   *parmsDict;
@@ -312,20 +337,9 @@
 		    @"80", @"Port",
 		  nil]];
 
-  /* initialize the coder */
-  coder = [GWSSOAPCoder new];
-  
-  /* salesforce WSDL specifies it to be literal */
-  [coder setUseLiteral:YES];
-
   /* init our service */
-  service = [[GWSService alloc] init];
+  service = [[DBSoap gwserviceForDBSoap] retain];
   
-  [service setCoder:coder];
-  
-  /* set the SOAP action to an empty string, salesforce likes that more */
-  [service setSOAPAction:@"\"\""];
-
   if (!useHttps && [[url scheme] isEqualTo:@"https"])
     {
       if (!useHttps)
@@ -422,8 +436,6 @@
     if (!useHttps)
       serverUrl = [@"http" stringByAppendingString:[serverUrl substringFromIndex:5]];
   }
-  
-  [coder release];
   
   if (sessionId == nil)
   {
@@ -2069,9 +2081,29 @@
   return sessionId;
 }
 
+- (void) setSessionId:(NSString *)session
+{
+  if (sessionId != session)
+    {
+      [sessionId release];
+      sessionId = session;
+      [sessionId retain];
+    }
+}
+
 - (NSString *) serverUrl
 {
   return serverUrl;
+}
+
+- (void) setServerUrl:(NSString *)urlStr
+{
+  if (serverUrl != urlStr)
+    {
+      [serverUrl release];
+      serverUrl = urlStr;
+      [serverUrl retain];
+    }
 }
 
 - (BOOL) passwordExpired
@@ -2109,6 +2141,15 @@
   return busyCount > 0;
 }
 
+- (void)setService:(GWSService *)serv
+{
+  if (service != serv)
+    {
+      [service release];
+      service = serv;
+      [service retain];
+    }
+}
 
 - (void)dealloc
 {
