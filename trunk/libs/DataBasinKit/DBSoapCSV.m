@@ -83,7 +83,7 @@
       [p incrementCurrentValue:[sObjects count]];
     }
 
-  while (qLoc != nil)
+  while (qLoc != nil && ![p shouldStop])
     {
       [p setCurrentDescription:@"Retrieving"];
       [sObjects removeAllObjects];

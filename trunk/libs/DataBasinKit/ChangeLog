@@ -3,6 +3,9 @@
 	* DBProgressProtocol.h
 	Methods for telling the associate process to stop.
 
+	* DBSoapCSV.m (query:)
+	Interrupt if the progress monitor says so.
+
 2015-04-14 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.h
