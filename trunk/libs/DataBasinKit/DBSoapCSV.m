@@ -48,11 +48,11 @@
   GWSService     *serv;
   DBSoap         *dbSoap;
   
+  /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
   dbSoap = [[DBSoap alloc] init];
   serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverUrl]];
-  
+  [serv setURL:[db serverUrl]];  
   [dbSoap setService:serv];
   
   fields = nil;
@@ -72,8 +72,8 @@
     qLoc = [dbSoap query: queryString queryAll: all toArray: sObjects progressMonitor:p];
   NS_HANDLER
     [sObjects release];
-    [localException raise];
     [dbSoap release];
+    [localException raise];
   NS_ENDHANDLER
 
   batchSize = [sObjects count];
@@ -121,7 +121,16 @@
   NSUInteger     i;
   NSUInteger     batchSize;
   NSArray        *queryFields;
-
+  GWSService     *serv;
+  DBSoap         *dbSoap;
+  
+  /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
+  dbSoap = [[DBSoap alloc] init];
+  serv = [DBSoap gwserviceForDBSoap];
+  [dbSoap setSessionId:[db sessionId]];
+  [serv setURL:[db serverUrl]];  
+  [dbSoap setService:serv];
+  
   queryFields = nil;
   if ([writer writeFieldsOrdered])
     {
@@ -163,6 +172,7 @@
   NS_HANDLER
     [identifierArray release];
     [sObjects release];
+    [dbSoap release];
     [localException raise];
   NS_ENDHANDLER
   
@@ -181,7 +191,7 @@
         }
       [writer writeDataSet: sObjects];
     }
-  
+  [dbSoap release];  
   [sObjects release];
   [identifierArray release];
   [p setEnd];
@@ -196,7 +206,16 @@
   NSUInteger     fieldCount;
   NSMutableArray *sObjectsArray;
   NSMutableArray *resultArray;
-
+  GWSService     *serv;
+  DBSoap         *dbSoap;
+  
+  /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
+  dbSoap = [[DBSoap alloc] init];
+  serv = [DBSoap gwserviceForDBSoap];
+  [dbSoap setSessionId:[db sessionId]];
+  [serv setURL:[db serverUrl]];  
+  [dbSoap setService:serv];
+  
   /* retrieve objects to create */
   
   /* first the fields */
@@ -227,8 +246,11 @@
     resultArray = [db create:objectName fromArray:sObjectsArray progressMonitor:p];
   NS_HANDLER
     [sObjectsArray release];
+    [dbSoap release];
     [localException raise];
   NS_ENDHANDLER
+  
+  [dbSoap release];
   [sObjectsArray release];
   [p setCurrentDescription:@"Done"];
   [p setEnd];
@@ -244,7 +266,16 @@
   NSUInteger     fieldCount;
   NSMutableArray *sObjectsArray;
   NSMutableArray *resultArray;
-
+  GWSService     *serv;
+  DBSoap         *dbSoap;
+  
+  /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
+  dbSoap = [[DBSoap alloc] init];
+  serv = [DBSoap gwserviceForDBSoap];
+  [dbSoap setSessionId:[db sessionId]];
+  [serv setURL:[db serverUrl]];  
+  [dbSoap setService:serv];
+  
   /* retrieve objects to update */
   [p reset];
   [p setCurrentDescription:@"Retrieving"];
@@ -277,9 +308,11 @@
     resultArray = [db update:objectName fromArray:sObjectsArray progressMonitor:p];
   NS_HANDLER
     [sObjectsArray release];
+    [dbSoap release];
     [localException raise];
   NS_ENDHANDLER
 
+  [dbSoap release];
   [sObjectsArray release];
   [p setCurrentDescription:@"Done"];
   [p setEnd];
@@ -295,14 +328,26 @@
   NSArray        *fields;
   NSArray        *keys;
   NSMutableArray *set;
-
+  GWSService     *serv;
+  DBSoap         *dbSoap;
   
-  object = [db describeSObject: objectType];
+  /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
+  dbSoap = [[DBSoap alloc] init];
+  serv = [DBSoap gwserviceForDBSoap];
+  [dbSoap setSessionId:[db sessionId]];
+  [serv setURL:[db serverUrl]];  
+  [dbSoap setService:serv];
+  
+  NS_DURING 
+    object = [db describeSObject: objectType];
+  NS_HANDLER
+    [dbSoap release];
+    [localException raise];
+  NS_ENDHANDLER
+  
   fields = [object fieldNames];
   size = [fields count];
   
-  if (size < 1)
-    return;
   
   keys = [[object propertiesOfField: [fields objectAtIndex: 0]] allKeys];
   [writer setFieldNames:[NSArray arrayWithArray:keys] andWriteThem:YES];
@@ -334,6 +379,7 @@
     }
   [writer writeDataSet:set];
   [set release];
+  [dbSoap release];
 }
 
 
@@ -342,7 +388,16 @@
 {
   NSMutableArray *objectsArray;
   NSMutableArray *resultArray;
-
+  GWSService     *serv;
+  DBSoap         *dbSoap;
+  
+  /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
+  dbSoap = [[DBSoap alloc] init];
+  serv = [DBSoap gwserviceForDBSoap];
+  [dbSoap setSessionId:[db sessionId]];
+  [serv setURL:[db serverUrl]];  
+  [dbSoap setService:serv];
+  
   /* retrieve objects to delete */
   // FIXME perhaps this copy is useless
   objectsArray = [[NSMutableArray arrayWithArray:[reader readDataSet]] retain];
@@ -354,9 +409,11 @@
     resultArray = [db delete:objectsArray progressMonitor:p];
   NS_HANDLER
     [objectsArray release];
+    [dbSoap release];
     [localException raise];
   NS_ENDHANDLER
 
+  [dbSoap release];
   [objectsArray release];
   return resultArray;
 }
