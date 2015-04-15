@@ -1,5 +1,10 @@
 2015-04-15 Riccardo Mottola <rm@gnu.org>
 
+	* DBSoap.m (_queryIdentify)
+	Stop if the associated progress monitor tells so.
+
+2015-04-15 Riccardo Mottola <rm@gnu.org>
+
 	* DBSoapCSV.m
 	Instantiate a private service class for create, query, indentify, etc. allowing parallel use.
 
