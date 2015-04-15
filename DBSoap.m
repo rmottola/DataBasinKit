@@ -307,12 +307,7 @@
 }
 
 
-/**<p>executes login</p>
-   <p><i>url</i> specifies the URL of the endpoint</p>
-   <p><i>useHttps</i> specifies if secure connecton has to be used or not. If not, http is attempted and then enforced.
-   The Salesforce.com instance must be configured to accept non-secure connections.</p>
- */
-- (void)login :(NSURL *)url :(NSString *)userName :(NSString *)password :(BOOL)useHttps
+- (void)_login :(NSURL *)url :(NSString *)userName :(NSString *)password :(BOOL)useHttps
 {
   NSUserDefaults        *defs;
   NSMutableArray        *orderArray;
@@ -326,10 +321,6 @@
   NSDictionary          *userInfoResult;
   NSDictionary          *queryFault;
 
-
-  [lockBusy lock];
-  busyCount++;
-  [lockBusy unlock];
 
   defs = [NSUserDefaults standardUserDefaults];
   [defs registerDefaults:
@@ -450,10 +441,6 @@
   [service setURL:serverUrl];
 
   [sessionId retain];
-  
-  [lockBusy lock];
-  busyCount--;
-  [lockBusy unlock];
 }
 
 
@@ -2163,6 +2150,33 @@
 
 
 /* ------- public exposed API, which test for lock and invoke internal implementations */
+
+/**<p>executes login</p>
+   <p><i>url</i> specifies the URL of the endpoint</p>
+   <p><i>useHttps</i> specifies if secure connecton has to be used or not. If not, http is attempted and then enforced.
+   The Salesforce.com instance must be configured to accept non-secure connections.</p>
+ */
+- (void)login :(NSURL *)url :(NSString *)userName :(NSString *)password :(BOOL)useHttps
+{
+  [lockBusy lock];
+  busyCount++;
+  [lockBusy unlock];
+
+  NS_DURING
+    [self _login :url :userName :password :useHttps];
+  NS_HANDLER
+    {
+      [lockBusy lock];
+      busyCount--;
+      [lockBusy unlock];
+      [localException raise];
+    }
+  NS_ENDHANDLER
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+}
 
 /** <p>execute SOQL query and write the resulting DBSObjects into the <i>objects</i> array
  which must be valid and allocated. </p>

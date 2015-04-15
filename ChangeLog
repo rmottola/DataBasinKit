@@ -1,5 +1,10 @@
 2015-04-15 Riccardo Mottola <rm@gnu.org>
 
+	* DBSoap.m (login:)
+	Protect login with lock and busy count
+
+2015-04-15 Riccardo Mottola <rm@gnu.org>
+
 	* DBSoap.m
 	Catch exceptions in all locked methods and unlock and decrease busy count.
 
