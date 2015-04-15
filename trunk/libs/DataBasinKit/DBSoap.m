@@ -974,7 +974,7 @@
     }
 
   i = 0;
-  while (i < [fromArray count])
+  while (i < [fromArray count] && ![p shouldStop])
     {
       NSMutableString *completeQuery;
       NSMutableArray *resArray;
