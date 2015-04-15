@@ -45,6 +45,15 @@
   NSArray        *fields;
   NSString       *qLoc;
   NSMutableArray *sObjects;
+  GWSService     *serv;
+  DBSoap         *dbSoap;
+  
+  dbSoap = [[DBSoap alloc] init];
+  serv = [DBSoap gwserviceForDBSoap];
+  [dbSoap setSessionId:[db sessionId]];
+  [serv setURL:[db serverUrl]];
+  
+  [dbSoap setService:serv];
   
   fields = nil;
   if ([writer writeFieldsOrdered])
@@ -60,10 +69,11 @@
 
   qLoc = nil;
   NS_DURING
-    qLoc = [db query: queryString queryAll: all toArray: sObjects progressMonitor:p];
+    qLoc = [dbSoap query: queryString queryAll: all toArray: sObjects progressMonitor:p];
   NS_HANDLER
     [sObjects release];
     [localException raise];
+    [dbSoap release];
   NS_ENDHANDLER
 
   batchSize = [sObjects count];
@@ -87,11 +97,12 @@
     {
       [p setCurrentDescription:@"Retrieving"];
       [sObjects removeAllObjects];
-      qLoc = [db queryMore: qLoc toArray: sObjects];
+      qLoc = [dbSoap queryMore: qLoc toArray: sObjects];
       [p setCurrentDescription:@"Writing"];
       [writer writeDataSet: sObjects];
       [p incrementCurrentValue:[sObjects count]];
     }
+  [dbSoap release];
   [sObjects release];
   [p setCurrentDescription:@"Done"];
   [p setEnd];
