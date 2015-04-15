@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2014 Free Software Foundation
+  Copyright (C) 2008-2015 Free Software Foundation
 
   Author: Riccardo Mottola
 

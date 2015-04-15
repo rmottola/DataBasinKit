@@ -2183,8 +2183,17 @@
   busyCount++;
   [lockBusy unlock];
   
-  queryLocator = [self _query:queryString queryAll:all toArray:objects progressMonitor:p];
-  
+  NS_DURING
+    queryLocator = [self _query:queryString queryAll:all toArray:objects progressMonitor:p];
+  NS_HANDLER
+    {
+      [lockBusy lock];
+      busyCount--;
+      [lockBusy unlock];
+      [localException raise];
+    }
+  NS_ENDHANDLER
+
   [lockBusy lock];
   busyCount--;
   [lockBusy unlock];
@@ -2210,7 +2219,16 @@
   busyCount++;
   [lockBusy unlock];
   
-  result = [self _queryFull:queryString queryAll:all progressMonitor:p];
+  NS_DURING
+    result = [self _queryFull:queryString queryAll:all progressMonitor:p];
+  NS_HANDLER
+    {
+      [lockBusy lock];
+      busyCount--;
+      [lockBusy unlock];
+      [localException raise];
+    }
+  NS_ENDHANDLER  
   
   [lockBusy lock];
   busyCount--;
@@ -2243,8 +2261,17 @@
   busyCount++;
   [lockBusy unlock];
   
-  [self _queryIdentify:queryString with:identifiers queryAll:all fromArray:fromArray toArray:outArray withBatchSize:batchSize progressMonitor:p];
-  
+  NS_DURING
+    [self _queryIdentify:queryString with:identifiers queryAll:all fromArray:fromArray toArray:outArray withBatchSize:batchSize progressMonitor:p];
+  NS_HANDLER
+    {
+      [lockBusy lock];
+      busyCount--;
+      [lockBusy unlock];
+      [localException raise];
+    }
+  NS_ENDHANDLER  
+    
   [lockBusy lock];
   busyCount--;
   [lockBusy unlock];
@@ -2269,8 +2296,17 @@
   busyCount++;
   [lockBusy unlock];
   
-  queryLocator = [self _queryMore:locator toArray:objects];
-  
+  NS_DURING
+    queryLocator = [self _queryMore:locator toArray:objects];
+  NS_HANDLER
+    {
+      [lockBusy lock];
+      busyCount--;
+      [lockBusy unlock];
+      [localException raise];
+    }
+  NS_ENDHANDLER
+    
   [lockBusy lock];
   busyCount--;
   [lockBusy unlock];
@@ -2296,8 +2332,17 @@
   busyCount++;
   [lockBusy unlock];
   
-  resultArray = [self _create:objectName fromArray:objects progressMonitor:p];
-  
+  NS_DURING
+    resultArray = [self _create:objectName fromArray:objects progressMonitor:p];
+  NS_HANDLER
+    {
+      [lockBusy lock];
+      busyCount--;
+      [lockBusy unlock];
+      [localException raise];
+    }
+  NS_ENDHANDLER
+    
   [lockBusy lock];
   busyCount--;
   [lockBusy unlock];
@@ -2326,8 +2371,17 @@
   busyCount++;
   [lockBusy unlock];
   
-  resultArray = [self _update:objectName fromArray:objects progressMonitor:p];
-  
+  NS_DURING
+    resultArray = [self _update:objectName fromArray:objects progressMonitor:p];
+  NS_HANDLER
+    {
+      [lockBusy lock];
+      busyCount--;
+      [lockBusy unlock];
+      [localException raise];
+    }
+  NS_ENDHANDLER
+    
   [lockBusy lock];
   busyCount--;
   [lockBusy unlock];
@@ -2351,8 +2405,17 @@
   busyCount++;
   [lockBusy unlock];
   
-  resArray = [self _delete:array progressMonitor:p];
-  
+  NS_DURING
+    resArray = [self _delete:array progressMonitor:p];
+  NS_HANDLER
+    {
+      [lockBusy lock];
+      busyCount--;
+      [lockBusy unlock];
+      [localException raise];
+    }
+  NS_ENDHANDLER
+
   [lockBusy lock];
   busyCount--;
   [lockBusy unlock];
@@ -2375,8 +2438,17 @@
   busyCount++;
   [lockBusy unlock];
   
-  objects = [self _describeGlobal];
-  
+  NS_DURING
+    objects = [self _describeGlobal];
+  NS_HANDLER
+    {
+      [lockBusy lock];
+      busyCount--;
+      [lockBusy unlock];
+      [localException raise];
+    }
+  NS_ENDHANDLER
+
   [lockBusy lock];
   busyCount--;
   [lockBusy unlock];
@@ -2398,8 +2470,16 @@
   busyCount++;
   [lockBusy unlock];
   
-  sObj = [self _describeSObject:objectType];
-  
+  NS_DURING
+    sObj = [self _describeSObject:objectType];
+  NS_HANDLER
+    {
+      [lockBusy lock];
+      busyCount--;
+      [lockBusy unlock];
+      [localException raise];
+    }
+  NS_ENDHANDLER  
   
   [lockBusy lock];
   busyCount--;
@@ -2421,8 +2501,17 @@
   busyCount++;
   [lockBusy unlock];
   
-  [self _updateObjects];
-  
+  NS_DURING
+    [self _updateObjects];
+  NS_HANDLER
+    {
+      [lockBusy lock];
+      busyCount--;
+      [lockBusy unlock];
+      [localException raise];
+    }
+  NS_ENDHANDLER
+    
   [lockBusy lock];
   busyCount--;
   [lockBusy unlock];
@@ -2446,8 +2535,17 @@
   busyCount++;
   [lockBusy unlock];
   
-  str = [self _identifyObjectById:sfId];
-  
+  NS_DURING
+    str = [self _identifyObjectById:sfId];
+  NS_HANDLER
+    {
+      [lockBusy lock];
+      busyCount--;
+      [lockBusy unlock];
+      [localException raise];
+    }
+  NS_ENDHANDLER
+
   [lockBusy lock];
   busyCount--;
   [lockBusy unlock];
