@@ -1,5 +1,14 @@
 2015-04-14 Riccardo Mottola <rm@gnu.org>
 
+	* DBSoap.h
+	* DBSoap.m
+	Service convenience method, session details accessors.
+
+	* DBSoapCSV.m (query:)
+	Instantiate a private GWSService
+
+2015-04-14 Riccardo Mottola <rm@gnu.org>
+
 	* DBProgressProtocol.h
 	Methods for telling the associate process to stop.
 
