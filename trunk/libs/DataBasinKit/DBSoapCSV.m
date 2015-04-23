@@ -97,15 +97,22 @@
     {
       [p setCurrentDescription:@"Retrieving"];
       [sObjects removeAllObjects];
-      qLoc = [dbSoap queryMore: qLoc toArray: sObjects];
+      NS_DURING
+        qLoc = [dbSoap queryMore: qLoc toArray: sObjects];
+      NS_HANDLER
+        qLoc = nil;
+        [logger log: LogDebug :@"[DBSoapCSV query] Exception during query more: %@\n", [localException description]];
+      NS_ENDHANDLER
       [p setCurrentDescription:@"Writing"];
       [writer writeDataSet: sObjects];
       [p incrementCurrentValue:[sObjects count]];
     }
   [dbSoap release];
   [sObjects release];
-  [p setCurrentDescription:@"Done"];
-  [p setEnd];
+  if ([p shouldStop])
+    [p setCurrentDescription:@"Interrupted"];
+  else
+    [p setCurrentDescription:@"Done"];
 }
 
 /**
