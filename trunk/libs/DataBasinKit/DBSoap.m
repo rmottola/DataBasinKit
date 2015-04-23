@@ -872,7 +872,7 @@
   
   qLoc = [self _query: queryString queryAll:all toArray: sObjects progressMonitor:p];
   [logger log: LogInformative: @"[DBSoap queryFull]: query locator after first query: %@\n", qLoc];
-  while (qLoc != nil)
+  while (qLoc != nil  && ![p shouldStop])
     qLoc = [self _queryMore: qLoc toArray: sObjects];
   
   [sObjects autorelease];
@@ -1160,7 +1160,7 @@
   queryObjectsArray = [[NSMutableArray arrayWithCapacity: upBatchSize] retain];
   resultArray = [[NSMutableArray arrayWithCapacity:1] retain];
 
-  while ((sObject = [enumerator nextObject]))
+  while ((sObject = [enumerator nextObject])  && ![p shouldStop])
   {
     unsigned            i;
     NSMutableDictionary *sObj;
@@ -1367,7 +1367,7 @@
   totalCounter = 1;
   queryObjectsArray = [[NSMutableArray arrayWithCapacity: upBatchSize] retain];
   resultArray = [[NSMutableArray arrayWithCapacity:1] retain];
-  while ((sObject = [enumerator nextObject]))
+  while ((sObject = [enumerator nextObject])  && ![p shouldStop])
   {
     unsigned int i;
     NSMutableDictionary *sObj;
@@ -2003,7 +2003,7 @@
 	  batchCounter = 0;
 	} /* of batch */
     }
-  while (idStr);
+  while (idStr  && ![p shouldStop]);
 
   [batchObjArray release];
   return [resultArray autorelease];
