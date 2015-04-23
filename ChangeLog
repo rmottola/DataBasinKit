@@ -3,6 +3,10 @@
 	* DBSoap.m (_delete)
 	Stop if the associated progress monitor tells to.
 
+	* DBSoapCSV.m
+	Query: if interrupted, do not set progress to 100% and set the status to interrupted.
+
+
 2015-04-15 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m (_queryIdentify)
