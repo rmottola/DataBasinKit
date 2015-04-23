@@ -1,3 +1,8 @@
+2015-04-23 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.m (_delete)
+	Stop if the associated progress monitor tells to.
+
 2015-04-15 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m (_queryIdentify)
