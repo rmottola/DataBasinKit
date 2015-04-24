@@ -31,6 +31,9 @@
 #import "DBProgressProtocol.h"
 #import "DBLoggerProtocol.h"
 
+/* since query identify would work in a big array giving memory issues, we split it up in this batch size */
+#define MAX_SIZE_OF_IDENTBATCH 20000
+
 @implementation DBSoapCSV
 
 - (void)setDBSoap: (DBSoap *)dbs
@@ -130,6 +133,8 @@
   NSArray        *queryFields;
   GWSService     *serv;
   DBSoap         *dbSoap;
+  NSMutableArray *batchOfIdentifiers;
+  BOOL           firstBatchIteration;
   
   /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
   dbSoap = [[DBSoap alloc] init];
@@ -174,30 +179,55 @@
   [p setCurrentDescription:@"Identifying and querying."];
   [logger log: LogStandard :@"[DBSoapCSV queryIdentify] Identify through %@\n", inFieldNames];
 
-  NS_DURING
-    [db queryIdentify:queryString with:inFieldNames queryAll:all fromArray:identifierArray toArray: sObjects withBatchSize:bSize progressMonitor: p];
-  NS_HANDLER
-    [identifierArray release];
-    [sObjects release];
-    [dbSoap release];
-    [localException raise];
-  NS_ENDHANDLER
-  
-  [p setCurrentDescription:@"Writing data"];
-  batchSize = [sObjects count];
-  if (batchSize > 0)
+  batchOfIdentifiers = [[NSMutableArray alloc] initWithCapacity:MAX_SIZE_OF_IDENTBATCH];
+  firstBatchIteration = YES; /* we keep track of the first batch since we need to writ the header only once*/
+  while ([identifierArray count] > 0 && ![p shouldStop])
     {
-      if (queryFields != nil)
+      NSUInteger j;
+
+      j = 0;
+      while (j < MAX_SIZE_OF_IDENTBATCH && [identifierArray count] > 0)
         {
-          [writer setWriteFieldsOrdered:YES];
-          [writer setFieldNames: queryFields andWriteThem:YES];
+          id item;
+
+          item = [identifierArray objectAtIndex:0];
+          [batchOfIdentifiers addObject:item];
+          [identifierArray removeObjectAtIndex:0];
+          j++;
         }
-      else
+      NS_DURING
+        [db queryIdentify:queryString with:inFieldNames queryAll:all fromArray:batchOfIdentifiers toArray: sObjects withBatchSize:bSize progressMonitor: p];
+      NS_HANDLER
+        [identifierArray release];
+        [sObjects release];
+        [dbSoap release];
+        [localException raise];
+        [batchOfIdentifiers release];
+      NS_ENDHANDLER
+
+      [batchOfIdentifiers removeAllObjects];
+      [p setCurrentDescription:@"Writing data"];
+      batchSize = [sObjects count];
+      if (batchSize > 0 )
         {
-          [writer setFieldNames: [sObjects objectAtIndex: 0] andWriteThem:YES];
+          if (firstBatchIteration)
+            {
+              if (queryFields != nil)
+                {
+                  [writer setWriteFieldsOrdered:YES];
+                  [writer setFieldNames: queryFields andWriteThem:YES];
+                }
+              else
+                {
+                  [writer setFieldNames: [sObjects objectAtIndex: 0] andWriteThem:YES];
+                }
+            }
+          [writer writeDataSet: sObjects];
+          [sObjects removeAllObjects];
         }
-      [writer writeDataSet: sObjects];
+      firstBatchIteration = NO;
     }
+  [batchOfIdentifiers release];
   [dbSoap release];  
   [sObjects release];
   [identifierArray release];
