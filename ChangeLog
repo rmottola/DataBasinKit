@@ -1,3 +1,8 @@
+2015-04-24 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoapCSV.m
+	QueryIdentify: split query array in chunks, to limit maximum memory consumption. The batch size is fixed for now.
+
 2015-04-23 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m (_delete)
