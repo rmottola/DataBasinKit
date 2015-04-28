@@ -886,7 +886,6 @@
 {
   unsigned i;
   unsigned j;
-  unsigned b;
   BOOL batchable;
   BOOL autoBatch;
   BOOL multiKey;
@@ -976,6 +975,8 @@
   i = 0;
   while (i < [fromArray count] && ![p shouldStop])
     {
+      unsigned b;
+
       NSMutableString *completeQuery;
       NSMutableArray *resArray;
 
@@ -1048,6 +1049,7 @@
               [completeQuery appendString:queryOptionsPart];
             }
 	  i++;
+          b = 1;
 	}
       else
 	{
@@ -1116,8 +1118,8 @@
       for (j = 0; j < [resArray count]; j++)
 	[outArray addObject: [resArray objectAtIndex: j]];
       [completeQuery release];
-      
-      [p setCurrentValue: i];
+
+      [p incrementCurrentValue: b];
     }
 }
 

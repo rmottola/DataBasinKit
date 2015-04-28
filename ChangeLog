@@ -1,3 +1,8 @@
+2015-04-28 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.m
+	Increment progress by te current batch size, do not set an absolute value.
+
 2015-04-24 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoapCSV.m
