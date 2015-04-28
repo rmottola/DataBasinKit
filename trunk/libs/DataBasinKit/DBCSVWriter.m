@@ -1,7 +1,7 @@
 /*
    Project: DataBasin
 
-   Copyright (C) 2009-2014 Free Software Foundation
+   Copyright (C) 2009-2015 Free Software Foundation
 
    Author: Riccardo Mottola
 
@@ -197,7 +197,7 @@
     [keys removeObject:@"Id"];
 
   //[logger log: LogDebug :@"[DBCSVWriter formatComplexObject] clean dictionary %@:\n", d];
-  NSLog(@"[DBCSVWriter formatComplexObject] clean dictionary %@\n", d);
+  //NSLog(@"[DBCSVWriter formatComplexObject] clean dictionary %@\n", d);
 
   for (i = 0; i < [keys count]; i++)
     {
@@ -222,7 +222,7 @@
             [s appendString:@"."];
           [s appendString:key];
 
-          NSLog(@"formatting complex object with root: %@", s);
+          //NSLog(@"formatting complex object with root: %@", s);
           [self formatComplexObject: obj withRoot:s inDict:dict inOrder:order];
         }
       else if ([obj isKindOfClass: [NSString class]] || [obj isKindOfClass: [NSNumber class]])
@@ -239,7 +239,7 @@
           [s appendString:key];
 
           extendedFieldName = s;
-          NSLog(@"formatting scalar object: %@ for key: %@", obj,extendedFieldName);
+          //NSLog(@"formatting scalar object: %@ for key: %@", obj,extendedFieldName);
           [dict setObject:obj forKey:extendedFieldName];
           [order addObject:extendedFieldName];
 	}
@@ -277,7 +277,7 @@
   if ([array count] == 0)
     return;
 
-  NSLog(@"header array is %@", array);
+  //NSLog(@"header array is %@", array);
 
   /* if we write the header, fine, else we write at least the BOM */
   if (flag == YES)
@@ -300,12 +300,14 @@
 
 - (void)writeDataSet:(NSArray *)array
 {
-  int i;
-  int setCount;
+  NSUInteger i;
+  NSUInteger setCount;
+  NSAutoreleasePool *arp;
 
   if (array == nil)
     return;
 
+  arp = [[NSAutoreleasePool alloc] init];
   setCount = [array count];
   for (i = 0; i < setCount; i++)
     {
@@ -326,6 +328,7 @@
 	data2 = data;
       [file writeData: data2];
     }
+  [arp drain];
 }
 
 - (NSString *)formatOneLine:(id)data forHeader:(BOOL) headerFlag
@@ -347,8 +350,8 @@
   else
     array = [NSArray arrayWithObject: data];
 
-  NSLog(@"Data array: %@", data);
-  NSLog(@"field names array: %@", fieldNames);
+  //NSLog(@"Data array: %@", data);
+  //NSLog(@"field names array: %@", fieldNames);
   size = [array count];
 
   if (size == 0)
@@ -379,7 +382,7 @@
 
 	      key = [keys objectAtIndex: j];
 	      value = [obj valueForField: key];
-	      NSLog(@"key ---> %@ object %@", key, value);
+	      //NSLog(@"key ---> %@ object %@", key, value);
 	      
 	      if ([value isKindOfClass: [NSString class]] ||[value isKindOfClass: [NSNumber class]] )
 		{
@@ -405,13 +408,14 @@
 	}
       else if ([obj isKindOfClass: [NSString class]])
         {
-	  NSLog(@"formatOneLine, we have directly a scalar object, NSString: %@", obj);
+	  //NSLog(@"formatOneLine, we have directly a scalar object, NSString: %@", obj);
           [dataDict setObject:obj forKey:obj];
           [keyOrder addObject:obj];
         }
       else if ([obj isKindOfClass: [NSNumber class]])
 	{
           NSLog(@"formatOneLine, we have directly a scalar object, NSNumber: %@", obj);
+          [logger log: LogStandard :@"[DBCSVWriter formatOneLine] we have a NSNumber, unhandled %@:\n", obj];
 	}
       else
         NSLog(@"unknown class of value: %@", [obj class]);
