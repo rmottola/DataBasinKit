@@ -231,7 +231,6 @@
   [dbSoap release];  
   [sObjects release];
   [identifierArray release];
-  [p setEnd];
 }
 
 - (NSMutableArray *)create :(NSString *)objectName fromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p
