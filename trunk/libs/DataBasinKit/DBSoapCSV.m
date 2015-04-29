@@ -133,7 +133,6 @@
   NSArray        *queryFields;
   GWSService     *serv;
   DBSoap         *dbSoap;
-  NSMutableArray *batchOfIdentifiers;
   BOOL           firstBatchIteration;
   
   /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
@@ -179,22 +178,19 @@
   [p setCurrentDescription:@"Identifying and querying."];
   [logger log: LogStandard :@"[DBSoapCSV queryIdentify] Identify through %@\n", inFieldNames];
 
-  batchOfIdentifiers = [[NSMutableArray alloc] initWithCapacity:MAX_SIZE_OF_IDENTBATCH];
   firstBatchIteration = YES; /* we keep track of the first batch since we need to writ the header only once*/
   while ([identifierArray count] > 0 && ![p shouldStop])
     {
-      NSUInteger j;
+      NSRange subArrayRange;
+      NSArray *batchOfIdentifiers;
 
-      j = 0;
-      while (j < MAX_SIZE_OF_IDENTBATCH && [identifierArray count] > 0)
-        {
-          id item;
+      subArrayRange = NSMakeRange(0, [identifierArray count]);
+      if ([identifierArray count] > MAX_SIZE_OF_IDENTBATCH)
+        subArrayRange = NSMakeRange(0, MAX_SIZE_OF_IDENTBATCH);
+      batchOfIdentifiers = [identifierArray subarrayWithRange:subArrayRange];
+      [batchOfIdentifiers retain];
+      [identifierArray removeObjectsInRange:subArrayRange];
 
-          item = [identifierArray objectAtIndex:0];
-          [batchOfIdentifiers addObject:item];
-          [identifierArray removeObjectAtIndex:0];
-          j++;
-        }
       NS_DURING
         [db queryIdentify:queryString with:inFieldNames queryAll:all fromArray:batchOfIdentifiers toArray: sObjects withBatchSize:bSize progressMonitor: p];
       NS_HANDLER
@@ -205,7 +201,7 @@
         [batchOfIdentifiers release];
       NS_ENDHANDLER
 
-      [batchOfIdentifiers removeAllObjects];
+      [batchOfIdentifiers release];
       [p setCurrentDescription:@"Writing data"];
       batchSize = [sObjects count];
       if (batchSize > 0 )
@@ -227,7 +223,6 @@
         }
       firstBatchIteration = NO;
     }
-  [batchOfIdentifiers release];
   [dbSoap release];  
   [sObjects release];
   [identifierArray release];

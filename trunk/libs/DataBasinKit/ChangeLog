@@ -1,3 +1,8 @@
+2015-04-29 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoapCSV.m (queryIdentify)
+	Do not batch in a mutable array emptied each time, but work on NSArray as subarray and release it at each cycle
+
 2015-04-28 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m
