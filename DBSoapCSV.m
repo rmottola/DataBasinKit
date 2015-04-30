@@ -183,7 +183,9 @@
     {
       NSRange subArrayRange;
       NSArray *batchOfIdentifiers;
+      NSAutoreleasePool *arp;
 
+      arp = [[NSAutoreleasePool alloc] init];
       subArrayRange = NSMakeRange(0, [identifierArray count]);
       if ([identifierArray count] > MAX_SIZE_OF_IDENTBATCH)
         subArrayRange = NSMakeRange(0, MAX_SIZE_OF_IDENTBATCH);
@@ -199,6 +201,7 @@
         [dbSoap release];
         [localException raise];
         [batchOfIdentifiers release];
+        [arp drain];
       NS_ENDHANDLER
 
       [batchOfIdentifiers release];
@@ -222,6 +225,7 @@
           [sObjects removeAllObjects];
         }
       firstBatchIteration = NO;
+      [arp drain];
     }
   [dbSoap release];  
   [sObjects release];
