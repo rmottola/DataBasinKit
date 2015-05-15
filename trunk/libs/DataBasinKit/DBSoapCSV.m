@@ -98,6 +98,9 @@
 
   while (qLoc != nil && ![p shouldStop])
     {
+      NSAutoreleasePool *arp;
+
+      arp = [[NSAutoreleasePool alloc] init];
       [p setCurrentDescription:@"Retrieving"];
       [sObjects removeAllObjects];
       NS_DURING
@@ -109,6 +112,7 @@
       [p setCurrentDescription:@"Writing"];
       [writer writeDataSet: sObjects];
       [p incrementCurrentValue:[sObjects count]];
+      [arp drain];
     }
   [dbSoap release];
   [sObjects release];
