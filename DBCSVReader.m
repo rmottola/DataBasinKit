@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2009-2014 Free Software Foundation
+  Copyright (C) 2009-2015 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -125,7 +125,7 @@
       qualifier = [q retain];
       if ([[[linesArray objectAtIndex:0] substringToIndex:[qualifier length]] isEqualToString: qualifier])
         isQualified = YES;
-      [logger log:LogStandard :@"[DBCVSReader initWithPath] Is file qualified? %d\n", isQualified];
+      [logger log:LogStandard :@"[DBCVSReader setQualifier] Is file qualified? %d\n", isQualified];
     }
 }
 
@@ -181,69 +181,73 @@
   NSScanner      *scanner;
   NSMutableArray *record;
   NSString       *field;
-  BOOL           inField;
   
   if ([line length] == 0)
     return nil;
-  
+
   scanner = [NSScanner scannerWithString:line];
   record = [NSMutableArray arrayWithCapacity:1];
 
   if (isQualified)
     {
       NSString *token;
+      BOOL     inField;
+      BOOL     inQualifier;
 
       field = @"";
       //NSLog(@"loc %lu, total length: %lu", [scanner scanLocation], [line length]);
-      inField = false;
+      inField = NO;
+      inQualifier = NO;
       while ([scanner scanLocation] < [line length])
 	{
 	  NSUInteger loc;
 
 	  token = nil;
 	  [scanner scanUpToString:qualifier intoString:&token];
-	  //NSLog(@"token %@", token);
 
 	  loc = [scanner scanLocation];
 
-	  /* we reach the end, but the field was empty, thus we artifically insert an empty string */
-	  if (loc == [line length]-1 && token == nil)
+	  if ([token isEqualToString:separator])
 	    {
-	      token = @"";
-              //	      NSLog(@"we reached the end... token is %@", token);
+              [record addObject:field];
+
+              [scanner scanString:separator intoString:(NSString **)nil];
+              
+              inField = NO;
+              inQualifier = NO;
+              field = @"";
 	    }
-	  //NSLog(@"loc %lu", loc);
-	  if (loc > 0 && token)
+	  else if (loc > 0 && token == nil &&
+              [line characterAtIndex:(loc-1)] == [qualifier characterAtIndex:0])
+                {
+                  if (!inQualifier)
+                    {
+                      /* it was an qualified qualifier */
+                      field = [field stringByAppendingString: qualifier];
+                    }
+		  inField = YES;
+                  inQualifier = YES;
+                  [scanner scanString:qualifier intoString:(NSString **)nil];
+            }
+	  else if (loc > 0 && token)
 	    {
 	      if ([line characterAtIndex:(loc-1)] == '\\')
 		{
 		  /* it was an escaped qualifier */
-		  //NSLog(@"Escaped qualifier");
 		  inField = YES;
+                  inQualifier = YES;
 		  field = [field stringByAppendingString: [token substringToIndex:[token length]-1]];
-		  field = [field stringByAppendingString: @"\""];
-		  [scanner scanString:qualifier intoString:(NSString **)nil];
+		  field = [field stringByAppendingString: qualifier];
+                  [scanner scanString:qualifier intoString:(NSString **)nil];
 		}
 	      else
 		{
-		  /* we might have skipped qualifiers up to a separator, thus an empty field. We check for that */
-		  if (![token isEqualToString:separator])
-		    {
-		      if (inField)
-			field = [field stringByAppendingString: token];
-		      else
-			field = [NSString stringWithString: token];
-		      if (field == nil)
-			field = @"";
-		      [scanner scanString:qualifier intoString:(NSString **)nil];
-		    }
+                  field = [field stringByAppendingString: token];
 
-		  [record addObject:field];
+                  [scanner scanString:qualifier intoString:(NSString **)nil];
 
-		  [scanner scanString:separator intoString:(NSString **)nil];
-
-		  inField = NO;
-		  field = @"";
+                  inField = YES;
+                  inQualifier = NO;
 		}
 	    }
 	  else
@@ -252,6 +256,8 @@
 	      [scanner scanString:qualifier intoString:(NSString **)nil];
 	    }
 	}
+      if (field)
+        [record addObject:field];
     }
   else
     {
