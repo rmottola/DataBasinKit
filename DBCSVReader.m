@@ -186,6 +186,7 @@
     return nil;
 
   scanner = [NSScanner scannerWithString:line];
+  [scanner setCharactersToBeSkipped:nil];
   record = [NSMutableArray arrayWithCapacity:1];
 
   if (isQualified)
@@ -206,54 +207,54 @@
 	  [scanner scanUpToString:qualifier intoString:&token];
 
 	  loc = [scanner scanLocation];
-
 	  if ([token isEqualToString:separator])
 	    {
-              [record addObject:field];
-
-              [scanner scanString:separator intoString:(NSString **)nil];
-              
-              inField = NO;
-              inQualifier = NO;
-              field = @"";
-	    }
-	  else if (loc > 0 && token == nil &&
-              [line characterAtIndex:(loc-1)] == [qualifier characterAtIndex:0])
+              if (inField)
                 {
-                  if (!inQualifier)
-                    {
-                      /* it was an qualified qualifier */
-                      field = [field stringByAppendingString: qualifier];
-                    }
-		  inField = YES;
-                  inQualifier = YES;
-                  [scanner scanString:qualifier intoString:(NSString **)nil];
-            }
-	  else if (loc > 0 && token)
-	    {
-	      if ([line characterAtIndex:(loc-1)] == '\\')
-		{
-		  /* it was an escaped qualifier */
-		  inField = YES;
-                  inQualifier = YES;
-		  field = [field stringByAppendingString: [token substringToIndex:[token length]-1]];
-		  field = [field stringByAppendingString: qualifier];
-                  [scanner scanString:qualifier intoString:(NSString **)nil];
-		}
-	      else
-		{
                   field = [field stringByAppendingString: token];
-
-                  [scanner scanString:qualifier intoString:(NSString **)nil];
-
-                  inField = YES;
-                  inQualifier = NO;
-		}
+                }
+              else
+                {
+                  [record addObject:field];
+                  field = @"";
+                }                
+              [scanner scanString:separator intoString:(NSString **)nil];
 	    }
-	  else
-	    {
+	  else if (loc > 0 && [line characterAtIndex:(loc-1)] == [qualifier characterAtIndex:0])
+            {
+              if (token)
+                field = [field stringByAppendingString: token];
+
+              if (!inField && !inQualifier)
+                {
+                  inQualifier = YES;
+                  inField = YES;
+                }
+              else if (inQualifier) /* inField : don't care */
+                {
+                  /* it was a qualified qualifier */
+                  field = [field stringByAppendingString: qualifier];
+                  inQualifier = NO;
+                  inField = YES;
+                }
+              else /* inField && !inQualifier */
+                {
+                  inQualifier = YES;
+                  inField = NO;
+                }
+                [scanner scanString:qualifier intoString:(NSString **)nil];
+            }
+	  else if (token)
+            {
+              field = [field stringByAppendingString: token];
+              inField = YES;
+            }
+          else
+            {
 	      /* let's skip this qualifier */
 	      [scanner scanString:qualifier intoString:(NSString **)nil];
+              inQualifier = inField;
+              inField = !inField;
 	    }
 	}
       if (field)
