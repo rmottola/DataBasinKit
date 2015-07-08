@@ -2198,7 +2198,8 @@
     }
   busyCount++;
   [lockBusy unlock];
-  
+
+  queryLocator = nil;
   NS_DURING
     queryLocator = [self _query:queryString queryAll:all toArray:objects progressMonitor:p];
   NS_HANDLER
@@ -2234,7 +2235,8 @@
     }
   busyCount++;
   [lockBusy unlock];
-  
+
+  result = nil;
   NS_DURING
     result = [self _queryFull:queryString queryAll:all progressMonitor:p];
   NS_HANDLER
@@ -2311,7 +2313,8 @@
     }
   busyCount++;
   [lockBusy unlock];
-  
+
+  queryLocator = nil;
   NS_DURING
     queryLocator = [self _queryMore:locator toArray:objects];
   NS_HANDLER
@@ -2347,7 +2350,8 @@
     }
   busyCount++;
   [lockBusy unlock];
-  
+
+  resultArray = nil;
   NS_DURING
     resultArray = [self _create:objectName fromArray:objects progressMonitor:p];
   NS_HANDLER
@@ -2386,7 +2390,8 @@
     }
   busyCount++;
   [lockBusy unlock];
-  
+
+  resultArray = nil;
   NS_DURING
     resultArray = [self _update:objectName fromArray:objects progressMonitor:p];
   NS_HANDLER
@@ -2420,7 +2425,8 @@
     }
   busyCount++;
   [lockBusy unlock];
-  
+
+  resArray = nil;
   NS_DURING
     resArray = [self _delete:array progressMonitor:p];
   NS_HANDLER
@@ -2453,7 +2459,8 @@
     }
   busyCount++;
   [lockBusy unlock];
-  
+
+  objects = nil;
   NS_DURING
     objects = [self _describeGlobal];
   NS_HANDLER
@@ -2485,7 +2492,8 @@
     }
   busyCount++;
   [lockBusy unlock];
-  
+
+  sObj = nil;
   NS_DURING
     sObj = [self _describeSObject:objectType];
   NS_HANDLER
@@ -2550,7 +2558,8 @@
     }  
   busyCount++;
   [lockBusy unlock];
-  
+
+  str = nil;
   NS_DURING
     str = [self _identifyObjectById:sfId];
   NS_HANDLER
