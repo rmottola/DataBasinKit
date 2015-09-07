@@ -1,3 +1,8 @@
+2015-09-07 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.m
+	use upBatchSize for delete batch size
+
 2015-07-02 Riccardo Mottola <rm@gnu.org>
 
 	* DBCSVReader.m

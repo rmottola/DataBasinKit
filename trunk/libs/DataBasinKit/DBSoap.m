@@ -1886,7 +1886,7 @@
 
   enumerator = [array objectEnumerator];
   batchCounter = 0;
-  batchObjArray = [[NSMutableArray arrayWithCapacity: MAX_BATCH_SIZE] retain];
+  batchObjArray = [[NSMutableArray arrayWithCapacity: upBatchSize] retain];
   resultArray = [[NSMutableArray arrayWithCapacity:1] retain];
   
   do
@@ -1913,7 +1913,7 @@
 	  batchCounter++;
 	}
       /* did we fill a batch or did we reach the end? */
-      if (batchCounter == MAX_BATCH_SIZE || !idStr)
+      if (batchCounter == upBatchSize || !idStr)
 	{
 	  /* prepare the parameters */
 	  queryParmDict = [NSMutableDictionary dictionaryWithCapacity: 2];
