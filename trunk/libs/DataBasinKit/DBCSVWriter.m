@@ -256,10 +256,11 @@
 {
   NSArray *array;
 
+  [logger log: LogDebug :@"[DBCSVWriter setFieldNames] Object: %@:\n", obj];
+
   /* if we have no data, we return */
   if (obj == nil)
     return;
-
 
   /* if we have just a single object, we fake an array */
   if([obj isKindOfClass: [NSArray class]])
@@ -267,6 +268,9 @@
   else
     array = [NSArray arrayWithObject: obj];
 
+  if ([array count] == 0)
+    return;
+ 
   if (fieldNames != array)
     {
       [fieldNames release];
@@ -274,17 +278,13 @@
       [array retain];
     }
 
-  if ([array count] == 0)
-    return;
-
-  //NSLog(@"header array is %@", array);
+  [logger log: LogDebug :@"[DBCSVWriter setFieldNames] Names: %@:\n", array];
 
   /* if we write the header, fine, else we write at least the BOM */
   if (flag == YES)
     {
       NSString *theLine;
 
-      NSLog(@"array of header: %@\n", array);
       theLine = [self formatOneLine:array forHeader:YES];
       [file writeData: [theLine dataUsingEncoding: encoding]];
     }
