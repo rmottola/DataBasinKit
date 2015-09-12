@@ -705,8 +705,6 @@
   NSArray               *records;
   NSDictionary          *record;
   NSDictionary          *queryFault;
-  NSString              *sizeStr;
-  unsigned long         size;
 
   /* if the destination array is nil, exit */
   if (objects == nil)
@@ -761,7 +759,6 @@
 
   doneStr = [result objectForKey:@"done"];
   records = [result objectForKey:@"records"];
-  sizeStr = [result objectForKey:@"size"];
 
   if (doneStr != nil)
     {
@@ -780,20 +777,19 @@
       return nil;
     }
 
-  if (sizeStr != nil)
+  // Size returned in queryMore refers to the original size of the query
+  // not to the current batch
+  // So we can just check against the actually returned records
+  if (records != nil)
     {
       NSUInteger     i;
       NSUInteger     j;
       NSUInteger     batchSize;
       NSMutableArray *keys;
       BOOL typePresent;
-
-      /* this will be only as big as a batch anyway */
-      size = (unsigned long)[sizeStr intValue];
-      NSLog(@"Query More Declared size is: %lu", size);
       
       /* if we have only one element, put it in an array */
-      if (size == 1)
+      if (![records isKindOfClass:[NSArray class]])
         {
           NSLog(@"query more -> only one element");
           records = [NSArray arrayWithObject:records];

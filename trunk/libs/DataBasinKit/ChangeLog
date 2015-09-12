@@ -1,5 +1,10 @@
 2015-09-12 Riccardo Mottola <rm@gnu.org>
 
+	* DBSoap.m (queryMore)
+	Check if returned object is an array: do not use size to determine if a single object is returned, since size refers to the size of the whole query.
+
+2015-09-12 Riccardo Mottola <rm@gnu.org>
+
 	* DBSoap.m
 	in _query check size against declared size.
 
