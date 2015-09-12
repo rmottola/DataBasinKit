@@ -445,7 +445,7 @@
 
 
 
-- (NSString *)_query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p
+- (NSString *)_query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects declaredSize:(NSUInteger *)ds progressMonitor:(id<DBProgressProtocol>)p
 {
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
@@ -477,6 +477,7 @@
     isCountQuery = YES;
 
   queryLocator = nil;
+  *ds = 0;
  
   /* prepare the header */
   sessionHeaderDict = [NSMutableDictionary dictionaryWithCapacity: 2];
@@ -586,6 +587,7 @@
         {
           size = (unsigned long)ll;
           [logger log: LogInformative: @"[DBSoap query] Declared size is: %lu\n", size];
+          *ds = (NSUInteger)ll;
         }
       else
 	{
@@ -732,7 +734,7 @@
   parmsDict = [NSMutableDictionary dictionaryWithCapacity: 1];
   [parmsDict setObject: queryParmDict forKey: @"queryMore"];
   [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey]; 
-  
+
   /* make the query */  
   resultDict = [service invokeMethod: @"queryMore"
                          parameters : parmsDict
@@ -760,10 +762,10 @@
   doneStr = [result objectForKey:@"done"];
   records = [result objectForKey:@"records"];
   sizeStr = [result objectForKey:@"size"];
- 
+
   if (doneStr != nil)
     {
-      NSLog(@"done: %@", doneStr);
+      NSLog(@"query more done: %@", doneStr);
       done = NO;
       if ([doneStr isEqualToString:@"true"])
         done = YES;
@@ -785,14 +787,15 @@
       NSUInteger     batchSize;
       NSMutableArray *keys;
       BOOL typePresent;
-      
+
       /* this will be only as big as a batch anyway */
       size = (unsigned long)[sizeStr intValue];
-      NSLog(@"Declared size is: %lu", size);
+      NSLog(@"Query More Declared size is: %lu", size);
       
       /* if we have only one element, put it in an array */
       if (size == 1)
         {
+          NSLog(@"query more -> only one element");
           records = [NSArray arrayWithObject:records];
         }
       record = [records objectAtIndex:0];
@@ -866,14 +869,20 @@
 {
   NSString       *qLoc;
   NSMutableArray *sObjects;
-  
+  NSUInteger     ds;
   
   sObjects = [[NSMutableArray alloc] init];
   
-  qLoc = [self _query: queryString queryAll:all toArray: sObjects progressMonitor:p];
+  qLoc = [self _query: queryString queryAll:all toArray:sObjects declaredSize:&ds progressMonitor:p];
   [logger log: LogInformative: @"[DBSoap queryFull]: query locator after first query: %@\n", qLoc];
   while (qLoc != nil  && ![p shouldStop])
     qLoc = [self _queryMore: qLoc toArray: sObjects];
+
+  NSLog(@"_query declared size vs. actual size %lu %lu, (unsigned long)ds, (unsigned long)[sObjects count]");
+  if (ds != [sObjects count])
+    [logger log: LogStandard: @"[DBSoap queryFull]: delcared size and actual array size differ: %lu %lu\n", (unsigned long)ds, (unsigned long)[sObjects count]];
+  else
+    [logger log: LogInformative: @"[DBSoap queryFull]: declared size %lu vs. actual size:%lu\n", (unsigned long)ds, (unsigned long)[sObjects count]];
   
   [sObjects autorelease];
   
@@ -1114,9 +1123,16 @@
 
       /* since we might get back more records for each object to identify, we need to use query more */
       resArray = [self _queryFull:completeQuery queryAll:all progressMonitor:nil];
- 
-      for (j = 0; j < [resArray count]; j++)
-	[outArray addObject: [resArray objectAtIndex: j]];
+
+      if (resArray && [resArray count])
+        {
+          for (j = 0; j < [resArray count]; j++)
+            [outArray addObject: [resArray objectAtIndex: j]];
+        }
+      else
+        {
+          [logger log: LogInformative: @"[DBSoap queryIdentify] no results in batch\n"];
+        }
       [completeQuery release];
 
       [p incrementCurrentValue: b];
@@ -2188,6 +2204,7 @@
 - (NSString *)query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p
 {
   NSString *queryLocator;
+  NSUInteger ds;
   
   [lockBusy lock];
   if (busyCount)
@@ -2201,7 +2218,7 @@
 
   queryLocator = nil;
   NS_DURING
-    queryLocator = [self _query:queryString queryAll:all toArray:objects progressMonitor:p];
+    queryLocator = [self _query:queryString queryAll:all toArray:objects declaredSize:&ds progressMonitor:p];
   NS_HANDLER
     {
       [lockBusy lock];
