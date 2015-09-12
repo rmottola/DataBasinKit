@@ -1,3 +1,8 @@
+2015-09-12 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.m
+	in _query check size against declared size.
+
 2015-09-07 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m
@@ -7,7 +12,7 @@
 
 	* DBCSVReader.m
         More extensive rewrite to handle qualifiers and escaped qualifiers
-      
+
 2015-06-25 Riccardo Mottola <rm@gnu.org>
 
 	* DBCSVReader.m
