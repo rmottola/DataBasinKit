@@ -382,6 +382,7 @@
   NS_HANDLER
     [dbSoap release];
     [localException raise];
+    return;
   NS_ENDHANDLER
   
   fields = [object fieldNames];
