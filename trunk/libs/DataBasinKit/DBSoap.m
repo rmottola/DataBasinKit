@@ -874,7 +874,7 @@
   while (qLoc != nil  && ![p shouldStop])
     qLoc = [self _queryMore: qLoc toArray: sObjects];
 
-  NSLog(@"_query declared size vs. actual size %lu %lu, (unsigned long)ds, (unsigned long)[sObjects count]");
+  NSLog(@"_query declared size vs. actual size %lu %lu", (unsigned long)ds, (unsigned long)[sObjects count]);
   if (ds != [sObjects count])
     [logger log: LogStandard: @"[DBSoap queryFull]: delcared size and actual array size differ: %lu %lu\n", (unsigned long)ds, (unsigned long)[sObjects count]];
   else
