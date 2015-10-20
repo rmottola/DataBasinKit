@@ -39,6 +39,7 @@
       newLine = @"\n";
       fieldNames = nil;
       writeOrdered = NO;
+      lineBreakHandling = DBCSVLineBreakNoChange;
       [self setStringEncoding: NSUTF8StringEncoding];
    }
   return self;
@@ -95,6 +96,11 @@
     }
 }
 
+- (void)setLineBreakHandling: (DBCSVLineBreakHandling)handling
+{
+  lineBreakHandling = handling;
+}
+
 - (void)setStringEncoding: (NSStringEncoding) enc
 {
   NSData *tempData;
@@ -127,6 +133,24 @@
   res = nil;
   if ([value isKindOfClass: [NSString class]])
     {
+      if (lineBreakHandling != DBCSVLineBreakNoChange)
+        {
+          NSRange lbRange;
+          NSMutableString *mutStr;
+
+          mutStr = [NSMutableString stringWithString:value];
+          lbRange = [mutStr rangeOfString:@"\n"];
+          while (lbRange.location != NSNotFound)
+            {
+              if (lineBreakHandling == DBCSVLineBreakDelete)
+                [mutStr deleteCharactersInRange:lbRange];
+              else if (lineBreakHandling == DBCSVLineBreakDelete)
+                [mutStr replaceCharactersInRange:lbRange withString:@" "];
+              lbRange = [mutStr rangeOfString:@"\n"];
+            }
+          value = mutStr;
+        }
+
       if (isQualified)
 	{
 	  NSMutableString *s;
@@ -236,6 +260,7 @@
 
           if (root)
             [s appendString:@"."];
+
           [s appendString:key];
 
           extendedFieldName = s;

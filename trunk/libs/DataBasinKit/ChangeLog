@@ -1,3 +1,9 @@
+2015-10-20 Riccardo Mottola <rm@gnu.org>
+
+	* DBCSVWriter.h
+	* DBCSVWriter.m
+	DBCSVLineBreakHandling : filter line breaks in strings
+
 2015-09-12 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m (queryMore)
