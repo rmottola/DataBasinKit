@@ -24,6 +24,14 @@
 
 #import <Foundation/Foundation.h>
 
+enum DBCSVLineBreakHandling
+{
+  DBCSVLineBreakNoChange = 0,
+  DBCSVLineBreakDelete,
+  DBCSVLineBreakReplaceWithSpace
+};
+typedef enum DBCSVLineBreakHandling DBCSVLineBreakHandling;
+
 @protocol DBLoggerProtocol;
 
 @interface DBCSVWriter : NSObject
@@ -39,10 +47,12 @@
   NSStringEncoding encoding;
   unsigned     bomLength;
   BOOL writeOrdered;
+  DBCSVLineBreakHandling lineBreakHandling;
 }
 
 - (void)setQualifier: (NSString *)q;
 - (void)setSeparator: (NSString *)sep;
+- (void)setLineBreakHandling: (DBCSVLineBreakHandling)handling;
 - (BOOL)writeFieldsOrdered;
 - (void)setWriteFieldsOrdered:(BOOL)flag;
 - (id)initWithHandle:(NSFileHandle *)fileHandle;
