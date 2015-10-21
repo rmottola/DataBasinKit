@@ -144,7 +144,7 @@
             {
               if (lineBreakHandling == DBCSVLineBreakDelete)
                 [mutStr deleteCharactersInRange:lbRange];
-              else if (lineBreakHandling == DBCSVLineBreakDelete)
+              else if (lineBreakHandling == DBCSVLineBreakReplaceWithSpace)
                 [mutStr replaceCharactersInRange:lbRange withString:@" "];
               lbRange = [mutStr rangeOfString:@"\n"];
             }
