@@ -224,11 +224,11 @@
                 {
                   [writer setFieldNames: [sObjects objectAtIndex: 0] andWriteThem:YES];
                 }
+              firstBatchIteration = NO;
             }
           [writer writeDataSet: sObjects];
           [sObjects removeAllObjects];
         }
-      firstBatchIteration = NO;
       [arp drain];
     }
   [dbSoap release];  
