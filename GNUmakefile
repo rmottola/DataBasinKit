@@ -13,10 +13,10 @@ include $(GNUSTEP_MAKEFILES)/common.make
 #
 # Framework
 #
-VERSION = 0.8
-FRAMEWORK_NAME = DataBasinKit
+VERSION = 0.9
 PACKAGE_NAME = DataBasinKit
-DataBasinKit_CURRENT_VERSION_NAME = 0.8
+FRAMEWORK_NAME = DataBasinKit
+DataBasinKit_CURRENT_VERSION_NAME = 0.9
 DataBasinKit_DEPLOY_WITH_CURRENT_VERSION = yes
 
 
@@ -34,7 +34,7 @@ DBCSVReader.h \
 DBCSVWriter.h 
 
 #
-# Class files
+# Objective-C Class files
 #
 DataBasinKit_OBJC_FILES = \
 DBSoap.m \
