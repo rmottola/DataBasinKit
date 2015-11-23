@@ -1,3 +1,8 @@
+2015-11-23 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.m (fieldsByParsingQuery)
+	Detect nested query and return unsupported exception.
+
 2015-11-19 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoapCSV.m

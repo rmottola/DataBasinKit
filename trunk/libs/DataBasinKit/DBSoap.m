@@ -101,6 +101,13 @@
       exprProgressive = 0;
       selectPart = [query substringWithRange:NSMakeRange([@"select " length], fromPosition.location - [@"select " length])];
 
+      /* check for a nested query */
+      if ([selectPart rangeOfString:@"select " options:NSCaseInsensitiveSearch].location != NSNotFound)
+        {
+          NSLog(@"We have a nested query, it is not supported since we have no information of the nested object");
+          [[NSException exceptionWithName:@"DBException" reason:@"Nested query not supported"  userInfo:nil] raise];
+        }
+
       /* we replace certain characters with space */
       cleansedSelectPart = [NSMutableString stringWithString:selectPart];
       [cleansedSelectPart replaceOccurrencesOfString:@"\r" withString:@" " options:0  range:NSMakeRange(0, [cleansedSelectPart length])];
@@ -110,7 +117,7 @@
       /* now we do some white-space coalescing */
       while ([cleansedSelectPart replaceOccurrencesOfString:@"  " withString:@" " options:0 range:NSMakeRange(0, [cleansedSelectPart length])] > 0);
 
-      /* now we trust the string enough and get the sngle comma-separated components */
+      /* now we trust the string enough and get the single comma-separated components */
       components = [cleansedSelectPart componentsSeparatedByString:@","];
 
       /* if we only have one field, we fake an array to retain the same logic */
@@ -210,7 +217,6 @@
           [fields addObject:field];
         }
     }
-  NSLog(@"fields: %@", fields);
   return [NSArray arrayWithArray:fields];
 }
 
