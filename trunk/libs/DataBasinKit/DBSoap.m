@@ -131,7 +131,7 @@
       if ([cleansedSelectPart rangeOfString:@"(" options:NSCaseInsensitiveSearch].location != NSNotFound)
          hasAggregate = YES;
 
-      NSLog(@"Does query have aggregate? %d", hasAggregate);
+//      NSLog(@"Does query have aggregate? %d", hasAggregate);
       fields = [NSMutableArray arrayWithCapacity:[components count]];
       for (i = 0; i < [components count]; i++)
         {
@@ -818,8 +818,7 @@
       if (![[record objectForKey:@"Id"] isKindOfClass: [NSArray class]])
           [keys removeObject:@"Id"];
 
-
-      NSLog(@"keys: %@", keys);
+      //NSLog(@"keys: %@", keys);
       
       /* now cycle all the records and read out the fields */
       for (i = 0; i < batchSize; i++)
@@ -860,7 +859,7 @@
   if (!done)
     {
       queryLocator = [result objectForKey:@"queryLocator"];
-      [logger log: LogDebug: @"[DBSoap queryMore] should do query more, queryLocator: %@\n", queryLocator];
+      [logger log: LogInformative: @"[DBSoap queryMore] should do query more, queryLocator: %@\n", queryLocator];
     }
 
   return queryLocator;
@@ -880,7 +879,7 @@
   while (qLoc != nil  && ![p shouldStop])
     qLoc = [self _queryMore: qLoc toArray: sObjects];
 
-  NSLog(@"_query declared size vs. actual size %lu %lu", (unsigned long)ds, (unsigned long)[sObjects count]);
+  // NSLog(@"_query declared size vs. actual size %lu %lu", (unsigned long)ds, (unsigned long)[sObjects count]);
   if (ds != [sObjects count])
     [logger log: LogStandard: @"[DBSoap queryFull]: delcared size and actual array size differ: %lu %lu\n", (unsigned long)ds, (unsigned long)[sObjects count]];
   else
@@ -924,7 +923,7 @@
     }
   else
     {
-      NSLog(@"Unexpected identifier count: %u", (unsigned int)[identifiers count]);
+      [logger log: LogStandard: @"[DBSoap queryIdentify] Unexpected identifier count: %u\n", (unsigned int)[identifiers count]];
     }
 
   batchable = NO;
@@ -1305,7 +1304,7 @@
                     message = [errors objectForKey:@"message"];
                     code = [errors objectForKey:@"statusCode"];
                   }
-                NSLog(@"result: %@ -> %d, %@: %@ (%@)", objId, success, code, message, r);
+//                NSLog(@"result: %@ -> %d, %@: %@ (%@)", objId, success, code, message, r);
                 if (success)
                   {
                     rowDict = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -1493,7 +1492,7 @@
                 NSString *code;
                 NSDictionary *r;
                 NSDictionary *errors;
-		NSDictionary *rowDict;
+                NSDictionary *rowDict;
                 
                 r = [results objectAtIndex:i];
                 objId = [r objectForKey:@"id"];
@@ -1938,7 +1937,7 @@
 	  [queryParmDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
 	  
 	  queryObjectsDict = [NSDictionary dictionaryWithObjectsAndKeys: batchObjArray, GWSSOAPValueKey, nil];
-	  NSLog(@"Inner delete cycle. Deleting %u objects", (unsigned int)[batchObjArray count]);
+//	  NSLog(@"Inner delete cycle. Deleting %u objects", (unsigned int)[batchObjArray count]);
 	  [queryParmDict setObject: queryObjectsDict forKey: @"ids"];
 	  
 	  parmsDict = [NSMutableDictionary dictionaryWithCapacity: 1];
