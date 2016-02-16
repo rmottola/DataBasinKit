@@ -1,3 +1,8 @@
+2016-02-16 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.m
+	Look for 'LIMIT ' including space to reduce risk of matching a field.
+
 2015-11-23 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m (fieldsByParsingQuery)
