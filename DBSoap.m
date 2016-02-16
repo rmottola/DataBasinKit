@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2015 Free Software Foundation
+  Copyright (C) 2008-2016 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -946,7 +946,7 @@
   if (groupByLocation != NSNotFound)
     optionsLocation = groupByLocation;
 
-  limitLocation = [queryString rangeOfString: @"LIMIT" options:NSCaseInsensitiveSearch].location;
+  limitLocation = [queryString rangeOfString: @"LIMIT " options:NSCaseInsensitiveSearch].location;
   if (limitLocation != NSNotFound || optionsLocation != NSNotFound)
     {
       if (batchable)
