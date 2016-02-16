@@ -97,6 +97,7 @@
       BOOL hasAggregate;
       NSMutableString *cleansedSelectPart;
       NSUInteger exprProgressive; /* to enumerate Expr0, Expr1... */
+      NSRange firstParenthesisPosition;
 
       exprProgressive = 0;
       selectPart = [query substringWithRange:NSMakeRange([@"select " length], fromPosition.location - [@"select " length])];
@@ -128,7 +129,8 @@
 
       /* now we look for (, to check if it is an aggregate query */
       hasAggregate = NO;
-      if ([cleansedSelectPart rangeOfString:@"(" options:NSCaseInsensitiveSearch].location != NSNotFound)
+      firstParenthesisPosition = [cleansedSelectPart rangeOfString:@"("];
+      if (firstParenthesisPosition.location != NSNotFound && firstParenthesisPosition.location < fromPosition.location)
          hasAggregate = YES;
 
 //      NSLog(@"Does query have aggregate? %d", hasAggregate);
