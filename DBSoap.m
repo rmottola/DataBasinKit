@@ -1187,10 +1187,10 @@
     NSMutableDictionary *sObj;
     NSMutableDictionary *sObjType;
     NSMutableArray      *sObjKeyOrder;
-    NSMutableDictionary *queryObjectsDict;
+    NSDictionary *queryObjectsDict;
     NSMutableDictionary *parmsDict;
     NSMutableDictionary *queryParmDict;
-    NSDictionary        *result;
+    id                  result;
     NSDictionary        *queryFault;
     NSDictionary        *queryError;
    
@@ -1394,7 +1394,7 @@
     NSMutableDictionary *sObj;
     NSMutableDictionary *sObjType;
     NSMutableArray      *sObjKeyOrder;
-    NSMutableDictionary *queryObjectsDict;
+    NSDictionary        *queryObjectsDict;
     NSMutableDictionary *parmsDict;
     NSMutableDictionary *queryParmDict;
     NSDictionary        *queryResult;
@@ -1914,9 +1914,9 @@
       NSMutableDictionary   *queryParmDict;
       NSDictionary          *resultDict;
       NSDictionary          *queryResult;
-      NSDictionary          *result;
+      id                    result;
       NSDictionary          *queryFault;
-      NSMutableArray        *queryObjectsDict;
+      NSDictionary          *queryObjectsDict;
 
       objToDelete = [enumerator nextObject];
       if ([objToDelete isKindOfClass:[DBSObject class]])
@@ -1967,19 +1967,22 @@
   
 	  queryResult = [resultDict objectForKey:@"GWSCoderParameters"];
 	  result = [queryResult objectForKey:@"result"];
-          //	  NSLog(@"result: %@", result);
+          // NSLog(@"result: %@", result);
 
 	  if (result != nil)
 	    {
 	      id resultRow;
 	      NSEnumerator   *objEnu;
 	      NSDictionary   *rowDict;
+              NSArray        *results;
 	      
 	      /* if only one element gets returned, GWS can't interpret it as an array */
 	      if (!([result isKindOfClass: [NSArray class]]))
-		result = [NSArray arrayWithObject: result];
-	      
-	      objEnu = [result objectEnumerator];
+		results = [NSArray arrayWithObject: result];
+	      else
+                results = (NSArray *)result;
+              
+	      objEnu = [results objectEnumerator];
 	      while ((resultRow = [objEnu nextObject]))
 		{
 		  id message;

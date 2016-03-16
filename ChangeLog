@@ -1,3 +1,8 @@
+2016-03-16 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.m
+	Fix correct result return type from query for insert and delete.
+
 2016-02-16 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m
