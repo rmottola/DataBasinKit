@@ -1398,7 +1398,7 @@
     NSMutableDictionary *parmsDict;
     NSMutableDictionary *queryParmDict;
     NSDictionary        *queryResult;
-    NSDictionary        *result;
+    id                  result;
     NSDictionary        *queryFault;
     NSDictionary        *queryError;
 
