@@ -1180,7 +1180,7 @@
     
   enumerator = [objects objectEnumerator];
   batchCounter = 0;
-  totalCounter = 1;
+  totalCounter = 0;
   queryObjectsArray = [[NSMutableArray arrayWithCapacity: upBatchSize] retain];
   resultArray = [[NSMutableArray arrayWithCapacity:1] retain];
 
@@ -1223,7 +1223,7 @@
     [sObj setObject: sObjKeyOrder forKey: GWSOrderKey];
     [queryObjectsArray addObject: sObj];
 
-    if (batchCounter == upBatchSize-1 || totalCounter == [objects count])
+    if (batchCounter == upBatchSize-1 || totalCounter == [objects count]-1)
       {
 	/* prepare the parameters */
 	queryParmDict = [NSMutableDictionary dictionaryWithCapacity: 2];
@@ -1272,7 +1272,7 @@
         if (result != nil)
           {
             NSArray *results;
-            NSUInteger i;
+            NSUInteger j;
 
             if (![result isKindOfClass:[NSArray class]])
               {
@@ -1284,7 +1284,7 @@
                 results = (NSArray *)result;
               }
 
-            for (i = 0; i < [results count]; i++)
+            for (j = 0; j < [results count]; j++)
               {
                 NSString *objId;
                 NSString *successStr;
