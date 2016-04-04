@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2015 Free Software Foundation
+  Copyright (C) 2008-2016 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -75,6 +75,12 @@
   /** is executing */
   NSUInteger *busyCount;
   NSRecursiveLock *lockBusy;
+
+  /** return positive results */
+  BOOL returnSuccessResults;
+
+  /** return multiple errors per object, else only the first is retrieved */
+  BOOL returnMultipleErrors;
 }
 
 + (NSArray *)fieldsByParsingQuery:(NSString *)query;

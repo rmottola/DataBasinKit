@@ -286,6 +286,9 @@
 	  if (size > 0)
 	    upBatchSize = size;
 	}
+
+      returnSuccessResults = YES;
+      returnMultipleErrors = YES;
     }
   return self;
 }
@@ -1385,12 +1388,12 @@
   
   enumerator = [objects objectEnumerator];
   batchCounter = 0;
-  totalCounter = 1;
+  totalCounter = 0;
   queryObjectsArray = [[NSMutableArray arrayWithCapacity: upBatchSize] retain];
-  resultArray = [[NSMutableArray arrayWithCapacity:1] retain];
+  resultArray = [[NSMutableArray arrayWithCapacity:[objects count]] retain];
   while ((sObject = [enumerator nextObject])  && ![p shouldStop])
   {
-    unsigned int i;
+    NSUInteger           i;
     NSMutableDictionary *sObj;
     NSMutableDictionary *sObjType;
     NSMutableArray      *sObjKeyOrder;
@@ -1427,7 +1430,7 @@
     [sObj setObject: sObjKeyOrder forKey: GWSOrderKey];
     [queryObjectsArray addObject: sObj];
 //    NSLog(@"total counter = %lu of %lu", totalCounter, [objects count]);
-    if (batchCounter == upBatchSize-1 || totalCounter == [objects count])
+    if (batchCounter == upBatchSize-1 || totalCounter == [objects count]-1)
       {
 	/* prepare the parameters */
 	queryParmDict = [NSMutableDictionary dictionaryWithCapacity: 2];
@@ -1446,7 +1449,7 @@
 			       parameters : parmsDict
 				    order : nil
 				  timeout : standardTimeoutSec];
-        NSLog(@"resultDict: %@", resultDict);
+        //NSLog(@"resultDict: %@", resultDict);
         queryError = [resultDict objectForKey:@"GWSCoderError"];
         if (queryError != nil)
           {
@@ -1474,7 +1477,7 @@
 	if (result != nil)
 	  {
             NSArray *results;
-            NSUInteger i;
+            NSUInteger j;
 
             if (![result isKindOfClass:[NSArray class]])
               {
@@ -1485,7 +1488,7 @@
                 results = (NSArray *)result;
               }
 
-            for (i = 0; i < [results count]; i++)
+            for (j = 0; j < [results count]; j++)
               {
                 NSString *objId;
                 NSString *successStr;
@@ -1493,43 +1496,78 @@
                 NSString *message;
                 NSString *code;
                 NSDictionary *r;
-                NSDictionary *errors;
+                id errorsObj;
                 NSDictionary *rowDict;
                 
-                r = [results objectAtIndex:i];
+                r = [results objectAtIndex:j];
                 objId = [r objectForKey:@"id"];
                 successStr = [r objectForKey:@"success"];
-                success = NO;
-                if ([successStr isEqualToString:@"true"])
-                  success = YES;
+                success = YES;
+                if (![successStr isEqualToString:@"true"])
+                  {
+                    success = NO;
+                    /* fetch original object */
+                    //NSLog(@"totalCounter: %lu, upBatchSize: %lu, progressive: %lu look up %lu", totalCounter, upBatchSize, j, (totalCounter / upBatchSize) + j);
+                    objId = [[objects objectAtIndex:((totalCounter / upBatchSize) * upBatchSize) + j] sfId];
+                    if (objId == nil)
+                      {
+                        NSLog(@"nil id for object at index: %lu", (unsigned long)((totalCounter / upBatchSize) * upBatchSize) + j);
+                        objId = @"";
+                      }
+                  }
                 code = nil;
                 message = nil;
-                errors = [r objectForKey:@"errors"];
-                if (errors != nil)
+                if (success)
+		  {
+                    if (returnSuccessResults)
+                      {
+                        rowDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                  successStr, @"success",
+                                                objId, @"id",
+                                                @"", @"message",
+                                                @"", @"statusCode",
+                                                nil];
+                        [resultArray addObject:rowDict];
+                      }
+		  }
+                else
                   {
-                    message = [errors objectForKey:@"message"];
-                    code = [errors objectForKey:@"statusCode"];
+                    NSArray *errors;
+
+                    errorsObj = [r objectForKey:@"errors"];
+                    if (errorsObj != nil)
+                      {
+                        NSUInteger ec;
+                        NSUInteger howManyErrors;
+
+                        howManyErrors = 1;
+                        // NSLog(@"errors: %@", errorsObj);
+                        if (![errorsObj isKindOfClass:[NSArray class]])
+                          {
+                            errors = [NSArray arrayWithObject:errorsObj];
+                          }
+                        else
+                          {
+                            errors = (NSArray *)errorsObj;
+                            if (returnMultipleErrors)
+                              howManyErrors = [errors count];
+                          }
+                        for (ec = 0; ec < howManyErrors; ec++)
+                          {
+                            NSDictionary *error = [errors objectAtIndex:ec];
+                            message = [error objectForKey:@"message"];
+                            code = [error objectForKey:@"statusCode"];
+                            
+                            rowDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                      successStr, @"success",
+                                                    objId, @"id",
+                                                    message, @"message",
+                                                    code, @"statusCode",
+                                                    nil];
+                            [resultArray addObject:rowDict];      
+                          }
+                      }
                   }
-                //NSLog(@"result: %@ -> %d, %@: %@ (%@)", objId, success, code, message, r);
-		if (success)
-		  {
-		    rowDict = [NSDictionary dictionaryWithObjectsAndKeys:
-					      successStr, @"success",
-					    objId, @"id",
-					    @"", @"message",
-					    @"", @"statusCode",
-					    nil];
-		  }
-		else
-		  {
-		    rowDict = [NSDictionary dictionaryWithObjectsAndKeys:
-					      successStr, @"success",
-					    objId, @"id",
-					    message, @"message",
-					    code, @"statusCode",
-					    nil];
-		  }
-		[resultArray addObject:rowDict];
               }
 	  }
 
