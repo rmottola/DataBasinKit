@@ -1,3 +1,8 @@
+2016-04-11 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.m (_create)
+        Handle multiple errors more gracefully.
+
 2016-04-04 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m (_update)
