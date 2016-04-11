@@ -2033,7 +2033,6 @@
 	    {
 	      id resultRow;
 	      NSEnumerator   *objEnu;
-	      NSDictionary   *rowDict;
               NSArray        *results;
 	      
 	      /* if only one element gets returned, GWS can't interpret it as an array */
@@ -2047,6 +2046,7 @@
 		{
 		  NSString *successStr;
 		  NSString *objId;
+                  NSDictionary *rowDict;
 
 		  successStr = [resultRow objectForKey:@"success"];
 		  objId = [resultRow objectForKey:@"id"];
