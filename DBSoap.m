@@ -2045,41 +2045,61 @@
 	      objEnu = [results objectEnumerator];
 	      while ((resultRow = [objEnu nextObject]))
 		{
-		  id message;
-		  id success;
-		  id errors;
-		  id statusCode;
-		  id sfId;
+		  NSString *successStr;
+		  NSString *objId;
 
-		  errors = [resultRow objectForKey:@"errors"];
-		  message  = [errors objectForKey:@"message"];          
-		  statusCode = [errors objectForKey:@"statusCode"]; 
-		  success = [resultRow objectForKey:@"success"];
-		  sfId = [resultRow objectForKey:@"id"];
+		  successStr = [resultRow objectForKey:@"success"];
+		  objId = [resultRow objectForKey:@"id"];
 		  
-		  //		  NSLog(@"resultRow: %@", resultRow);
-		  NSLog(@"errors: %@", errors);
-		  NSLog(@"success: %@", success);
-		  NSLog(@"message: %@", message);
-		  NSLog(@"statusCode: %@", statusCode);
-		  //		  NSLog(@"id: %@", sfId);
-		  
-		  if ([success isEqualToString:@"true"])
+		  // NSLog(@"resultRow: %@", resultRow);
+		  if ([successStr isEqualToString:@"true"])
 		    {
 		      rowDict = [NSDictionary dictionaryWithObjectsAndKeys:
-						success, @"success",
-					      sfId, @"id",
-					      nil];            
+						successStr, @"success",
+					      objId, @"id",
+					      nil];
+                      [resultArray addObject:rowDict];
 		    }
 		  else
 		    {
-		      rowDict = [NSDictionary dictionaryWithObjectsAndKeys:
-						success, @"success",
-					      message, @"message",
-					      statusCode, @"statusCode",
-					      nil];
+                      id errorsObj;
+                      NSArray *errors;
+                      
+                      errorsObj = [resultRow objectForKey:@"errors"];
+                      if (errorsObj != nil)
+                        {
+                          NSUInteger ec;
+                          NSUInteger howManyErrors;
+                          NSString *message;
+                          NSString *code;
+                          
+                          howManyErrors = 1;
+                          if (![errorsObj isKindOfClass:[NSArray class]])
+                            {
+                              errors = [NSArray arrayWithObject:errorsObj];
+                            }
+                          else
+                            {
+                              errors = (NSArray *)errorsObj;
+                              if (returnMultipleErrors)
+                                howManyErrors = [errors count];
+                            }
+                          for (ec = 0; ec < howManyErrors; ec++)
+                            {
+                              NSDictionary *error = [errors objectAtIndex:ec];
+                              message = [error objectForKey:@"message"];
+                              code = [error objectForKey:@"statusCode"];
+                            
+                              rowDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                        successStr, @"success",
+                                                      objId, @"id",
+                                                      message, @"message",
+                                                      code, @"statusCode",
+                                                      nil];
+                              [resultArray addObject:rowDict];      
+                            }
+                        }
 		    }
-		  [resultArray addObject:rowDict];
 		}
 	    }
           [p incrementCurrentValue:batchCounter];
