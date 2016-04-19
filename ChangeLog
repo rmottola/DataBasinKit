@@ -4,6 +4,9 @@
 	* DBSoap.h
 	Getters for batch size.
 
+	* DBSoapCSV.m
+	Copy batch size when cloning DBSoap instance.
+
 2016-04-11 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m (_create)

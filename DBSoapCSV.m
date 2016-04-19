@@ -57,6 +57,7 @@
   [dbSoap setSessionId:[db sessionId]];
   [serv setURL:[db serverUrl]];  
   [dbSoap setService:serv];
+  [dbSoap setDownBatchSize:[db downBatchSize]];
   
   fields = nil;
   if ([writer writeFieldsOrdered])
@@ -145,6 +146,7 @@
   [dbSoap setSessionId:[db sessionId]];
   [serv setURL:[db serverUrl]];  
   [dbSoap setService:serv];
+  [dbSoap setDownBatchSize:2000];
   
   queryFields = nil;
   if ([writer writeFieldsOrdered])
