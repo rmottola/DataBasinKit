@@ -91,7 +91,9 @@
 - (void)login :(NSURL *)url :(NSString *)userName :(NSString *)password :(BOOL)useHttps;
 - (void)setLogger: (id<DBLoggerProtocol>)l;
 - (id<DBLoggerProtocol>)logger;
+- (unsigned)upBatchSize;
 - (void)setUpBatchSize:(unsigned)size;
+- (unsigned)downBatchSize;
 - (void)setDownBatchSize:(unsigned)size;
 - (NSMutableArray *)queryFull :(NSString *)queryString queryAll:(BOOL)all progressMonitor:(id<DBProgressProtocol>)p;
 - (NSString *)query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p;

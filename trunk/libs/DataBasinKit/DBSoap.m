@@ -264,11 +264,6 @@
 {
   if ((self = [super init]))
     {
-      NSUserDefaults *defaults;
-      id obj;
-
-      defaults = [NSUserDefaults standardUserDefaults];
-    
       lockBusy = [[NSRecursiveLock alloc] init];
       busyCount = 0;
       
@@ -277,15 +272,6 @@
       
       upBatchSize = 1;
       downBatchSize = 500;
-      obj = [defaults objectForKey:@"UpBatchSize"];
-      if (obj)
-	{
-	  int size;
-	  
-	  size = [obj intValue];
-	  if (size > 0)
-	    upBatchSize = size;
-	}
 
       returnSuccessResults = YES;
       returnMultipleErrors = YES;
@@ -305,12 +291,20 @@
   return logger;
 }
 
+- (unsigned)upBatchSize
+{
+  return upBatchSize;
+}
 /** sets the size of the batches in which recors are inserted, updated or deleted */
 - (void)setUpBatchSize:(unsigned)size
 {
   upBatchSize = size;
 }
 
+- (unsigned)downBatchSize
+{
+  return downBatchSize;
+}
 /** Set the maximum suggested query size (download). Maximum effective is 2000, standard is 500. */
 - (void)setDownBatchSize:(unsigned)size
 {
