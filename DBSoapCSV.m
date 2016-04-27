@@ -95,6 +95,13 @@
       [p setCurrentDescription:@"Writing"];
       [writer writeDataSet: sObjects];
       [p incrementCurrentValue:[sObjects count]];
+      if (!qLoc && batchSize == 1)
+	{
+	  // Aggregate query count() without id returns the size as count but contains only one record
+	  // We detect such a case and mark progress as completed
+	  if ([queryString rangeOfString:@"count()" options:NSCaseInsensitiveSearch].location != NSNotFound)
+	    [p setEnd];
+	}	  
     }
 
   while (qLoc != nil && ![p shouldStop])
