@@ -409,7 +409,7 @@
   serverUrl = [loginResult2 objectForKey:@"serverUrl"];
   
   passwordExpired = NO;
-  if ([[loginResult2 objectForKey:@"serverUrl"] isEqualToString:@"true"])
+  if ([[loginResult2 objectForKey:@"passwordExpired"] isEqualToString:@"true"])
       passwordExpired = YES;
   
   userInfoResult = [loginResult2 objectForKey:@"userInfo"];
