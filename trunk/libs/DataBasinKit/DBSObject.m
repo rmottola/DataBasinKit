@@ -330,11 +330,12 @@ converting it if necessary.</p>
   NSUInteger i;
   DBSObject *tObj;
   NSMutableArray *tArr;
+  NSMutableArray *results;
+  NSString *errorString;
 
   if (!namesArray || [namesArray count] == 0)
     return;
 
-  NSLog(@"Should update these fields: %@", namesArray);
   tObj = [[DBSObject alloc] init];
   tArr = [[NSMutableArray alloc] initWithCapacity:1];
   [tArr addObject:tObj];
@@ -349,16 +350,44 @@ converting it if necessary.</p>
     
       fieldName = [namesArray objectAtIndex: i];
       fieldValue = [self valueForField:fieldName];
-      NSLog(@"%@ - %@", fieldName, fieldValue);
+//      NSLog(@"%@ - %@", fieldName, fieldValue);
       if (fieldValue)
         [tObj setValue:fieldValue forField:fieldName];
       else
         NSLog(@"Error: trying to update field %@, but the field is null", fieldValue);
     }
-  NSLog(@"updating: %@", [tObj name]);
-  [dbs update :[tObj name] fromArray: tArr progressMonitor:nil];
+  results = [dbs update :[tObj name] fromArray: tArr progressMonitor:nil];
+  
+  errorString = nil;
+  if (results && [results count] > 0)
+    {
+      NSUInteger j;
+    
+      for (i = 0; i < [results count]; i++)
+        {
+          NSDictionary *r;
+
+          r = [results objectAtIndex:i];
+          if ([[r objectForKey:@"success"] isEqualToString:@"false"])
+            {
+              if (errorString == nil)
+                errorString = [NSString stringWithString:[r objectForKey:@"message"]];
+              else
+                errorString = [[errorString stringByAppendingString:@", "] stringByAppendingString:[r objectForKey:@"message"]];
+            }
+        }
+    }
+  else
+    {
+      NSLog(@"Error: no valid results returned");
+    }
 
   [tArr release];
+  if (errorString)
+    {
+      NSLog(@"Errors: %@", errorString);
+      [[NSException exceptionWithName:@"DBException" reason:errorString userInfo:nil] raise];
+    }
 }
 
 @end
