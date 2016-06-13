@@ -1,5 +1,11 @@
 2016-06-13 Riccardo Mottola <rm@gnu.org>
 
+	* DBSObject.h
+        * DBSObject.m
+        Implement storeValuesForFields to update several fields of a single object.
+
+2016-06-13 Riccardo Mottola <rm@gnu.org>
+
 	* DBSoap.h
         * DBSoap.m
         Bump API version to 37 and increase SOQL size limit 9000->18000 retaining some safety compared to 20000.
