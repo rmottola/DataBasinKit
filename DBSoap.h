@@ -35,7 +35,7 @@
 #endif
 #endif
 
-#define MAX_SOQL_SIZE 9000
+#define MAX_SOQL_SIZE 18000
 #define MAX_BATCH_SIZE 200
 
 #define CLIENT_NAME @"DataBasin"
