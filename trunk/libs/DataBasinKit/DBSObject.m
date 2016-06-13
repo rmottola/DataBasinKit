@@ -2,7 +2,7 @@
  Project: DataBasin
  DBSobject.m
  
- Copyright (C) 2010-2014 Free Software Foundation
+ Copyright (C) 2010-2016 Free Software Foundation
  
  Author: Riccardo Mottola
  
@@ -160,7 +160,8 @@ converting it if necessary.</p>
 
 - (void)setObjectProperties: (NSDictionary *)properties
 {
-  [objectProperties release];
+  if (properties != objectProperties)
+    [objectProperties release];
   objectProperties = [[NSMutableDictionary dictionaryWithDictionary: properties] retain];
 }
 
@@ -282,7 +283,7 @@ converting it if necessary.</p>
   NSMutableString *statement;
   NSMutableArray *tempArray;
   DBSObject *tempObj;
-  int i;
+  NSUInteger i;
 
   if ([namesArray count] == 0)
     return;
@@ -322,6 +323,42 @@ converting it if necessary.</p>
       fieldName = [namesArray objectAtIndex: i];
       [self setValue: [tempObj valueForField: fieldName] forField: fieldName];
     }
+}
+
+- (void)storeValuesForFields:(NSArray *)namesArray
+{
+  NSUInteger i;
+  DBSObject *tObj;
+  NSMutableArray *tArr;
+
+  if (!namesArray || [namesArray count] == 0)
+    return;
+
+  NSLog(@"Should update these fields: %@", namesArray);
+  tObj = [[DBSObject alloc] init];
+  tArr = [[NSMutableArray alloc] initWithCapacity:1];
+  [tArr addObject:tObj];
+  [tObj release];
+
+  [tObj setObjectProperties:[self objectProperties]];
+  [tObj setValue:[self sfId] forField:@"Id"];
+  for (i = 0; i < [namesArray count]; i++)
+    {
+      NSString *fieldName;
+      NSString *fieldValue;
+    
+      fieldName = [namesArray objectAtIndex: i];
+      fieldValue = [self valueForField:fieldName];
+      NSLog(@"%@ - %@", fieldName, fieldValue);
+      if (fieldValue)
+        [tObj setValue:fieldValue forField:fieldName];
+      else
+        NSLog(@"Error: trying to update field %@, but the field is null", fieldValue);
+    }
+  NSLog(@"updating: %@", [tObj name]);
+  [dbs update :[tObj name] fromArray: tArr progressMonitor:nil];
+
+  [tArr release];
 }
 
 @end

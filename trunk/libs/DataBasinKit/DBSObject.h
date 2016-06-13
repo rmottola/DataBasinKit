@@ -2,7 +2,7 @@
  Project: DataBasin
  DBSobject.h
  
- Copyright (C) 2010-2015 Free Software Foundation
+ Copyright (C) 2010-2016 Free Software Foundation
  
  Author: Riccardo Mottola
  
@@ -115,5 +115,9 @@
 /** <p>Loads or refreshes the value of the fields passed in the array.</p>
  */
 - (void)loadValuesForFields:(NSArray *)namesArray;
+
+/** <p>Stores by updating the value of the fields passed in the array.</p>
+ */
+- (void)storeValuesForFields:(NSArray *)namesArray;
 
 @end
