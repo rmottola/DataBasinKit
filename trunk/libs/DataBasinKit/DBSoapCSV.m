@@ -120,7 +120,7 @@
       [p setCurrentDescription:@"Writing"];
       [writer writeDataSet: sObjects];
       [p incrementCurrentValue:[sObjects count]];
-      [arp drain];
+      [arp release];
     }
   [dbSoap release];
   [sObjects release];
@@ -214,7 +214,7 @@
         [dbSoap release];
         [localException raise];
         [batchOfIdentifiers release];
-        [arp drain];
+        [arp release];
       NS_ENDHANDLER
 
       [batchOfIdentifiers release];
@@ -238,7 +238,7 @@
           [writer writeDataSet: sObjects];
           [sObjects removeAllObjects];
         }
-      [arp drain];
+      [arp release];
     }
   [dbSoap release];  
   [sObjects release];

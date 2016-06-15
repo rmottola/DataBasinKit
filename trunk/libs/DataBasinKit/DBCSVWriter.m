@@ -1,7 +1,7 @@
 /*
    Project: DataBasin
 
-   Copyright (C) 2009-2015 Free Software Foundation
+   Copyright (C) 2009-2016 Free Software Foundation
 
    Author: Riccardo Mottola
 
@@ -353,7 +353,7 @@
 	data2 = data;
       [file writeData: data2];
     }
-  [arp drain];
+  [arp release];
 }
 
 - (NSString *)formatOneLine:(id)data forHeader:(BOOL) headerFlag
