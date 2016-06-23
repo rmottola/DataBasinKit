@@ -363,11 +363,11 @@ converting it if necessary.</p>
     {
       NSUInteger j;
     
-      for (i = 0; i < [results count]; i++)
+      for (j = 0; j < [results count]; j++)
         {
           NSDictionary *r;
 
-          r = [results objectAtIndex:i];
+          r = [results objectAtIndex:j];
           if ([[r objectForKey:@"success"] isEqualToString:@"false"])
             {
               if (errorString == nil)
