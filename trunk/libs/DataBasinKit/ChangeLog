@@ -1,3 +1,8 @@
+2016-06-24 Riccardo Mottola <rm@gnu.org>
+
+	* DBSObject.m (_update)
+	If value of a field is empty, consider it NULL and issue a fieldToNull
+
 2016-06-13 Riccardo Mottola <rm@gnu.org>
 
 	* DBSObject.h
