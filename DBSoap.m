@@ -1460,7 +1460,6 @@
     [sObj setObject: sObjKeyOrder forKey: GWSOrderKey];
     [queryObjectsArray addObject: sObj];
 
-    NSLog(@"Fields to null: %@", fieldsToNullArr);
     if ([fieldsToNullArr count])
       {
         NSMutableDictionary *sObjNillablesList;
