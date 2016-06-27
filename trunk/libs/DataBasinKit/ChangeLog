@@ -1,3 +1,8 @@
+2016-06-27 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.m
+        Use GSWS constants instead of hard-coded strings.
+
 2016-06-24 Riccardo Mottola <rm@gnu.org>
 
 	* DBSObject.m (_update)
