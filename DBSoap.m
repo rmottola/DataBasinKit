@@ -532,7 +532,7 @@
       NSString *faultName;
     
       faultDetail = [queryFault objectForKey:@"detail"];
-      faultName = [[faultDetail objectForKey:@"GWSCoderOrder"] objectAtIndex: 0];
+      faultName = [[faultDetail objectForKey:GWSOrderKey] objectAtIndex: 0];
       if (faultName)
 	{
 	  NSDictionary *fault;
@@ -623,7 +623,7 @@
       [logger log: LogInformative :@"[DBSoap query] records size is: %d\n", batchSize];
       /* let's get the fields from the keys of the first record */
       keys = [NSMutableArray arrayWithArray:[record allKeys]];
-      [keys removeObject:@"GWSCoderOrder"];
+      [keys removeObject:GWSOrderKey];
       
       /* remove some fields which get added automatically by salesforce even if not asked for */
       typePresent = [keys containsObject:@"type"];
@@ -806,7 +806,7 @@
       
       /* let's get the fields from the keys of the first record */
       keys = [NSMutableArray arrayWithArray:[record allKeys]];
-      [keys removeObject:@"GWSCoderOrder"];
+      [keys removeObject:GWSOrderKey];
 
       /* remove some fields which get added automatically by salesforce even if not asked for */
       typePresent = [keys containsObject:@"type"];
@@ -1706,7 +1706,7 @@
       unsigned j;
     
       sObj = [sobjects objectAtIndex: i];
-      propertiesArray = [sObj objectForKey: @"GWSCoderOrder"];
+      propertiesArray = [sObj objectForKey: GWSOrderKey];
       propertiesDict = [NSMutableDictionary dictionaryWithCapacity: [propertiesArray count]];
       for (j = 0; j < [propertiesArray count]; j++)
 	{
@@ -1862,7 +1862,7 @@
   record = [records objectAtIndex:0]; 
 
   keys = [NSMutableArray arrayWithArray:[record allKeys]];
-  [keys removeObject:@"GWSCoderOrder"];
+  [keys removeObject:GWSOrderKey];
 
 
   for (i = 0; i < [records count]; i++)
@@ -1872,7 +1872,7 @@
       
       record = [records objectAtIndex:i];
       props = [NSMutableDictionary dictionaryWithDictionary: record];
-      [props removeObjectForKey:@"GWSCoderOrder"];
+      [props removeObjectForKey:GWSOrderKey];
       fieldName = [props objectForKey: @"name"];
       [object setProperties:[NSDictionary dictionaryWithDictionary: props] forField: fieldName];
     }
@@ -1914,7 +1914,7 @@
 
           record = [recordTypeObjs objectAtIndex:i];
           mDict = [NSMutableDictionary dictionaryWithDictionary: record];
-          [mDict removeObjectForKey:@"GWSCoderOrder"];
+          [mDict removeObjectForKey:GWSOrderKey];
 //          NSLog(@"record-type from object: %@", mDict);
           devName = nil;
           /* we check for the master record type, for which the code is hardcoded by SF */
