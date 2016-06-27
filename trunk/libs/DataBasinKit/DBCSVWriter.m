@@ -26,6 +26,8 @@
 #import "DBSObject.h"
 #import "DBLoggerProtocol.h"
 
+#import <WebServices/GWSConstants.h>
+
 @implementation DBCSVWriter
 
 - (id)initWithHandle:(NSFileHandle *)fileHandle
@@ -211,7 +213,7 @@
     return;
 
   keys = [NSMutableArray arrayWithArray:[d allKeys]];
-  [keys removeObject:@"GWSCoderOrder"];
+  [keys removeObject:GWSOrderKey];
   
   /* remove some fields which get added automatically by salesforce even if not asked for */
   [keys removeObject:@"type"];
