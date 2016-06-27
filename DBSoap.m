@@ -371,7 +371,7 @@
 
   [logger log: LogDebug: @"[DBSoap Login]:resultDict is %d big\n", [resultDict count]];
   
-  queryFault = [resultDict objectForKey:@"GWSFaultKey"];
+  queryFault = [resultDict objectForKey:GWSFaultKey];
   if (queryFault != nil)
   {
     NSString *faultCode;
@@ -385,7 +385,7 @@
     [[NSException exceptionWithName:@"DBException" reason:faultString userInfo:nil] raise];
   }
   
-  loginResult = [resultDict objectForKey:@"GWSParametersKey"];
+  loginResult = [resultDict objectForKey:GWSParametersKey];
   [logger log: LogDebug: @"[DBSoap Login]: coder parameters is %@\n", loginResult];
   
   enumerator = [loginResult keyEnumerator];
@@ -519,13 +519,13 @@
                             timeout : queryTimeoutSec];
   
   [logger log: LogDebug: @"[DBSoap query] result: %@\n", resultDict];
-  coderError = [resultDict objectForKey:@"GWSErrorKey"];
+  coderError = [resultDict objectForKey:GWSErrorKey];
   if (coderError != nil)
     {
       [logger log: LogStandard :@"[DBSoap query] error: %@\n", coderError];
       [[NSException exceptionWithName:@"DBException" reason:@"Coder Error, check log" userInfo:nil] raise];
     }
-  queryFault = [resultDict objectForKey:@"GWSFaultKey"];
+  queryFault = [resultDict objectForKey:GWSFaultKey];
   if (queryFault != nil)
     {
       NSDictionary *faultDetail;
@@ -553,7 +553,7 @@
       return nil;
     }
   
-  queryResult = [resultDict objectForKey:@"GWSParametersKey"];
+  queryResult = [resultDict objectForKey:GWSParametersKey];
   result = [queryResult objectForKey:@"result"];
   [logger log: LogDebug: @"[DBSoap query] result: %@\n", result];  
   doneStr = [result objectForKey:@"done"];
@@ -746,7 +746,7 @@
   
 
   queryLocator = nil;
-  queryFault = [resultDict objectForKey:@"GWSFaultKey"];
+  queryFault = [resultDict objectForKey:GWSFaultKey];
   if (queryFault != nil)
     {
       NSDictionary *fault;
@@ -759,7 +759,7 @@
       NSLog(@"exception code: %@", [fault objectForKey:@"exceptionMessage"]);
     }
 
-  queryResult = [resultDict objectForKey:@"GWSParametersKey"];
+  queryResult = [resultDict objectForKey:GWSParametersKey];
   result = [queryResult objectForKey:@"result"];
 
   doneStr = [result objectForKey:@"done"];
@@ -1239,13 +1239,13 @@
 				    order : nil
 				  timeout : standardTimeoutSec];
   
-        queryError = [resultDict objectForKey:@"GWSErrorKey"];
+        queryError = [resultDict objectForKey:GWSErrorKey];
         if (queryError != nil)
           {
             [logger log: LogStandard: @"[DBSoap create] Error:%@\n", queryError];
             [[NSException exceptionWithName:@"DBException" reason:@"Coder Error, check log" userInfo:nil] raise];
           }
-	queryFault = [resultDict objectForKey:@"GWSFaultKey"];
+	queryFault = [resultDict objectForKey:GWSFaultKey];
 	if (queryFault != nil)
 	  {
 	    NSString *faultCode;
@@ -1259,7 +1259,7 @@
 	    [[NSException exceptionWithName:@"DBException" reason:faultString userInfo:nil] raise];
 	  }
 
-	queryResult = [resultDict objectForKey:@"GWSParametersKey"];
+	queryResult = [resultDict objectForKey:GWSParametersKey];
 	result = [queryResult objectForKey:@"result"];
 	[logger log: LogDebug: @"[DBSoap create] result: %@\n", result];
  
@@ -1491,13 +1491,13 @@
 				    order : nil
 				  timeout : standardTimeoutSec];
         //NSLog(@"resultDict: %@", resultDict);
-        queryError = [resultDict objectForKey:@"GWSErrorKey"];
+        queryError = [resultDict objectForKey:GWSErrorKey];
         if (queryError != nil)
           {
             [logger log: LogStandard: @"[DBSoap update] Error:%@\n", queryError];
             [[NSException exceptionWithName:@"DBException" reason:@"Coder Error, check log" userInfo:nil] raise];
           }
-	queryFault = [resultDict objectForKey:@"GWSFaultKey"];
+	queryFault = [resultDict objectForKey:GWSFaultKey];
 	if (queryFault != nil)
 	  {
 	    NSString *faultCode;
@@ -1511,7 +1511,7 @@
 	  }
 
 
-	queryResult = [resultDict objectForKey:@"GWSParametersKey"];
+	queryResult = [resultDict objectForKey:GWSParametersKey];
 	result = [queryResult objectForKey:@"result"];
 	//NSLog(@"query result: %@", result);
 
@@ -1676,7 +1676,7 @@
 
   [logger log: LogDebug: @"[DBSoap describeGlobal] Describe Global dict is %lu big\n", [resultDict count]];
   
-  queryFault = [resultDict objectForKey:@"GWSFaultKey"];
+  queryFault = [resultDict objectForKey:GWSFaultKey];
   if (queryFault != nil)
     {
       NSDictionary *fault;
@@ -1690,7 +1690,7 @@
       [[NSException exceptionWithName:@"DBException" reason:[fault objectForKey:@"exceptionMessage"] userInfo:nil] raise];
     }
 
-  queryResult = [resultDict objectForKey:@"GWSParametersKey"];
+  queryResult = [resultDict objectForKey:GWSParametersKey];
   result = [queryResult objectForKey:@"result"];
 //  NSLog(@"result: %@", result);
 
@@ -1824,7 +1824,7 @@
 		order : nil
 		timeout : standardTimeoutSec];
   
-  queryFault = [resultDict objectForKey:@"GWSFaultKey"];
+  queryFault = [resultDict objectForKey:GWSFaultKey];
   if (queryFault != nil)
     {
       NSDictionary *fault;
@@ -1839,7 +1839,7 @@
       return nil;
     }
 
-  queryResult = [resultDict objectForKey:@"GWSParametersKey"];
+  queryResult = [resultDict objectForKey:GWSParametersKey];
   result = [queryResult objectForKey:@"result"];
 
   object = [[DBSObject alloc] init];
@@ -2031,7 +2031,7 @@
 				      order : nil
 				    timeout : standardTimeoutSec];
 
-	  queryFault = [resultDict objectForKey:@"GWSFaultKey"];
+	  queryFault = [resultDict objectForKey:GWSFaultKey];
 	  if (queryFault != nil)
 	    {
 	      NSString *faultCode;
@@ -2044,7 +2044,7 @@
 	      [[NSException exceptionWithName:@"DBException" reason:faultString userInfo:nil] raise];
 	    }
   
-	  queryResult = [resultDict objectForKey:@"GWSParametersKey"];
+	  queryResult = [resultDict objectForKey:GWSParametersKey];
 	  result = [queryResult objectForKey:@"result"];
           // NSLog(@"result: %@", result);
 
