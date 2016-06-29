@@ -1462,7 +1462,7 @@
 
     if ([fieldsToNullArr count])
       {
-        NSMutableDictionary *sObjNillablesList;
+        NSDictionary *sObjNillablesList;
 
         sObjNillablesList = [NSDictionary dictionaryWithObjectsAndKeys: fieldsToNullArr, GWSSOAPValueKey, nil];      
         [sObj setObject:sObjNillablesList forKey: @"fieldsToNull"];
