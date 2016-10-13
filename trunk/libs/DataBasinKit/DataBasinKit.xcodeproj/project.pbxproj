@@ -22,6 +22,8 @@
 		850A48C61912D4CB00B9303D /* DBSObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 850A48BA1912D4CB00B9303D /* DBSObject.m */; };
 		850A48D819131EC500B9303D /* WebServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 850A48D719131EC500B9303D /* WebServices.framework */; };
 		85125B25192031A6000E6004 /* ChangeLog in Resources */ = {isa = PBXBuildFile; fileRef = 85125B24192031A6000E6004 /* ChangeLog */; };
+		8534AFED1DAB9919005F5ECD /* DBHTMLWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8534AFEB1DAB9919005F5ECD /* DBHTMLWriter.h */; };
+		8534AFEE1DAB9919005F5ECD /* DBHTMLWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 8534AFEC1DAB9919005F5ECD /* DBHTMLWriter.m */; };
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -46,6 +48,8 @@
 		850A48BA1912D4CB00B9303D /* DBSObject.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DBSObject.m; sourceTree = "<group>"; };
 		850A48D719131EC500B9303D /* WebServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebServices.framework; path = /Library/Frameworks/WebServices.framework; sourceTree = "<absolute>"; };
 		85125B24192031A6000E6004 /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ChangeLog; sourceTree = "<group>"; };
+		8534AFEB1DAB9919005F5ECD /* DBHTMLWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBHTMLWriter.h; sourceTree = "<group>"; };
+		8534AFEC1DAB9919005F5ECD /* DBHTMLWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBHTMLWriter.m; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* DataBasinKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DataBasinKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -115,6 +119,8 @@
 				850A48B81912D4CB00B9303D /* DBSoapCSV.m */,
 				850A48B91912D4CB00B9303D /* DBSObject.h */,
 				850A48BA1912D4CB00B9303D /* DBSObject.m */,
+				8534AFEB1DAB9919005F5ECD /* DBHTMLWriter.h */,
+				8534AFEC1DAB9919005F5ECD /* DBHTMLWriter.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -162,6 +168,7 @@
 				850A48C11912D4CB00B9303D /* DBSoap.h in Headers */,
 				850A48C31912D4CB00B9303D /* DBSoapCSV.h in Headers */,
 				850A48C51912D4CB00B9303D /* DBSObject.h in Headers */,
+				8534AFED1DAB9919005F5ECD /* DBHTMLWriter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,6 +240,7 @@
 				850A48C21912D4CB00B9303D /* DBSoap.m in Sources */,
 				850A48C41912D4CB00B9303D /* DBSoapCSV.m in Sources */,
 				850A48C61912D4CB00B9303D /* DBSObject.m in Sources */,
+				8534AFEE1DAB9919005F5ECD /* DBHTMLWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
