@@ -32,6 +32,7 @@
   NSArray      *fieldNames;
   NSArray      *fieldTypes;
   NSFileHandle *file;
+  NSString     *newLine;
   NSStringEncoding encoding;
   unsigned     bomLength;
 }

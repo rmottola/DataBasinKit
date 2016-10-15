@@ -35,9 +35,12 @@
 {
   if ((self = [super init]))
     {
+      newLine = @"\n";
       file = fileHandle;
+      fieldNames = nil;
       [self setStringEncoding: NSUTF8StringEncoding];
     }
+  return self;
 }
 
 - (void)dealloc
@@ -304,7 +307,73 @@
   
   /* create the string */
   theLine = [[NSMutableString alloc] initWithCapacity:64];
+  [theLine appendString:@"<tr>"];
+
+  for (i = 0; i < [fieldNames count]; i++)
+    {
+      unsigned j;
+      NSString *key;
+      NSString *originalKey;
+      NSString *valStr;
+
+      /* look for original key name for correct capitalization */
+      key = [fieldNames objectAtIndex:i];
+      originalKey = nil;
+      j = 0;
+      //NSLog(@"lookingfor -> %@", key);
+      while (j < [keyOrder count] && originalKey == nil)
+        {
+          originalKey = [keyOrder objectAtIndex:j];
+          if ([originalKey compare:key options:NSCaseInsensitiveSearch] != NSOrderedSame)
+            originalKey = nil;
+          j++;
+        }
+      
+      [theLine appendString: @"<tc>"];
+      //NSLog(@"original key: %@", originalKey);
+      valStr = nil;
+      if (headerFlag)
+        {
+          valStr = [self formatScalarObject: key];
+        }
+      else
+        {
+          if (originalKey)
+            {
+              id val;
+              
+              val = [dataDict objectForKey: originalKey];
+              if (val)
+                {
+                  valStr = [self formatScalarObject: val];
+                }
+              else
+                {
+                  /* we found the key but no corresponding value
+                     we insert an empty string to keep the column sequence */
+                  valStr = [self formatScalarObject: @""];
+                }
+            }
+          else
+            {
+              /* we no corresponding key, possibly referencing a null complex object
+                 we insert an empty string to keep the column sequence */
+              valStr = [self formatScalarObject: @""];
+            }
+        }
+      
+      [theLine appendString:valStr];
+      [theLine appendString: @"</tc>"];
+      if (i == [fieldNames count]-1)
+        [theLine appendString: @"</tr>"];
+    }
   
+  
+  [keyOrder release];
+  [dataDict release];
+  [theLine appendString:@"</tr>"];
+  [theLine appendString:newLine];
+  return [theLine autorelease];
 }
 
 @end
