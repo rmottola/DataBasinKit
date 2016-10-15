@@ -12,7 +12,8 @@
 	"DBSoapCSV.m",
 	"DBSObject.m",
 	"DBCSVReader.m",
-	"DBCSVWriter.m"
+	"DBCSVWriter.m",
+	"DBHTMLWriter.m"
     );
     COMPILEROPTIONS = "";
     CPPOPTIONS = "";
@@ -30,7 +31,8 @@
 	"DBProgressProtocol.h",
 	"DBLoggerProtocol.h",
 	"DBCSVReader.h",
-	"DBCSVWriter.h"
+	"DBCSVWriter.h",
+	"DBHTMLWriter.h"
     );
     IMAGES = (
     );
@@ -71,7 +73,8 @@
 	"DBProgressProtocol.h",
 	"DBLoggerProtocol.h",
 	"DBCSVReader.h",
-	"DBCSVWriter.h"
+	"DBCSVWriter.h",
+	"DBHTMLWriter.h"
     );
     "SEARCH_HEADER_DIRS" = (
     );
