@@ -1,5 +1,13 @@
 2016-10-18 Riccardo Mottola <rm@gnu.org>
 
+	* DBCSVWriter.h
+	* DBCSVWriter.m
+	* DBHTMLWriter.h
+	* DBHTMLWriter.m
+	Provide common writeStart and writeEnd method to write out the begin and end of a block, clean and complete table header ad rows generation.
+
+2016-10-18 Riccardo Mottola <rm@gnu.org>
+
 	* DBSoapCSV.m
 	Use the property writeFieldsOrdered directly and do not try to reset it.
 
