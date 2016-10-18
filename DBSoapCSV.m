@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2015 Free Software Foundation
+  Copyright (C) 2008-2016 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -83,15 +83,10 @@
   batchSize = [sObjects count];
   if (batchSize > 0)
     {
-      if (fields != nil)
-        {
-          [writer setWriteFieldsOrdered:YES];
-          [writer setFieldNames: fields andWriteThem:YES];
-        }
+      if ([writer writeFieldsOrdered])
+        [writer setFieldNames: fields andWriteThem:YES];
       else
-        {
-          [writer setFieldNames: [sObjects objectAtIndex: 0] andWriteThem:YES];
-        }
+        [writer setFieldNames: [sObjects objectAtIndex: 0] andWriteThem:YES];
       [p setCurrentDescription:@"Writing"];
       [writer writeDataSet: sObjects];
       [p incrementCurrentValue:[sObjects count]];
@@ -224,9 +219,8 @@
         {
           if (firstBatchIteration)
             {
-              if (queryFields != nil)
+              if ([writer writeFieldsOrdered])
                 {
-                  [writer setWriteFieldsOrdered:YES];
                   [writer setFieldNames: queryFields andWriteThem:YES];
                 }
               else

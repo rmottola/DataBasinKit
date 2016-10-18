@@ -1,3 +1,8 @@
+2016-10-18 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoapCSV.m
+	Use the property writeFieldsOrdered directly and do not try to reset it.
+
 2016-06-27 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m
