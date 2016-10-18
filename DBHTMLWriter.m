@@ -49,6 +49,11 @@
   [super dealloc];
 }
 
+- (BOOL)writeFieldsOrdered
+{
+  return YES;
+}
+
 - (void)setLogger:(id<DBLoggerProtocol>)l
 {
   logger = l;
@@ -77,7 +82,92 @@
   NSLog(@"bom length: %u", bomLength);
 }
 
-- (void)formatComplexObject:(NSMutableDictionary *)d withRoot:(NSString *)root inDict:(NSMutableDictionary *)dict inOrder:(NSMutableArray *)order
+
+- (NSString *)formatScalarObject:(id)value forHeader:(BOOL) headerFlag
+{
+  NSString *res;
+  NSString *tagBegin;
+  NSString *tagEnd;
+
+  res = nil;
+  if (headerFlag)
+    tagEnd = @"</th>";
+  else
+    tagEnd = @"</td>";
+  if ([value isKindOfClass: [NSString class]])
+    {
+      if (headerFlag)
+        tagBegin = @"<th>";
+      else
+        tagBegin = @"<td>";
+#if 0
+      if (lineBreakHandling != DBCSVLineBreakNoChange)
+        {
+          NSRange lbRange;
+          NSMutableString *mutStr;
+
+          mutStr = [NSMutableString stringWithString:value];
+          lbRange = [mutStr rangeOfString:@"\n"];
+          while (lbRange.location != NSNotFound)
+            {
+              if (lineBreakHandling == DBCSVLineBreakDelete)
+                [mutStr deleteCharactersInRange:lbRange];
+              else if (lineBreakHandling == DBCSVLineBreakReplaceWithSpace)
+                [mutStr replaceCharactersInRange:lbRange withString:@" "];
+              lbRange = [mutStr rangeOfString:@"\n"];
+            }
+          value = mutStr;
+        }
+#endif
+
+      NSMutableString *s;
+	      
+      s = [[NSMutableString alloc] initWithCapacity: [value length]+2];
+
+      [s appendString: tagBegin]; 
+
+      // FIXME here we should escape all HTML tags like < and &
+      [s appendString: value];
+
+      [s appendString: tagEnd];
+
+      res = [NSString stringWithString: s];
+      [s release];
+
+    }
+  else if ([value isKindOfClass: [NSNumber class]])
+    {
+      if (headerFlag)
+        tagBegin = @"<th>";
+      else
+        tagBegin = @"<td>";
+      // FIXME: this is locale sensitive?
+      // FIXME2: maybe give the option to quote also numbers
+	{
+	  NSMutableString *s;
+	  NSString *strValue;
+
+	  strValue = [value stringValue];
+	  s = [[NSMutableString alloc] initWithCapacity: [strValue length]+2];
+
+          [s appendString: tagBegin];
+
+	  [s appendString: strValue];
+
+          [s appendString: tagEnd];
+          
+	  res = [NSString stringWithString: s];
+	  [s release];
+	}
+    }
+  else
+    {
+      [logger log: LogStandard :@"[DBHTMLWriter formatScalarObject] %@ has unknown class %@:\n", value, [value class]];
+    }
+  return res;
+}
+
+- (void)formatComplexObject:(NSMutableDictionary *)d withRoot:(NSString *)root inDict:(NSMutableDictionary *)dict inOrder:(NSMutableArray *)order forHeader:(BOOL) headerFlag
 {
   NSMutableArray  *keys;
   unsigned i;
@@ -96,8 +186,8 @@
   if (![[d objectForKey:@"Id"] isKindOfClass: [NSArray class]])
     [keys removeObject:@"Id"];
   
-  //[logger log: LogDebug :@"[DBCSVWriter formatComplexObject] clean dictionary %@:\n", d];
-  //NSLog(@"[DBCSVWriter formatComplexObject] clean dictionary %@\n", d);
+  //[logger log: LogDebug :@"[DBHTMLWriter formatComplexObject] clean dictionary %@:\n", d];
+  //NSLog(@"[DBHTMLWriter formatComplexObject] clean dictionary %@\n", d);
   
   for (i = 0; i < [keys count]; i++)
     {
@@ -123,7 +213,7 @@
           [s appendString:key];
           
           //NSLog(@"formatting complex object with root: %@", s);
-          [self formatComplexObject: obj withRoot:s inDict:dict inOrder:order];
+          [self formatComplexObject: obj withRoot:s inDict:dict inOrder:order forHeader:headerFlag];
         }
       else if ([obj isKindOfClass: [NSString class]] || [obj isKindOfClass: [NSNumber class]])
         {
@@ -145,7 +235,7 @@
           [order addObject:extendedFieldName];
         }
       else
-        NSLog(@"[DBCSVWriter formatComplexObject] unknown class of value: %@, object: %@", [obj class], obj);     
+        NSLog(@"[DBHTMLWriter formatComplexObject] unknown class of value: %@, object: %@", [obj class], obj);     
     }
 }
 
@@ -157,7 +247,7 @@
 {
   NSArray *array;
   
-  [logger log: LogDebug :@"[DBCSVWriter setFieldNames] Object: %@:\n", obj];
+  [logger log: LogDebug :@"[DBHTMLWriter setFieldNames] Object: %@:\n", obj];
   
   /* if we have no data, we return */
   if (obj == nil)
@@ -179,7 +269,7 @@
       [array retain];
     }
   
-  [logger log: LogDebug :@"[DBCSVWriter setFieldNames] Names: %@:\n", array];
+  [logger log: LogDebug :@"[DBHTMLWriter setFieldNames] Names: %@:\n", array];
   
   /* if we write the header, fine, else we write at least the BOM */
   if (flag == YES)
@@ -199,6 +289,26 @@
     }
 }
 
+- (void)writeStart
+{
+  NSData *data;
+  NSString *str;
+
+  str = @"<table>";
+  data = [str dataUsingEncoding: encoding];
+  [file writeData: data];
+}
+
+- (void)writeEnd
+{
+  NSData *data;
+  NSString *str;
+
+  str = @"</table>";
+  data = [str dataUsingEncoding: encoding];
+  [file writeData: data];
+}
+
 - (void)writeDataSet:(NSArray *)array
 {
   NSUInteger i;
@@ -212,6 +322,22 @@
   setCount = [array count];
   for (i = 0; i < setCount; i++)
     {
+      NSString *oneLine;
+      NSData *data;
+      NSData *data2;
+      id o;
+
+//      NSLog(@"write data set");
+      o = [array objectAtIndex:i];
+      if ([o isKindOfClass: [DBSObject class]])
+	o = [NSArray  arrayWithObject: o];
+      oneLine = [self formatOneLine:o forHeader:NO];
+      data = [oneLine dataUsingEncoding: encoding];
+      if (bomLength > 0)
+	data2 = [NSData dataWithBytesNoCopy: (void *)[data bytes] length: [data length]-bomLength freeWhenDone: NO];
+      else
+	data2 = data;
+      [file writeData: data2];
     }
 }
 
@@ -250,7 +376,7 @@
     obj = [array objectAtIndex:i];
     if ([obj isKindOfClass: [NSDictionary class]])
       {
-        [self formatComplexObject:obj withRoot:nil inDict:dataDict inOrder:keyOrder];
+        [self formatComplexObject:obj withRoot:nil inDict:dataDict inOrder:keyOrder forHeader:headerFlag];
       }
     else if ([obj isKindOfClass: [DBSObject class]])
       {
@@ -282,7 +408,7 @@
             else if ([value isKindOfClass: [NSDictionary class]])
               {
                 // NSLog(@"Dictionary");
-                [self formatComplexObject:value withRoot:key inDict:dataDict inOrder:keyOrder];
+                [self formatComplexObject:value withRoot:key inDict:dataDict inOrder:keyOrder forHeader:headerFlag];
               }
             else
               {
@@ -299,7 +425,7 @@
     else if ([obj isKindOfClass: [NSNumber class]])
       {
         NSLog(@"formatOneLine, we have directly a scalar object, NSNumber: %@", obj);
-        [logger log: LogStandard :@"[DBCSVWriter formatOneLine] we have a NSNumber, unhandled %@:\n", obj];
+        [logger log: LogStandard :@"[DBHTMLWriter formatOneLine] we have a NSNumber, unhandled %@:\n", obj];
       }
     else
       NSLog(@"unknown class of value: %@", [obj class]);
@@ -329,12 +455,11 @@
           j++;
         }
       
-      [theLine appendString: @"<tc>"];
       //NSLog(@"original key: %@", originalKey);
       valStr = nil;
       if (headerFlag)
         {
-          valStr = [self formatScalarObject: key];
+          valStr = [self formatScalarObject: key forHeader:headerFlag];
         }
       else
         {
@@ -345,27 +470,24 @@
               val = [dataDict objectForKey: originalKey];
               if (val)
                 {
-                  valStr = [self formatScalarObject: val];
+                  valStr = [self formatScalarObject: val forHeader:headerFlag];
                 }
               else
                 {
                   /* we found the key but no corresponding value
                      we insert an empty string to keep the column sequence */
-                  valStr = [self formatScalarObject: @""];
+                  valStr = [self formatScalarObject: @""  forHeader:headerFlag];
                 }
             }
           else
             {
               /* we no corresponding key, possibly referencing a null complex object
                  we insert an empty string to keep the column sequence */
-              valStr = [self formatScalarObject: @""];
+              valStr = [self formatScalarObject: @"" forHeader:headerFlag];
             }
         }
       
       [theLine appendString:valStr];
-      [theLine appendString: @"</tc>"];
-      if (i == [fieldNames count]-1)
-        [theLine appendString: @"</tr>"];
     }
   
   

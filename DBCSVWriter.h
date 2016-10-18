@@ -58,6 +58,8 @@ typedef enum DBCSVLineBreakHandling DBCSVLineBreakHandling;
 - (id)initWithHandle:(NSFileHandle *)fileHandle;
 - (void)setLogger:(id<DBLoggerProtocol>)l;
 - (void)setFieldNames: (id)obj andWriteThem: (BOOL)flag;
+- (void)writeStart;
+- (void)writeEnd;
 - (void)writeDataSet:(NSArray *)array;
 - (NSString *)formatOneLine:(id)data forHeader:(BOOL) headerFlag;
 - (void)setStringEncoding: (NSStringEncoding) enc;
