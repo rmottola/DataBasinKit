@@ -339,6 +339,7 @@
 	data2 = data;
       [file writeData: data2];
     }
+  [arp release];
 }
 
 - (NSString *)formatOneLine:(id)data forHeader:(BOOL) headerFlag
