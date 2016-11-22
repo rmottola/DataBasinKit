@@ -127,6 +127,8 @@
 
 /**
    See DBSoap for informations about the batch size parameter.
+
+   The batch size parameter affects
  */
 - (void)queryIdentify :(NSString *)queryString queryAll:(BOOL)all fromReader:(DBCSVReader *)reader toWriter:(DBCSVWriter *)writer withBatchSize:(int)bSize progressMonitor:(id<DBProgressProtocol>)p
 {
@@ -134,13 +136,20 @@
   NSUInteger      inFieldCount;
   NSArray        *dataSet;
   NSMutableArray *identifierArray;
-  NSMutableArray *sObjects;
   NSUInteger     i;
   NSUInteger     batchSize;
   NSArray        *queryFields;
   GWSService     *serv;
   DBSoap         *dbSoap;
   BOOL           firstBatchIteration;
+  NSUInteger     identifyBatchSize;
+
+  /* if we identify through fields which are not keys and return a large number of results, the DBSoap identify,
+     We try to be smart and thus if Max is not selected as query batch size, then we sync the identify and the query
+     batch sizes */
+  identifyBatchSize = MAX_SIZE_OF_IDENTBATCH;
+  if (bSize > 0)
+    identifyBatchSize = bSize;
   
   /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
   dbSoap = [[DBSoap alloc] init];
@@ -181,26 +190,27 @@
     }
   
   [p setMaximumValue:[identifierArray count]];
-  sObjects = [[NSMutableArray alloc] init];
 
   [p setCurrentDescription:@"Identifying and querying."];
   [logger log: LogStandard :@"[DBSoapCSV queryIdentify] Identify through %@\n", inFieldNames];
 
-  firstBatchIteration = YES; /* we keep track of the first batch since we need to writ the header only once*/
+  firstBatchIteration = YES; /* we keep track of the first batch since we need to write the header only once*/
   while ([identifierArray count] > 0 && ![p shouldStop])
     {
       NSRange subArrayRange;
       NSArray *batchOfIdentifiers;
       NSAutoreleasePool *arp;
+      NSMutableArray *sObjects;
 
       arp = [[NSAutoreleasePool alloc] init];
       subArrayRange = NSMakeRange(0, [identifierArray count]);
-      if ([identifierArray count] > MAX_SIZE_OF_IDENTBATCH)
-        subArrayRange = NSMakeRange(0, MAX_SIZE_OF_IDENTBATCH);
+      if ([identifierArray count] > identifyBatchSize)
+        subArrayRange = NSMakeRange(0, identifyBatchSize);
       batchOfIdentifiers = [identifierArray subarrayWithRange:subArrayRange];
       [batchOfIdentifiers retain];
       [identifierArray removeObjectsInRange:subArrayRange];
 
+      sObjects = [[NSMutableArray alloc] init];
       NS_DURING
         [db queryIdentify:queryString with:inFieldNames queryAll:all fromArray:batchOfIdentifiers toArray: sObjects withBatchSize:bSize progressMonitor: p];
       NS_HANDLER
@@ -230,12 +240,11 @@
               firstBatchIteration = NO;
             }
           [writer writeDataSet: sObjects];
-          [sObjects removeAllObjects];
+          [sObjects release];
         }
       [arp release];
     }
   [dbSoap release];  
-  [sObjects release];
   [identifierArray release];
 }
 
