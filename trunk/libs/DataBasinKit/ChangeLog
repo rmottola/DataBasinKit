@@ -1,3 +1,8 @@
+2016-11-22 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoapCSV.m (queryIdentify:)
+	Adjust the identification loop to the query loop when it is not MAX, furthermore make result objects local to loop.
+
 2016-10-18 Riccardo Mottola <rm@gnu.org>
 
 	* DBCSVWriter.h
