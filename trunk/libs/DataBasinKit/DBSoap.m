@@ -893,7 +893,7 @@
 
 - (void)_queryIdentify :(NSString *)queryString with: (NSArray *)identifiers queryAll:(BOOL)all fromArray:(NSArray *)fromArray toArray:(NSMutableArray *)outArray withBatchSize:(int)batchSize progressMonitor:(id<DBProgressProtocol>)p
 {
-  unsigned i;
+  NSUInteger i;
   BOOL batchable;
   BOOL autoBatch;
   BOOL multiKey;
@@ -1030,7 +1030,7 @@
 	    }
 	  else
 	    {
-	      unsigned k;
+	      NSUInteger k;
 
 	      [completeQuery appendString: @"( "];
 	      for (k = 0; k < [currKeyArray count]; k++)
@@ -1091,7 +1091,7 @@
 	      /* we always stay inside the maximum soql query size and if we have a batch limit we cap on that */
 	      while (((i < [fromArray count]) && ([completeQuery length] < MAX_SOQL_SIZE-20)) && (autoBatch || (b < batchSize)))
 		{
-		  unsigned k;
+		  NSUInteger k;
 
 		  [completeQuery appendString: @"( "];
 		  for (k = 0; k < [currKeyArray count]; k++)
