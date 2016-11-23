@@ -894,7 +894,6 @@
 - (void)_queryIdentify :(NSString *)queryString with: (NSArray *)identifiers queryAll:(BOOL)all fromArray:(NSArray *)fromArray toArray:(NSMutableArray *)outArray withBatchSize:(int)batchSize progressMonitor:(id<DBProgressProtocol>)p
 {
   unsigned i;
-  unsigned j;
   BOOL batchable;
   BOOL autoBatch;
   BOOL multiKey;
@@ -1126,8 +1125,7 @@
 
       if (resArray && [resArray count])
         {
-          for (j = 0; j < [resArray count]; j++)
-            [outArray addObject: [resArray objectAtIndex: j]];
+          [outArray addObjectsFromArray:resArray];
         }
       else
         {
