@@ -240,8 +240,8 @@
               firstBatchIteration = NO;
             }
           [writer writeDataSet: sObjects];
-          [sObjects release];
         }
+      [sObjects release];
       [arp release];
     }
   [dbSoap release];  
