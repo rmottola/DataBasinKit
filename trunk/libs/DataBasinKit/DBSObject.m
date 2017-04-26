@@ -2,7 +2,7 @@
  Project: DataBasin
  DBSobject.m
  
- Copyright (C) 2010-2016 Free Software Foundation
+ Copyright (C) 2010-2017 Free Software Foundation
  
  Author: Riccardo Mottola
  
@@ -247,8 +247,8 @@ converting it if necessary.</p>
 
 - (void)loadFieldValues
 {
-  unsigned int i;
-  unsigned int sizeCount;
+  NSUInteger i;
+  NSUInteger sizeCount;
   NSMutableArray *fieldsArray;
 
   if (dbs == nil)
