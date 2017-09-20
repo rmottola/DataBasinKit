@@ -1,3 +1,11 @@
+2017-09-20 Riccardo Mottola <rm@gnu.org>
+
+	* DBCSVWriter.h
+	* DBCSVWriter.m
+	* DBHTMLWriter.h
+	* DBHTMLWriter.m
+	Factor out common File Writer class
+
 2017-04-26 Riccardo Mottola <rm@gnu.org>
 
 	* DBSObject.m
