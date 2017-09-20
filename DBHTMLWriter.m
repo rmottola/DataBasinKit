@@ -45,7 +45,6 @@
 
 - (void)dealloc
 {
-  [fieldNames release];
   [super dealloc];
 }
 
@@ -54,10 +53,7 @@
   return YES;
 }
 
-- (void)setLogger:(id<DBLoggerProtocol>)l
-{
-  logger = l;
-}
+
 
 - (void)setStringEncoding: (NSStringEncoding) enc
 {

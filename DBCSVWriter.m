@@ -51,7 +51,6 @@
 {
   [qualifier release];
   [separator release];
-  [fieldNames release];
   [super dealloc];
 }
 
@@ -63,11 +62,6 @@
 - (BOOL)writeFieldsOrdered
 {
   return writeOrdered;
-}
-
-- (void)setLogger:(id<DBLoggerProtocol>)l
-{
-  logger = l;
 }
 
 - (void)setIsQualified: (BOOL)flag
