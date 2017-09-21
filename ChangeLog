@@ -1,3 +1,10 @@
+2017-09-21 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.h
+        * DBSoap.m
+        * DBSObject.m
+        Make SOQL length defineable
+
 2017-09-20 Riccardo Mottola <rm@gnu.org>
 
 	* DBCSVWriter.h
