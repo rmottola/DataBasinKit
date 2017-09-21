@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2016 Free Software Foundation
+  Copyright (C) 2008-2017 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -272,6 +272,7 @@
       
       upBatchSize = 1;
       downBatchSize = 500;
+      maxSOQLLength = MAX_SOQL_LENGTH;
 
       returnSuccessResults = YES;
       returnMultipleErrors = YES;
@@ -311,6 +312,20 @@
   downBatchSize = size;
 }
 
+- (unsigned)maxSOQLLength
+{
+  return maxSOQLLength;
+}
+
+/** Set the maximum used lenght for a SOQL statement. Maximum is defined by MAX_SOQL_LENGTH but
+  if a query returns QUERY_TOO_COMPLICATED the size must be reduced. A large value is capped to MAX */
+- (void)setMaxSOQLLength:(unsigned)size
+{
+  if (size < MAX_SOQL_LENGTH)
+    maxSOQLLength = size;
+  else
+    maxSOQLLength = MAX_SOQL_LENGTH;
+}
 
 - (void)_login :(NSURL *)url :(NSString *)userName :(NSString *)password :(BOOL)useHttps
 {
@@ -1067,7 +1082,7 @@
 	      b = 0;
 	      [completeQuery appendString: @" in ("];
 	      /* we always stay inside the maximum soql query size and if we have a batch limit we cap on that */
-	      while (((i < [fromArray count]) && ([completeQuery length] < MAX_SOQL_SIZE-20)) && (autoBatch || (b < batchSize)))
+	      while (((i < [fromArray count]) && ([completeQuery length] < [self maxSOQLLength]-20)) && (autoBatch || (b < batchSize)))
 		{
                   NSString *escapedKeyVal;
 
@@ -1089,7 +1104,7 @@
 	      b = 0;
 	      [completeQuery appendString: @" ("];
 	      /* we always stay inside the maximum soql query size and if we have a batch limit we cap on that */
-	      while (((i < [fromArray count]) && ([completeQuery length] < MAX_SOQL_SIZE-20)) && (autoBatch || (b < batchSize)))
+	      while (((i < [fromArray count]) && ([completeQuery length] < [self maxSOQLLength]-20)) && (autoBatch || (b < batchSize)))
 		{
 		  NSUInteger k;
 

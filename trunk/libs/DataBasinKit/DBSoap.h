@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2016 Free Software Foundation
+  Copyright (C) 2008-2017 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -35,7 +35,9 @@
 #endif
 #endif
 
-#define MAX_SOQL_SIZE 18000
+/* some Salesforce limits */
+#define MAX_SOQL_LENGTH 20000
+#define MAX_SOQL WHERE_LENGTH 4000
 #define MAX_BATCH_SIZE 200
 
 #define CLIENT_NAME @"DataBasin"
@@ -65,6 +67,9 @@
 
   /** query batch size */
   unsigned downBatchSize;
+  
+  /** actually used SOQL length, must be inferior to MAX_SOQL_LENGTH */
+  unsigned maxSOQLLength;
 
   /** Timeout in seconds, for generic methods */
   unsigned standardTimeoutSec;
@@ -95,6 +100,8 @@
 - (void)setUpBatchSize:(unsigned)size;
 - (unsigned)downBatchSize;
 - (void)setDownBatchSize:(unsigned)size;
+- (unsigned)maxSOQLLength;
+- (void)setMaxSOQLLength:(unsigned)size;
 - (NSMutableArray *)queryFull :(NSString *)queryString queryAll:(BOOL)all progressMonitor:(id<DBProgressProtocol>)p;
 - (NSString *)query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p;
 - (NSString *)queryMore :(NSString *)locator toArray:(NSMutableArray *)objects;

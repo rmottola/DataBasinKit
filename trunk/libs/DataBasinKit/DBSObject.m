@@ -261,7 +261,7 @@ converting it if necessary.</p>
       NSString *currField;
 
       currField = [fieldNames objectAtIndex:i];
-      if (sizeCount + [currField length] + 2 < MAX_SOQL_SIZE)
+      if (sizeCount + [currField length] + 2 < [dbs maxSOQLLength])
 	{
 	  [fieldsArray addObject: currField];
 	  sizeCount += [currField length] + 2;
