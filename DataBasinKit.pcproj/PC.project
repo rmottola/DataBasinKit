@@ -13,7 +13,8 @@
 	"DBSObject.m",
 	"DBCSVReader.m",
 	"DBCSVWriter.m",
-	"DBHTMLWriter.m"
+	"DBHTMLWriter.m",
+	"DBFileWriter.m"
     );
     COMPILEROPTIONS = "";
     CPPOPTIONS = "";
@@ -32,7 +33,8 @@
 	"DBLoggerProtocol.h",
 	"DBCSVReader.h",
 	"DBCSVWriter.h",
-	"DBHTMLWriter.h"
+	"DBHTMLWriter.h",
+	"DBFileWriter.h"
     );
     IMAGES = (
     );
@@ -42,7 +44,8 @@
     LANGUAGE = English;
     LIBRARIES = (
 	"gnustep-base",
-	"gnustep-gui"
+	"gnustep-gui",
+	WebServices
     );
     LINKEROPTIONS = "";
     MAKEFILEDIR = "$(GNUSTEP_MAKEFILES)";
@@ -74,11 +77,13 @@
 	"DBLoggerProtocol.h",
 	"DBCSVReader.h",
 	"DBCSVWriter.h",
-	"DBHTMLWriter.h"
+	"DBHTMLWriter.h",
+	"DBFileWriter.h"
     );
     "SEARCH_HEADER_DIRS" = (
     );
     "SEARCH_LIB_DIRS" = (
+	"/Local/Library/Libraries"
     );
     SUBPROJECTS = (
     );

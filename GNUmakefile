@@ -30,6 +30,11 @@ DataBasinKit_DEPLOY_WITH_CURRENT_VERSION = yes
 
 
 #
+# Libraries
+#
+DataBasinKit_LIBRARIES_DEPEND_UPON += -lWebServices 
+
+#
 # Public headers (will be installed)
 #
 DataBasinKit_HEADER_FILES = \
@@ -41,7 +46,8 @@ DBProgressProtocol.h \
 DBLoggerProtocol.h \
 DBCSVReader.h \
 DBCSVWriter.h \
-DBHTMLWriter.h 
+DBHTMLWriter.h \
+DBFileWriter.h 
 
 #
 # Objective-C Class files
@@ -52,7 +58,8 @@ DBSoapCSV.m \
 DBSObject.m \
 DBCSVReader.m \
 DBCSVWriter.m \
-DBHTMLWriter.m
+DBHTMLWriter.m \
+DBFileWriter.m
 
 #
 # Makefiles
