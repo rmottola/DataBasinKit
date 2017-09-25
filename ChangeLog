@@ -1,3 +1,8 @@
+2017-09-25 Riccardo Mottola <rm@gnu.org>
+
+	* DBHTMLWriter.m
+	Better header/footer for HTML.
+
 2017-09-21 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.h
