@@ -88,28 +88,6 @@
   lineBreakHandling = handling;
 }
 
-- (void)setStringEncoding: (NSStringEncoding) enc
-{
-  NSData *tempData;
-
-  encoding = enc;
-  bomLength = 0;
-
-  /* BOM heuristics */
-  tempData = [@" "dataUsingEncoding: encoding];
-#if defined(__APPLE__) && (MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_4)
-  NSString *blankString;
-    
-  blankString = [[[NSString alloc] initWithBytes: [tempData bytes] length: [tempData length] encoding: encoding] autorelease];
-  NSLog(@"blank string: %@", blankString);
-  tempData = [tempData subdataWithRange: NSMakeRange(0, [tempData length] - [blankString length])];
-#else
-  tempData = [tempData subdataWithRange: NSMakeRange(0, [tempData length] - [@" " lengthOfBytesUsingEncoding: encoding])];
-#endif
-  bomLength = [tempData length];
-
-  NSLog(@"bom length: %u", bomLength);
-}
 
 - (NSString *)formatScalarObject:(id)value
 {

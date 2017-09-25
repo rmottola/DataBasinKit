@@ -6,6 +6,16 @@
 	* DBFileWriter.m
 	* DBHTMLWriter.h
 	* DBHTMLWriter.m
+	put setStringEncoding in superclass
+
+2017-09-25 Riccardo Mottola <rm@gnu.org>
+
+	* DBCSVWriter.h
+	* DBCSVWriter.m
+	* DBFileWriter.h
+	* DBFileWriter.m
+	* DBHTMLWriter.h
+	* DBHTMLWriter.m
 	put writeDataSet in superclass, as well as encoding info.
 
 2017-09-25 Riccardo Mottola <rm@gnu.org>
