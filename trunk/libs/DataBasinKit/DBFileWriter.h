@@ -45,6 +45,7 @@
 - (BOOL)writeFieldsOrdered;
 - (void)setWriteFieldsOrdered:(BOOL)flag;
 - (void)setFieldNames: (id)obj andWriteThem: (BOOL)flag;
+- (void)setStringEncoding: (NSStringEncoding) enc;
 - (void)writeStart;
 - (void)writeEnd;
 - (void)writeDataSet:(NSArray *)array;

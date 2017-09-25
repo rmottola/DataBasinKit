@@ -33,7 +33,6 @@
   NSString     *newLine;
 }
 
-- (void)setStringEncoding: (NSStringEncoding) enc;
 
 
 @end

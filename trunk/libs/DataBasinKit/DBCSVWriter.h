@@ -48,7 +48,6 @@ typedef enum DBCSVLineBreakHandling DBCSVLineBreakHandling;
 - (void)setQualifier: (NSString *)q;
 - (void)setSeparator: (NSString *)sep;
 - (void)setLineBreakHandling: (DBCSVLineBreakHandling)handling;
-- (void)setStringEncoding: (NSStringEncoding) enc;
 
 @end
 
