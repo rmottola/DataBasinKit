@@ -1,7 +1,7 @@
 /* -*- mode: objc -*-
  Project: DataBasin
  
- Copyright (C) 2009-2014 Free Software Foundation
+ Copyright (C) 2009-2017 Free Software Foundation
  
  Author: Riccardo Mottola
  
@@ -24,7 +24,8 @@
 */
 
 #import "DBFileWriter.h"
-
+#import "DBSObject.h"
+#import "DBLoggerProtocol.h"
 
 @implementation DBFileWriter
 
@@ -73,6 +74,42 @@
 
 }
 
+- (void)writeDataSet:(NSArray *)array
+{
+  NSUInteger i;
+  NSUInteger setCount;
+  NSAutoreleasePool *arp;
+  
+  if (array == nil)
+    return;
+  
+  arp = [[NSAutoreleasePool alloc] init];
+  setCount = [array count];
+  for (i = 0; i < setCount; i++)
+    {
+      NSString *oneLine;
+      NSData *data;
+      NSData *data2;
+      id o;
 
+      o = [array objectAtIndex:i];
+      if ([o isKindOfClass: [DBSObject class]])
+	o = [NSArray  arrayWithObject: o];
+      oneLine = [self formatOneLine:o forHeader:NO];
+      data = [oneLine dataUsingEncoding: encoding];
+      if (bomLength > 0)
+	data2 = [NSData dataWithBytesNoCopy: (void *)[data bytes] length: [data length]-bomLength freeWhenDone: NO];
+      else
+	data2 = data;
+      [file writeData: data2];
+    }
+  [arp release];
+}
+
+- (NSString *)formatOneLine:(id)data forHeader:(BOOL) headerFlag
+{
+  NSLog(@"DBFileWriter - formatOneLine: forHeader: - method should be subclassed");
+  return nil;
+}
 
 @end

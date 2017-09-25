@@ -35,6 +35,8 @@
   NSArray      *fieldNames;
   NSArray      *fieldTypes;
   NSFileHandle *file;
+  unsigned     bomLength;
+  NSStringEncoding encoding;
   BOOL writeOrdered;
 }
 

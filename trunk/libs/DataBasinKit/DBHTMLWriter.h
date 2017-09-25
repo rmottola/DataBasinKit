@@ -31,8 +31,6 @@
 @interface DBHTMLWriter : DBFileWriter
 {
   NSString     *newLine;
-  NSStringEncoding encoding;
-  unsigned     bomLength;
 }
 
 - (void)setStringEncoding: (NSStringEncoding) enc;
