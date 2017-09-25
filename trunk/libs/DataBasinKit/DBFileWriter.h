@@ -1,7 +1,7 @@
 /* -*- mode: objc -*-
  Project: DataBasin
  
- Copyright (C) 2009-2014 Free Software Foundation
+ Copyright (C) 2017 Free Software Foundation
  
  Author: Riccardo Mottola
  
@@ -35,10 +35,13 @@
   NSArray      *fieldNames;
   NSArray      *fieldTypes;
   NSFileHandle *file;
+  BOOL writeOrdered;
 }
 
 - (id)initWithHandle:(NSFileHandle *)fileHandle;
 - (void)setLogger:(id<DBLoggerProtocol>)l;
+- (BOOL)writeFieldsOrdered;
+- (void)setWriteFieldsOrdered:(BOOL)flag;
 - (void)setFieldNames: (id)obj andWriteThem: (BOOL)flag;
 - (void)writeStart;
 - (void)writeEnd;

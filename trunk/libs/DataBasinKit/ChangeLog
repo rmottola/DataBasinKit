@@ -1,5 +1,13 @@
 2017-09-25 Riccardo Mottola <rm@gnu.org>
 
+	* DBCSVWriter.h
+	* DBCSVWriter.m
+	* DBFileWriter.h
+	* DBFileWriter.m
+	Put writeOrder in super class
+
+2017-09-25 Riccardo Mottola <rm@gnu.org>
+
 	* DBHTMLWriter.m
 	Better header/footer for HTML.
 
