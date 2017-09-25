@@ -290,6 +290,14 @@
   NSData *data;
   NSString *str;
 
+  str = @"<html>";
+  data = [str dataUsingEncoding: encoding];
+  [file writeData: data];
+
+  str = @"<body>";
+  data = [str dataUsingEncoding: encoding];
+  [file writeData: data];
+  
   str = @"<table>";
   data = [str dataUsingEncoding: encoding];
   [file writeData: data];
@@ -301,6 +309,14 @@
   NSString *str;
 
   str = @"</table>";
+  data = [str dataUsingEncoding: encoding];
+  [file writeData: data];
+
+  str = @"</body>";
+  data = [str dataUsingEncoding: encoding];
+  [file writeData: data];
+  
+  str = @"</html>";
   data = [str dataUsingEncoding: encoding];
   [file writeData: data];
 }
