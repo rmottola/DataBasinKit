@@ -63,5 +63,16 @@
   return writeOrdered;
 }
 
+- (void)writeStart
+{
+
+}
+
+- (void)writeEnd
+{
+
+}
+
+
 
 @end

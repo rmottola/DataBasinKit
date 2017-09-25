@@ -311,16 +311,6 @@
 }
 
 
-- (void)writeStart
-{
-
-}
-
-- (void)writeEnd
-{
-
-}
-
 
 - (void)writeDataSet:(NSArray *)array
 {
