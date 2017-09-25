@@ -42,8 +42,6 @@ typedef enum DBCSVLineBreakHandling DBCSVLineBreakHandling;
   BOOL         isQualified;
   NSString     *qualifier;
   NSString     *newLine;
-  NSStringEncoding encoding;
-  unsigned     bomLength;
   DBCSVLineBreakHandling lineBreakHandling;
 }
 
