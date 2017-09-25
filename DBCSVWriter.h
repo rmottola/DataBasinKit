@@ -44,15 +44,12 @@ typedef enum DBCSVLineBreakHandling DBCSVLineBreakHandling;
   NSString     *newLine;
   NSStringEncoding encoding;
   unsigned     bomLength;
-  BOOL writeOrdered;
   DBCSVLineBreakHandling lineBreakHandling;
 }
 
 - (void)setQualifier: (NSString *)q;
 - (void)setSeparator: (NSString *)sep;
 - (void)setLineBreakHandling: (DBCSVLineBreakHandling)handling;
-- (BOOL)writeFieldsOrdered;
-- (void)setWriteFieldsOrdered:(BOOL)flag;
 - (void)setStringEncoding: (NSStringEncoding) enc;
 
 @end

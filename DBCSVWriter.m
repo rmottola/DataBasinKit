@@ -54,15 +54,6 @@
   [super dealloc];
 }
 
-- (void)setWriteFieldsOrdered:(BOOL)flag
-{
-  writeOrdered = flag;
-}
-
-- (BOOL)writeFieldsOrdered
-{
-  return writeOrdered;
-}
 
 - (void)setIsQualified: (BOOL)flag
 {

@@ -51,4 +51,17 @@
   logger = l;
 }
 
+
+- (void)setWriteFieldsOrdered:(BOOL)flag
+{
+  writeOrdered = flag;
+}
+
+
+- (BOOL)writeFieldsOrdered
+{
+  return writeOrdered;
+}
+
+
 @end
