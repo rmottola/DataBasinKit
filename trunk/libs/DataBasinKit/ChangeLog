@@ -1,5 +1,13 @@
 2017-09-25 Riccardo Mottola <rm@gnu.org>
 
+	* DBCSVWriter.m
+	* DBFileWriter.h
+	* DBFileWriter.m
+	* DBHTMLWriter.m
+	put setFieldNames in superclass
+
+2017-09-25 Riccardo Mottola <rm@gnu.org>
+
 	* DBCSVWriter.h
 	* DBCSVWriter.m
 	* DBFileWriter.h

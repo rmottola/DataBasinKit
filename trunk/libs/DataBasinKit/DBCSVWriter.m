@@ -239,56 +239,6 @@
     }
 }
 
-/*
-  This methods sets the internal field names for the header when using ordered object writeout.
-*/
-- (void)setFieldNames:(id)obj andWriteThem:(BOOL)flag
-{
-  NSArray *array;
-
-  [logger log: LogDebug :@"[DBCSVWriter setFieldNames] Object: %@:\n", obj];
-
-  /* if we have no data, we return */
-  if (obj == nil)
-    return;
-
-  /* if we have just a single object, we fake an array */
-  if([obj isKindOfClass: [NSArray class]])
-    array = obj;
-  else
-    array = [NSArray arrayWithObject: obj];
-
-  if ([array count] == 0)
-    return;
- 
-  if (fieldNames != array)
-    {
-      [fieldNames release];
-      fieldNames = array;
-      [array retain];
-    }
-
-  [logger log: LogDebug :@"[DBCSVWriter setFieldNames] Names: %@:\n", array];
-
-  /* if we write the header, fine, else we write at least the BOM */
-  if (flag == YES)
-    {
-      NSString *theLine;
-
-      theLine = [self formatOneLine:array forHeader:YES];
-      [file writeData: [theLine dataUsingEncoding: encoding]];
-    }
-  else
-    {
-      NSData *tempData;
-
-      tempData = [@" "dataUsingEncoding: encoding];
-      tempData = [tempData subdataWithRange: NSMakeRange(0, bomLength)];
-      [file writeData: tempData];
-    }
-}
-
-
 
 - (NSString *)formatOneLine:(id)data forHeader:(BOOL) headerFlag
 {
