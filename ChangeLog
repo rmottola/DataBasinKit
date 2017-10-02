@@ -1,5 +1,11 @@
 2017-10-02 Riccardo Mottola <rm@gnu.org>
 
+	* DBSoapCSV.h
+	* DBSoapCSV.m
+	writeStart and writeEnd for each writer.
+
+2017-10-02 Riccardo Mottola <rm@gnu.org>
+
 	* DBFileWriter.h
 	* DBFileWriter.m
 	* DBCSVWriter.m
