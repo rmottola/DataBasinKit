@@ -1,3 +1,11 @@
+2017-10-02 Riccardo Mottola <rm@gnu.org>
+
+	* DBFileWriter.h
+	* DBFileWriter.m
+	* DBCSVWriter.m
+	* DBHTMLWriter.m
+	put also formatComplexObject in superclass
+
 2017-09-25 Riccardo Mottola <rm@gnu.org>
 
 	* DBCSVWriter.m
