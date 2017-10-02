@@ -50,6 +50,8 @@
 - (void)writeStart;
 - (void)writeEnd;
 - (void)writeDataSet:(NSArray *)array;
+
+- (void)formatComplexObject:(NSMutableDictionary *)d withRoot:(NSString *)root inDict:(NSMutableDictionary *)dict inOrder:(NSMutableArray *)order;
 - (NSString *)formatOneLine:(id)data forHeader:(BOOL) headerFlag;
 
 

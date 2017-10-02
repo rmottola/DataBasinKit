@@ -138,77 +138,6 @@
   return res;
 }
 
-- (void)formatComplexObject:(NSMutableDictionary *)d withRoot:(NSString *)root inDict:(NSMutableDictionary *)dict inOrder:(NSMutableArray *)order forHeader:(BOOL) headerFlag
-{
-  NSMutableArray  *keys;
-  unsigned i;
-  NSString *extendedFieldName;
-  
-  if (!d)
-    return;
-  
-  keys = [NSMutableArray arrayWithArray:[d allKeys]];
-  [keys removeObject:GWSOrderKey];
-  
-  /* remove some fields which get added automatically by salesforce even if not asked for */
-  [keys removeObject:@"type"];
-  
-  /* remove Id only if it is null, else an array of two populated Id is returned by SF */
-  if (![[d objectForKey:@"Id"] isKindOfClass: [NSArray class]])
-    [keys removeObject:@"Id"];
-  
-  //[logger log: LogDebug :@"[DBHTMLWriter formatComplexObject] clean dictionary %@:\n", d];
-  //NSLog(@"[DBHTMLWriter formatComplexObject] clean dictionary %@\n", d);
-  
-  for (i = 0; i < [keys count]; i++)
-    {
-      id obj;
-      NSString *key;
-      
-      key = [keys objectAtIndex: i];
-      obj = [d objectForKey: key];
-      if ([key isEqualToString:@"Id"])
-        obj = [obj objectAtIndex: 0];
-      
-      if ([obj isKindOfClass: [NSDictionary class]])
-        {
-          NSMutableString *s;
-          
-          if (root)
-            s = [NSMutableString stringWithString:root];
-          else
-            s = [NSMutableString stringWithString:@""];
-          
-          if (root)
-            [s appendString:@"."];
-          [s appendString:key];
-          
-          //NSLog(@"formatting complex object with root: %@", s);
-          [self formatComplexObject: obj withRoot:s inDict:dict inOrder:order forHeader:headerFlag];
-        }
-      else if ([obj isKindOfClass: [NSString class]] || [obj isKindOfClass: [NSNumber class]])
-        {
-          NSMutableString *s;
-          
-          if (root)
-            s = [NSMutableString stringWithString:root];
-          else
-            s = [NSMutableString stringWithString:@""];
-          
-          if (root)
-            [s appendString:@"."];
-          
-          [s appendString:key];
-          
-          extendedFieldName = s;
-          //NSLog(@"formatting scalar object: %@ for key: %@", obj,extendedFieldName);
-          [dict setObject:obj forKey:extendedFieldName];
-          [order addObject:extendedFieldName];
-        }
-      else
-        NSLog(@"[DBHTMLWriter formatComplexObject] unknown class of value: %@, object: %@", [obj class], obj);     
-    }
-}
 
 
 
@@ -286,7 +215,7 @@
     obj = [array objectAtIndex:i];
     if ([obj isKindOfClass: [NSDictionary class]])
       {
-        [self formatComplexObject:obj withRoot:nil inDict:dataDict inOrder:keyOrder forHeader:headerFlag];
+        [self formatComplexObject:obj withRoot:nil inDict:dataDict inOrder:keyOrder];
       }
     else if ([obj isKindOfClass: [DBSObject class]])
       {
@@ -318,7 +247,7 @@
             else if ([value isKindOfClass: [NSDictionary class]])
               {
                 // NSLog(@"Dictionary");
-                [self formatComplexObject:value withRoot:key inDict:dataDict inOrder:keyOrder forHeader:headerFlag];
+                [self formatComplexObject:value withRoot:key inDict:dataDict inOrder:keyOrder];
               }
             else
               {

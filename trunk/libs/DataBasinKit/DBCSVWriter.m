@@ -1,7 +1,7 @@
 /*
    Project: DataBasin
 
-   Copyright (C) 2009-2016 Free Software Foundation
+   Copyright (C) 2009-2017 Free Software Foundation
 
    Author: Riccardo Mottola
 
@@ -166,78 +166,6 @@
   return res;
 }
 
-- (void)formatComplexObject:(NSMutableDictionary *)d withRoot:(NSString *)root inDict:(NSMutableDictionary *)dict inOrder:(NSMutableArray *)order
-{
-  NSMutableArray  *keys;
-  unsigned i;
-  NSString *extendedFieldName;
-
-  if (!d)
-    return;
-
-  keys = [NSMutableArray arrayWithArray:[d allKeys]];
-  [keys removeObject:GWSOrderKey];
-  
-  /* remove some fields which get added automatically by salesforce even if not asked for */
-  [keys removeObject:@"type"];
-  
-  /* remove Id only if it is null, else an array of two populated Id is returned by SF */
-  if (![[d objectForKey:@"Id"] isKindOfClass: [NSArray class]])
-    [keys removeObject:@"Id"];
-
-  //[logger log: LogDebug :@"[DBCSVWriter formatComplexObject] clean dictionary %@:\n", d];
-  //NSLog(@"[DBCSVWriter formatComplexObject] clean dictionary %@\n", d);
-
-  for (i = 0; i < [keys count]; i++)
-    {
-      id obj;
-      NSString *key;
-      
-      key = [keys objectAtIndex: i];
-      obj = [d objectForKey: key];
-      if ([key isEqualToString:@"Id"])
-	obj = [obj objectAtIndex: 0];
-      
-      if ([obj isKindOfClass: [NSDictionary class]])
-        {
-          NSMutableString *s;
-
-          if (root)
-            s = [NSMutableString stringWithString:root];
-          else
-            s = [NSMutableString stringWithString:@""];
-
-          if (root)
-            [s appendString:@"."];
-          [s appendString:key];
-
-          //NSLog(@"formatting complex object with root: %@", s);
-          [self formatComplexObject: obj withRoot:s inDict:dict inOrder:order];
-        }
-      else if ([obj isKindOfClass: [NSString class]] || [obj isKindOfClass: [NSNumber class]])
-        {
-	  NSMutableString *s;
-
-          if (root)
-            s = [NSMutableString stringWithString:root];
-          else
-            s = [NSMutableString stringWithString:@""];
-
-          if (root)
-            [s appendString:@"."];
-
-          [s appendString:key];
-
-          extendedFieldName = s;
-          //NSLog(@"formatting scalar object: %@ for key: %@", obj,extendedFieldName);
-          [dict setObject:obj forKey:extendedFieldName];
-          [order addObject:extendedFieldName];
-	}
-      else
-	NSLog(@"[DBCSVWriter formatComplexObject] unknown class of value: %@, object: %@", [obj class], obj);
-      
-    }
-}
 
 
 - (NSString *)formatOneLine:(id)data forHeader:(BOOL) headerFlag
