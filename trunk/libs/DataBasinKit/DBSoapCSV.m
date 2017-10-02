@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2016 Free Software Foundation
+  Copyright (C) 2008-2017 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -30,6 +30,7 @@
 #import "DBSoapCSV.h"
 #import "DBProgressProtocol.h"
 #import "DBLoggerProtocol.h"
+#import "DBCSVReader.h"
 
 /* since query identify would work in a big array giving memory issues, we split it up in this batch size */
 #define MAX_SIZE_OF_IDENTBATCH 20000
@@ -42,7 +43,7 @@
   logger = [db logger];
 }
 
-- (void)query :(NSString *)queryString queryAll:(BOOL)all toWriter:(DBCSVWriter *)writer progressMonitor:(id<DBProgressProtocol>)p
+- (void)query :(NSString *)queryString queryAll:(BOOL)all toWriter:(DBFileWriter *)writer progressMonitor:(id<DBProgressProtocol>)p
 {
   int            batchSize;
   NSArray        *fields;
@@ -65,6 +66,8 @@
       fields = [DBSoap fieldsByParsingQuery:queryString];
       [logger log: LogDebug :@"[DBSoapCSV query] query parsed fields: %@\n", fields];
     }
+
+  [writer writeStart];
 
   sObjects = [[NSMutableArray alloc] init];
 
@@ -117,6 +120,8 @@
       [p incrementCurrentValue:[sObjects count]];
       [arp release];
     }
+
+  [writer writeEnd];
   [dbSoap release];
   [sObjects release];
   if ([p shouldStop])
@@ -130,7 +135,7 @@
 
    The batch size parameter affects
  */
-- (void)queryIdentify :(NSString *)queryString queryAll:(BOOL)all fromReader:(DBCSVReader *)reader toWriter:(DBCSVWriter *)writer withBatchSize:(int)bSize progressMonitor:(id<DBProgressProtocol>)p
+- (void)queryIdentify :(NSString *)queryString queryAll:(BOOL)all fromReader:(DBCSVReader *)reader toWriter:(DBFileWriter *)writer withBatchSize:(int)bSize progressMonitor:(id<DBProgressProtocol>)p
 {
   NSArray        *inFieldNames;
   NSUInteger      inFieldCount;
@@ -167,7 +172,8 @@
     }
 
   [p reset];
-  
+
+  [writer writeStart];
   /* retrieve objects to create */
   
   /* first the fields */
@@ -244,6 +250,7 @@
       [sObjects release];
       [arp release];
     }
+  [writer writeEnd];
   [dbSoap release];  
   [identifierArray release];
 }
@@ -370,7 +377,7 @@
   return resultArray;
 }
 
-- (void)describeSObject: (NSString *)objectType toWriter:(DBCSVWriter *)writer
+- (void)describeSObject: (NSString *)objectType toWriter:(DBFileWriter *)writer
 {
   NSUInteger      i;
   NSUInteger     size;
@@ -399,7 +406,8 @@
   
   fields = [object fieldNames];
   size = [fields count];
-  
+
+  [writer writeStart];
   
   keys = [[object propertiesOfField: [fields objectAtIndex: 0]] allKeys];
   [writer setFieldNames:[NSArray arrayWithArray:keys] andWriteThem:YES];
@@ -430,6 +438,7 @@
       [set addObject:values];
     }
   [writer writeDataSet:set];
+  [writer writeEnd];
   [set release];
   [dbSoap release];
 }

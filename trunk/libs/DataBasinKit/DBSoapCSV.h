@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2014 Free Software Foundation
+  Copyright (C) 2008-2017 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -26,11 +26,12 @@
 #import <Foundation/Foundation.h>
 
 #import <WebServices/WebServices.h>
-#import "DBCSVWriter.h"
-#import "DBCSVReader.h"
+#import "DBFileWriter.h"
+
 
 @class DBSObject;
 @class DBSoap;
+@class DBCSVReader;
 
 @protocol DBProgressProtocol;
 @protocol DBLoggerProtocol;
@@ -42,12 +43,12 @@
 }
 
 - (void)setDBSoap: (DBSoap *)dbs;
-- (void)query :(NSString *)queryString queryAll:(BOOL)all toWriter:(DBCSVWriter *)writer progressMonitor:(id<DBProgressProtocol>)p;
-- (void)queryIdentify :(NSString *)queryString queryAll:(BOOL)all fromReader:(DBCSVReader *)reader toWriter:(DBCSVWriter *)writer withBatchSize:(int)bSize progressMonitor:(id<DBProgressProtocol>)p;
+- (void)query :(NSString *)queryString queryAll:(BOOL)all toWriter:(DBFileWriter *)writer progressMonitor:(id<DBProgressProtocol>)p;
+- (void)queryIdentify :(NSString *)queryString queryAll:(BOOL)all fromReader:(DBCSVReader *)reader toWriter:(DBFileWriter *)writer withBatchSize:(int)bSize progressMonitor:(id<DBProgressProtocol>)p;
 - (NSMutableArray *)create :(NSString *)objectName fromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p;
 - (NSMutableArray *)update :(NSString *)objectName fromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p;
 - (NSMutableArray *)deleteFromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p;
-- (void)describeSObject: (NSString *)objectType toWriter:(DBCSVWriter *)writer;
+- (void)describeSObject: (NSString *)objectType toWriter:(DBFileWriter *)writer;
 
 
 @end
