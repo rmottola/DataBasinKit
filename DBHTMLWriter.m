@@ -266,61 +266,88 @@
   theLine = [[NSMutableString alloc] initWithCapacity:64];
   [theLine appendString:@"<tr>"];
 
-  for (i = 0; i < [fieldNames count]; i++)
+  if (writeOrdered)
     {
-      unsigned j;
-      NSString *key;
-      NSString *originalKey;
-      NSString *valStr;
+      for (i = 0; i < [fieldNames count]; i++)
+        {
+          unsigned j;
+          NSString *key;
+          NSString *originalKey;
+          NSString *valStr;
 
-      /* look for original key name for correct capitalization */
-      key = [fieldNames objectAtIndex:i];
-      originalKey = nil;
-      j = 0;
-      //NSLog(@"lookingfor -> %@", key);
-      while (j < [keyOrder count] && originalKey == nil)
-        {
-          originalKey = [keyOrder objectAtIndex:j];
-          if ([originalKey compare:key options:NSCaseInsensitiveSearch] != NSOrderedSame)
-            originalKey = nil;
-          j++;
-        }
-      
-      //NSLog(@"original key: %@", originalKey);
-      valStr = nil;
-      if (headerFlag)
-        {
-          valStr = [self formatScalarObject: key forHeader:headerFlag];
-        }
-      else
-        {
-          if (originalKey)
+          /* look for original key name for correct capitalization */
+          key = [fieldNames objectAtIndex:i];
+          originalKey = nil;
+          j = 0;
+          //NSLog(@"lookingfor -> %@", key);
+          while (j < [keyOrder count] && originalKey == nil)
             {
-              id val;
+              originalKey = [keyOrder objectAtIndex:j];
+              if ([originalKey compare:key options:NSCaseInsensitiveSearch] != NSOrderedSame)
+                originalKey = nil;
+              j++;
+            }
+      
+          //NSLog(@"original key: %@", originalKey);
+          valStr = nil;
+          if (headerFlag)
+            {
+              valStr = [self formatScalarObject: key forHeader:headerFlag];
+            }
+          else
+            {
+              if (originalKey)
+                {
+                  id val;
               
-              val = [dataDict objectForKey: originalKey];
+                  val = [dataDict objectForKey: originalKey];
+                  if (val)
+                    {
+                      valStr = [self formatScalarObject: val forHeader:headerFlag];
+                    }
+                  else
+                    {
+                      /* we found the key but no corresponding value
+                         we insert an empty string to keep the column sequence */
+                      valStr = [self formatScalarObject: @""  forHeader:headerFlag];
+                    }
+                }
+              else
+                {
+                  /* we no corresponding key, possibly referencing a null complex object
+                     we insert an empty string to keep the column sequence */
+                  valStr = [self formatScalarObject: @"" forHeader:headerFlag];
+                }
+            }
+      
+          [theLine appendString:valStr];
+        }
+    }
+    else
+    {
+      for (i = 0; i < [keyOrder count]; i++)
+        {
+          NSString *k;
+          id        val;
+          NSString *valStr;
+          
+          valStr = nil;
+          k = [keyOrder objectAtIndex: i];
+          if (headerFlag)
+            {
+              valStr = [self formatScalarObject: k forHeader:headerFlag];
+            }
+          else
+            {
+              val = [dataDict objectForKey: k];
               if (val)
                 {
                   valStr = [self formatScalarObject: val forHeader:headerFlag];
                 }
-              else
-                {
-                  /* we found the key but no corresponding value
-                     we insert an empty string to keep the column sequence */
-                  valStr = [self formatScalarObject: @""  forHeader:headerFlag];
-                }
             }
-          else
-            {
-              /* we no corresponding key, possibly referencing a null complex object
-                 we insert an empty string to keep the column sequence */
-              valStr = [self formatScalarObject: @"" forHeader:headerFlag];
-            }
+          [theLine appendString:valStr];
         }
-      
-      [theLine appendString:valStr];
     }
-  
   
   [keyOrder release];
   [dataDict release];
