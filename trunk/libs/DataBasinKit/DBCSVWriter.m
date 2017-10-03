@@ -32,15 +32,12 @@
 
 - (id)initWithHandle:(NSFileHandle *)fileHandle
 {
-  if ((self = [super init]))
+  if ((self = [super initWithHandle:fileHandle]))
     {
-      file = fileHandle;
       isQualified = YES;
       qualifier = @"\"";
       separator = @",";
       newLine = @"\n";
-      fieldNames = nil;
-      writeOrdered = NO;
       lineBreakHandling = DBCSVLineBreakNoChange;
       [self setStringEncoding: NSUTF8StringEncoding];
    }
