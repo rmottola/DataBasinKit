@@ -1,5 +1,10 @@
 2017-10-03 Riccardo Mottola <rm@gnu.org>
 
+	* DBHTMLWriter.m
+	Handle also unordered writing in HTML output.
+
+2017-10-03 Riccardo Mottola <rm@gnu.org>
+
 	* DBCSVWriter.m
 	* DBFileWriter.m
 	* DBHTMLWriter.m
