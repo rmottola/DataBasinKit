@@ -36,6 +36,7 @@
   if ((self = [super init]))
     {
       file = fileHandle;
+      writeOrdered = NO;
       fieldNames = nil;
     }
   return self;

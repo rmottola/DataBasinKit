@@ -33,11 +33,9 @@
 
 - (id)initWithHandle:(NSFileHandle *)fileHandle
 {
-  if ((self = [super init]))
+  if ((self = [super initWithHandle:fileHandle]))
     {
       newLine = @"\n";
-      file = fileHandle;
-      fieldNames = nil;
       [self setStringEncoding: NSUTF8StringEncoding];
     }
   return self;
@@ -47,12 +45,6 @@
 {
   [super dealloc];
 }
-
-- (BOOL)writeFieldsOrdered
-{
-  return YES;
-}
-
 
 - (NSString *)formatScalarObject:(id)value forHeader:(BOOL) headerFlag
 {
