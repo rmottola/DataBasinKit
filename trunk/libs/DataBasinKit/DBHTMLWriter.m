@@ -59,39 +59,56 @@
     tagEnd = @"</td>";
   if ([value isKindOfClass: [NSString class]])
     {
+      NSMutableString *s;
+      
       if (headerFlag)
         tagBegin = @"<th>";
       else
         tagBegin = @"<td>";
-#if 0
-      if (lineBreakHandling != DBCSVLineBreakNoChange)
-        {
-          NSRange lbRange;
-          NSMutableString *mutStr;
 
-          mutStr = [NSMutableString stringWithString:value];
-          lbRange = [mutStr rangeOfString:@"\n"];
-          while (lbRange.location != NSNotFound)
-            {
-              if (lineBreakHandling == DBCSVLineBreakDelete)
-                [mutStr deleteCharactersInRange:lbRange];
-              else if (lineBreakHandling == DBCSVLineBreakReplaceWithSpace)
-                [mutStr replaceCharactersInRange:lbRange withString:@" "];
-              lbRange = [mutStr rangeOfString:@"\n"];
-            }
-          value = mutStr;
-        }
-#endif
+      /* perform some replacements */
+      {
+        NSRange chRange;
+        NSMutableString *mutStr;
 
-      NSMutableString *s;
-	      
-      s = [[NSMutableString alloc] initWithCapacity: [value length]+2];
+        mutStr = [NSMutableString stringWithString:value];
+        NSLog(@"un-escaped string: %@", mutStr);
+        chRange = [mutStr rangeOfString:@"&"];
+        while (chRange.location != NSNotFound)
+          {
+            [mutStr replaceCharactersInRange:chRange withString:@"&amp;"];
+            if (chRange.location < [mutStr length]-1)
+              chRange = [mutStr rangeOfString:@"&" options:0 range:NSMakeRange(chRange.location+1, [mutStr length]-(chRange.location+1))];
+            else
+              chRange.location = NSNotFound;
+          }
+        chRange = [mutStr rangeOfString:@"<"];
+        while (chRange.location != NSNotFound)
+          {
+            [mutStr replaceCharactersInRange:chRange withString:@"&lt;"];
+            chRange = [mutStr rangeOfString:@"<"];
+          }
+        chRange = [mutStr rangeOfString:@">"];
+        while (chRange.location != NSNotFound)
+          {
+            [mutStr replaceCharactersInRange:chRange withString:@"&gt;"];
+            chRange = [mutStr rangeOfString:@">"];
+          }
+        chRange = [mutStr rangeOfString:@"\n"];
+        while (chRange.location != NSNotFound)
+          {
+            [mutStr replaceCharactersInRange:chRange withString:@"<br>"];
+            chRange = [mutStr rangeOfString:@"\n"];
+          }
+        value = mutStr;
+        NSLog(@"escaped string: %@", mutStr);
+      }
+
+  
+      s = [[NSMutableString alloc] initWithCapacity: [value length]];
 
       [s appendString: tagBegin]; 
-
-      // FIXME here we should escape all HTML tags like < and &
       [s appendString: value];
-
       [s appendString: tagEnd];
 
       res = [NSString stringWithString: s];
@@ -323,7 +340,7 @@
           [theLine appendString:valStr];
         }
     }
-    else
+  else
     {
       for (i = 0; i < [keyOrder count]; i++)
         {
