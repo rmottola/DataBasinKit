@@ -2,6 +2,12 @@
 
 	* DBHTMLWriter.h
 	* DBHTMLWriter.m
+	Start differentiating between HTML and pseudo-XLS
+
+2017-10-05 Riccardo Mottola <rm@gnu.org>
+
+	* DBHTMLWriter.h
+	* DBHTMLWriter.m
 	* DBCSVWriter.h
 	* DBCSVWriter.m
 	Provide file type constants.

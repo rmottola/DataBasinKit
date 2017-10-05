@@ -29,9 +29,11 @@
 @protocol DBLoggerProtocol;
 
 extern NSString *DBFileFormatXLS;
+extern NSString *DBFileFormatHTML;
 
 @interface DBHTMLWriter : DBFileWriter
 {
+  NSString     *format;
   NSString     *newLine;
 }
 

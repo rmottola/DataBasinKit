@@ -29,6 +29,7 @@
 #import <WebServices/GWSConstants.h>
 
 NSString *DBFileFormatXLS = @"XLS";
+NSString *DBFileFormatHTML = @"HTML";
 
 @implementation DBHTMLWriter
 
@@ -36,6 +37,7 @@ NSString *DBFileFormatXLS = @"XLS";
 {
   if ((self = [super initWithHandle:fileHandle]))
     {
+      format = DBFileFormatXLS;
       newLine = @"\n";
       [self setStringEncoding: NSUTF8StringEncoding];
     }
@@ -47,12 +49,32 @@ NSString *DBFileFormatXLS = @"XLS";
   [super dealloc];
 }
 
+- (void)setFileFormat:(NSString *)f
+{
+  format = f;
+}
+
+- (NSString *)format
+{
+  return format;
+}
+
 - (NSString *)formatScalarObject:(id)value forHeader:(BOOL) headerFlag
 {
   NSString *res;
   NSString *tagBegin;
   NSString *tagEnd;
+  NSString *TagBreak;
 
+  if (format == DBFileFormatHTML)
+    {
+      TagBreak = @"<br>";
+    }
+  else if (format == DBFileFormatXLS)
+    {
+      TagBreak = @"<br style=\"mso-data-placement:same-cell;\">";
+    }
+  
   res = nil;
   if (headerFlag)
     tagEnd = @"</th>";
@@ -73,7 +95,6 @@ NSString *DBFileFormatXLS = @"XLS";
         NSMutableString *mutStr;
 
         mutStr = [NSMutableString stringWithString:value];
-        NSLog(@"un-escaped string: %@", mutStr);
         chRange = [mutStr rangeOfString:@"&"];
         while (chRange.location != NSNotFound)
           {
@@ -98,11 +119,10 @@ NSString *DBFileFormatXLS = @"XLS";
         chRange = [mutStr rangeOfString:@"\n"];
         while (chRange.location != NSNotFound)
           {
-            [mutStr replaceCharactersInRange:chRange withString:@"<br>"];
+            [mutStr replaceCharactersInRange:chRange withString:TagBreak];
             chRange = [mutStr rangeOfString:@"\n"];
           }
         value = mutStr;
-        NSLog(@"escaped string: %@", mutStr);
       }
 
   
