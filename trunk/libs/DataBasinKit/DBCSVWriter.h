@@ -22,6 +22,9 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 */
 
+#ifndef DBCSVWRITER_H
+#define DBCSVWRITER_H
+
 #import <Foundation/Foundation.h>
 
 #import "DBFileWriter.h"
@@ -33,6 +36,8 @@ enum DBCSVLineBreakHandling
   DBCSVLineBreakReplaceWithSpace
 };
 typedef enum DBCSVLineBreakHandling DBCSVLineBreakHandling;
+
+extern NSString *DBFileFormatCSV;
 
 @protocol DBLoggerProtocol;
 
@@ -52,3 +57,4 @@ typedef enum DBCSVLineBreakHandling DBCSVLineBreakHandling;
 @end
 
 
+#endif /* DBCSVWRITER_H */
