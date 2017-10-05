@@ -28,6 +28,8 @@
 
 #import <WebServices/GWSConstants.h>
 
+NSString *DBFileFormatCSV = @"CSV";
+
 @implementation DBCSVWriter
 
 - (id)initWithHandle:(NSFileHandle *)fileHandle

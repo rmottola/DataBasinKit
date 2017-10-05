@@ -28,6 +28,8 @@
 
 @protocol DBLoggerProtocol;
 
+extern NSString *DBFileFormatXLS;
+
 @interface DBHTMLWriter : DBFileWriter
 {
   NSString     *newLine;

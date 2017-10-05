@@ -28,6 +28,7 @@
 
 #import <WebServices/GWSConstants.h>
 
+NSString *DBFileFormatXLS = @"XLS";
 
 @implementation DBHTMLWriter
 
