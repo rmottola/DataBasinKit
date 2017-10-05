@@ -1,5 +1,10 @@
 2017-10-05 Riccardo Mottola <rm@gnu.org>
 
+	* DBHTMLWriter.m
+	Some Excel specific HTML tags for format and linebreaks
+
+2017-10-05 Riccardo Mottola <rm@gnu.org>
+
 	* DBHTMLWriter.h
 	* DBHTMLWriter.m
 	Start differentiating between HTML and pseudo-XLS

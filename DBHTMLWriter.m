@@ -64,15 +64,18 @@ NSString *DBFileFormatHTML = @"HTML";
   NSString *res;
   NSString *tagBegin;
   NSString *tagEnd;
-  NSString *TagBreak;
+  NSString *tagBreak;
 
+  tagBreak = nil;
+  tagBegin = nil;
+  tagEnd = nil;
   if (format == DBFileFormatHTML)
     {
-      TagBreak = @"<br>";
+      tagBreak = @"<br>";
     }
   else if (format == DBFileFormatXLS)
     {
-      TagBreak = @"<br style=\"mso-data-placement:same-cell;\">";
+      tagBreak = @"<br style=\"mso-data-placement:same-cell;\">";
     }
   
   res = nil;
@@ -87,7 +90,12 @@ NSString *DBFileFormatHTML = @"HTML";
       if (headerFlag)
         tagBegin = @"<th>";
       else
-        tagBegin = @"<td>";
+        {
+          if (format == DBFileFormatXLS)
+            tagBegin = @"<td style=\"vnd.ms-excel.numberformat:@\">";
+          else
+            tagBegin = @"<td>";
+        }
 
       /* perform some replacements */
       {
@@ -119,7 +127,7 @@ NSString *DBFileFormatHTML = @"HTML";
         chRange = [mutStr rangeOfString:@"\n"];
         while (chRange.location != NSNotFound)
           {
-            [mutStr replaceCharactersInRange:chRange withString:TagBreak];
+            [mutStr replaceCharactersInRange:chRange withString:tagBreak];
             chRange = [mutStr rangeOfString:@"\n"];
           }
         value = mutStr;
@@ -141,7 +149,13 @@ NSString *DBFileFormatHTML = @"HTML";
       if (headerFlag)
         tagBegin = @"<th>";
       else
-        tagBegin = @"<td>";
+        {
+          if (format == DBFileFormatXLS)
+            tagBegin = @"<td style=\"vnd.ms-excel.numberformat:@\">";
+          else
+            tagBegin = @"<td>";
+        }
+
       // FIXME: this is locale sensitive?
       // FIXME2: maybe give the option to quote also numbers
 	{
