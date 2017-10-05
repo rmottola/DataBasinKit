@@ -97,7 +97,7 @@
 {
   NSArray *array;
   
-  [logger log: LogDebug :@"[DBHTMLWriter setFieldNames] Object: %@:\n", obj];
+  [logger log: LogDebug :@"[DBFileWriter setFieldNames] for Object: %@:\n", obj];
   
   /* if we have no data, we return */
   if (obj == nil)
@@ -119,7 +119,7 @@
       [array retain];
     }
   
-  [logger log: LogDebug :@"[DBHTMLWriter setFieldNames] Names: %@:\n", array];
+  [logger log: LogDebug :@"[DBFileWriter setFieldNames] Names: %@:\n", array];
   
   /* if we write the header, fine, else we write at least the BOM */
   if (flag == YES)
@@ -200,9 +200,6 @@
   /* remove Id only if it is null, else an array of two populated Id is returned by SF */
   if (![[d objectForKey:@"Id"] isKindOfClass: [NSArray class]])
     [keys removeObject:@"Id"];
-
-  //[logger log: LogDebug :@"[DBCSVWriter formatComplexObject] clean dictionary %@:\n", d];
-  //NSLog(@"[DBCSVWriter formatComplexObject] clean dictionary %@\n", d);
 
   for (i = 0; i < [keys count]; i++)
     {
