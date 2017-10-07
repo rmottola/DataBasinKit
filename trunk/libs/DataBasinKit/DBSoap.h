@@ -61,6 +61,8 @@
   NSArray  *sObjectList;
   /* list of all object names, custom and not */
   NSMutableArray  *sObjectNamesList;
+  /* Map of described objects, for which details are present */
+  NSMutableDictionary *sObjectDetailsDict;
 
   /** create, update, upsert batch size */
   unsigned upBatchSize;
@@ -80,6 +82,9 @@
   /** is executing */
   NSUInteger *busyCount;
   NSRecursiveLock *lockBusy;
+
+  /** describe each object in a query to get field types */
+  BOOL enableFieldTypesDescibeForQuery;
 
   /** return positive results */
   BOOL returnSuccessResults;
@@ -116,6 +121,7 @@
 - (void)updateObjects;
 - (DBSObject *)describeSObject: (NSString *)objectType;
 - (NSString *)identifyObjectById:(NSString *)sfId;
+- (void)flushObjectDetails;
 
 - (NSString *) sessionId;
 - (void) setSessionId:(NSString *)session;

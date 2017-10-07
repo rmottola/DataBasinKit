@@ -274,8 +274,11 @@
       downBatchSize = 500;
       maxSOQLLength = MAX_SOQL_LENGTH;
 
+      enableFieldTypesDescibeForQuery = YES;
       returnSuccessResults = YES;
       returnMultipleErrors = YES;
+
+      sObjectDetailsDict = [[NSMutableDictionary alloc] init];
     }
   return self;
 }
@@ -669,6 +672,18 @@
           DBSObject *sObj;
         
           sObj = [[DBSObject alloc] init];
+
+          /* we removed type, but if it is present, set it as a property
+             Further, we describe the type if desired to get field types.
+           */
+          if (typePresent) 
+            {
+              NSDictionary *propDict;
+
+              propDict = [NSDictionary dictionaryWithObject:[record objectForKey: @"type"] forKey:@"type"];
+              [sObj setObjectProperties: propDict];
+            }
+
           record = [records objectAtIndex:i];
 	  [logger log: LogDebug: @"[DBSoap query] record :%@\n", record];
           for (j = 0; j < [keys count]; j++)
@@ -683,17 +698,15 @@
                 value = [(NSArray *)obj objectAtIndex: 0];
               else
                 value = obj;
+
+              if (enableFieldTypesDescibeForQuery)
+                {
+                  NSLog(@"key %@, value: %@", key, value);
+                }
               [sObj setValue: value forField: key];
             }
 
-          /* we removed type, but if it is present, set it as a property */
-          if (typePresent) 
-            {
-              NSDictionary *propDict;
 
-              propDict = [NSDictionary dictionaryWithObject:[record objectForKey: @"type"] forKey:@"type"];
-              [sObj setObjectProperties: propDict];
-            }
           [objects addObject:sObj];
           [sObj release];
         }
@@ -2278,6 +2291,7 @@
 {
   [lockBusy release];
 
+  [sObjectDetailsDict release];
   [sessionId release];
   [userInfo release];
   [service release];
@@ -2711,6 +2725,12 @@
   [lockBusy unlock];
   
   return str;
+}
+
+/** clean the cache of descibed objects (sObjectDetailsDict) */
+- (void)flushObjectDetails
+{
+  [sObjectDetailsDict removeAllObjects];
 }
 
 @end
