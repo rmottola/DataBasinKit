@@ -1,3 +1,8 @@
+2017-10-09 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoapCSV.m
+	Set logger on DBSoap
+
 2017-10-05 Riccardo Mottola <rm@gnu.org>
 
 	* DBHTMLWriter.m

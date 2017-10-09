@@ -58,6 +58,7 @@
   [dbSoap setSessionId:[db sessionId]];
   [serv setURL:[db serverUrl]];  
   [dbSoap setService:serv];
+  [dbSoap setLogger:logger];
   [dbSoap setDownBatchSize:[db downBatchSize]];
   
   fields = nil;
@@ -162,6 +163,7 @@
   [dbSoap setSessionId:[db sessionId]];
   [serv setURL:[db serverUrl]];  
   [dbSoap setService:serv];
+  [dbSoap setLogger:logger];
   [dbSoap setDownBatchSize:2000];
   
   queryFields = nil;
@@ -333,6 +335,7 @@
   [dbSoap setSessionId:[db sessionId]];
   [serv setURL:[db serverUrl]];  
   [dbSoap setService:serv];
+  [dbSoap setLogger:logger];
   
   /* retrieve objects to update */
   [p reset];
@@ -395,6 +398,7 @@
   [dbSoap setSessionId:[db sessionId]];
   [serv setURL:[db serverUrl]];  
   [dbSoap setService:serv];
+  [dbSoap setLogger:logger];
   
   NS_DURING 
     object = [db describeSObject: objectType];
@@ -458,6 +462,7 @@
   [dbSoap setSessionId:[db sessionId]];
   [serv setURL:[db serverUrl]];  
   [dbSoap setService:serv];
+  [dbSoap setLogger:logger];
   
   /* retrieve objects to delete */
   // FIXME perhaps this copy is useless
