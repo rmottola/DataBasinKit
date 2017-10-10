@@ -151,7 +151,7 @@ NSString *DBFileFormatHTML = @"HTML";
       else
         {
           if (format == DBFileFormatXLS)
-            tagBegin = @"<td style=\"vnd.ms-excel.numberformat:@\">";
+            tagBegin = @"<td style=\"vnd.ms-excel.numberformat:General\">";
           else
             tagBegin = @"<td>";
         }
@@ -307,7 +307,6 @@ NSString *DBFileFormatHTML = @"HTML";
       }
     else if ([obj isKindOfClass: [NSNumber class]])
       {
-        NSLog(@"formatOneLine, we have directly a scalar object, NSNumber: %@", obj);
         [logger log: LogStandard :@"[DBHTMLWriter formatOneLine] we have a NSNumber, unhandled %@:\n", obj];
       }
     else
@@ -331,7 +330,7 @@ NSString *DBFileFormatHTML = @"HTML";
           key = [fieldNames objectAtIndex:i];
           originalKey = nil;
           j = 0;
-          //NSLog(@"lookingfor -> %@", key);
+
           while (j < [keyOrder count] && originalKey == nil)
             {
               originalKey = [keyOrder objectAtIndex:j];

@@ -1,3 +1,8 @@
+2017-10-10 Riccardo Mottola <rm@gnu.org>
+
+	* DBHTMLWriter.m
+	Output Numbers in General format.
+
 2017-10-09 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoapCSV.m
