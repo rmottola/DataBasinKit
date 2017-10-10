@@ -64,6 +64,10 @@
 
 #endif
 
+@interface DBSoap (PrivateMethods)
+- (DBSObject *)_describeSObject: (NSString *)objectType;
+- (NSArray *)_describeGlobal;
+@end
 
 @implementation DBSoap
 
@@ -466,7 +470,119 @@
   [sessionId retain];
 }
 
+- (id)adjustFormatForField:(NSString *)key forValue:(id)value inObject:(DBSObject *)sObj
+{
+  id retObj;
+  NSString *type;
 
+  type = [sObj type];
+  NSLog(@"Object Type: %@, key: %@, value %@", type, key, value);
+
+  /* this is not an object, we cannot describe it */
+  if ([type isEqualToString:@"AggregateResult"])
+    return value;
+  
+  if ([value isKindOfClass:[NSDictionary class]])
+    {
+      NSString *type2;
+      DBSObject *sObj2;
+      NSUInteger i;
+      NSDictionary *propDict;
+
+      sObj2 = [[DBSObject alloc] init];
+      type2 = [value objectForKey:@"type"];
+      propDict = [NSDictionary dictionaryWithObject:type2 forKey:@"type"];
+      [sObj2 setObjectProperties: propDict];
+
+      NSLog(@"we have a complex object: %@", type2);
+      [sObj2 autorelease];
+      retObj = value;
+    }
+  else
+    {
+      DBSObject *objDetails;
+
+      /* check for described object cache */
+      objDetails = [sObjectDetailsDict objectForKey:type];
+      if (!objDetails)
+        {
+          NSLog(@"*** describe Start***");
+          // since we are already inside the queryAll lock, we call the unlocked describe version
+          objDetails = [self _describeSObject:type];
+          NSLog(@"*** describe End***");
+          if (objDetails)
+            [sObjectDetailsDict setObject:objDetails forKey:type];
+        }
+      
+      if (objDetails)
+        {
+          NSDictionary *fieldProps;
+          NSString *fieldType;
+
+          fieldProps = [objDetails propertiesOfField: key];
+          fieldType = [fieldProps objectForKey:@"type"];
+
+          if ([fieldType isEqualToString:@"double"])
+            {
+              NSNumber *n;
+              double d;
+              
+              NSLog(@"we have a number-float");
+              d = [value doubleValue];
+              n = [NSNumber numberWithDouble:d];
+              retObj = n;
+            }
+          else if ([fieldType isEqualToString:@"int"])
+            {
+              NSNumber *n;
+              NSInteger i;
+              
+              NSLog(@"we have a number-int");
+              i = [value integerValue];
+              n = [NSNumber numberWithInteger:i];
+              retObj = n;
+            }
+          else if ([fieldType isEqualToString:@"boolean"])
+            {
+              NSLog(@"we have a bool");
+              retObj = value;
+            }
+          else if ([fieldType isEqualToString:@"currency"])
+            {
+              NSNumber *n;
+              double d;
+              
+              NSLog(@"we have a currency");
+              d = [value doubleValue];
+              n = [NSNumber numberWithDouble:d];
+              retObj = n;
+            }
+          else if ([fieldType isEqualToString:@"date"])
+            {
+              NSLog(@"we have a date");
+              retObj = value;
+            }
+          else if ([fieldType isEqualToString:@"datetime"])
+            {
+              NSLog(@"we have a date time");
+              retObj = value;
+            }
+          else
+            {
+              retObj = value;
+            }
+        }
+      else
+        {
+          [logger log: LogStandard: @"[DBSoap adjustFormatForField] Failed to get field information: %@.%@\n", type, key];
+          retObj = value;
+        }
+
+    }
+
+  return retObj;
+}
+  
 
 - (NSString *)_query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects declaredSize:(NSUInteger *)ds progressMonitor:(id<DBProgressProtocol>)p
 {
@@ -649,9 +765,9 @@
         [keys removeObject:@"type"];
       
       /* remove Id only if it is null, else an array of two populated Id is returned by SF */
+      NSLog(@"Id object: %@", [record objectForKey:@"Id"]);
       if (![[record objectForKey:@"Id"] isKindOfClass: [NSArray class]])
         [keys removeObject:@"Id"];
-      
       
       /* Count() is not like to aggregate count(Id) and returns no AggregateResult
 	 but returns just a size count without an actual records array.
@@ -679,8 +795,11 @@
           if (typePresent) 
             {
               NSDictionary *propDict;
+              NSString *typeStr;
 
-              propDict = [NSDictionary dictionaryWithObject:[record objectForKey: @"type"] forKey:@"type"];
+              typeStr = [record objectForKey: @"type"];
+              NSLog(@"Obj type present: %@", typeStr);
+              propDict = [NSDictionary dictionaryWithObject:typeStr forKey:@"type"];
               [sObj setObjectProperties: propDict];
             }
 
@@ -693,6 +812,7 @@
               NSString *key;
             
               key = [keys objectAtIndex:j];
+              NSLog(@"evaluating key -> %@", key);
               obj = [record objectForKey: key];
               if ([key isEqualToString:@"Id"])
                 value = [(NSArray *)obj objectAtIndex: 0];
@@ -701,11 +821,11 @@
 
               if (enableFieldTypesDescibeForQuery)
                 {
-                  NSLog(@"key %@, value: %@", key, value);
+                  NSLog(@"retrieve type for: %@ - %@", sObj);
+                  value = [self adjustFormatForField:key forValue:value inObject:sObj];
                 }
               [sObj setValue: value forField: key];
             }
-
 
           [objects addObject:sObj];
           [sObj release];
