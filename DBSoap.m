@@ -476,7 +476,7 @@
   NSString *type;
 
   type = [sObj type];
-  NSLog(@"Object Type: %@, key: %@, value %@", type, key, value);
+  //NSLog(@"Object Type: %@, key: %@, value %@", type, key, value);
 
   /* this is not an object, we cannot describe it */
   if ([type isEqualToString:@"AggregateResult"])
@@ -527,7 +527,6 @@
               NSNumber *n;
               double d;
               
-              NSLog(@"we have a number-float");
               d = [value doubleValue];
               n = [NSNumber numberWithDouble:d];
               retObj = n;
@@ -537,14 +536,12 @@
               NSNumber *n;
               NSInteger i;
               
-              NSLog(@"we have a number-int");
               i = [value integerValue];
               n = [NSNumber numberWithInteger:i];
               retObj = n;
             }
           else if ([fieldType isEqualToString:@"boolean"])
             {
-              NSLog(@"we have a bool");
               retObj = value;
             }
           else if ([fieldType isEqualToString:@"currency"])
@@ -552,19 +549,16 @@
               NSNumber *n;
               double d;
               
-              NSLog(@"we have a currency");
               d = [value doubleValue];
               n = [NSNumber numberWithDouble:d];
               retObj = n;
             }
           else if ([fieldType isEqualToString:@"date"])
             {
-              NSLog(@"we have a date");
               retObj = value;
             }
           else if ([fieldType isEqualToString:@"datetime"])
             {
-              NSLog(@"we have a date time");
               retObj = value;
             }
           else
