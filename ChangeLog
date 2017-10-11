@@ -1,6 +1,11 @@
 2017-10-11 Riccardo Mottola <rm@gnu.org>
 
-	* DBSoap.m (queryAll)
+	* DBSoap.m (_queryMore)
+	Update to type enhacenemnts implemented in query
+
+2017-10-11 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.m (_query)
 	Format Objects after describes
 
 2017-10-10 Riccardo Mottola <rm@gnu.org>
