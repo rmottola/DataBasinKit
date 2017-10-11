@@ -752,7 +752,9 @@
           record = nil;
           batchSize = 0;
         }
-           
+
+      /* since we go deep with describes and further queries, we retain */
+      [records retain];
       
       [logger log: LogInformative :@"[DBSoap query] records size is: %d\n", batchSize];
       /* let's get the fields from the keys of the first record */
@@ -830,6 +832,7 @@
           [objects addObject:sObj];
           [sObj release];
         }
+      [records release];
     }
   if (!done)
     {
