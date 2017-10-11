@@ -767,7 +767,6 @@
         [keys removeObject:@"type"];
       
       /* remove Id only if it is null, else an array of two populated Id is returned by SF */
-      NSLog(@"Id object: %@", [record objectForKey:@"Id"]);
       if (![[record objectForKey:@"Id"] isKindOfClass: [NSArray class]])
         [keys removeObject:@"Id"];
       
@@ -800,13 +799,13 @@
               NSString *typeStr;
 
               typeStr = [record objectForKey: @"type"];
-              NSLog(@"Obj type present: %@", typeStr);
+              //NSLog(@"Obj type present: %@", typeStr);
               propDict = [NSDictionary dictionaryWithObject:typeStr forKey:@"type"];
               [sObj setObjectProperties: propDict];
             }
 
           record = [records objectAtIndex:i];
-	  [logger log: LogDebug: @"[DBSoap query] record :%@\n", record];
+	  //[logger log: LogDebug: @"[DBSoap query] record :%@\n", record];
           for (j = 0; j < [keys count]; j++)
             {
               id       obj;
@@ -814,7 +813,6 @@
               NSString *key;
             
               key = [keys objectAtIndex:j];
-              NSLog(@"evaluating key -> %@", key);
               obj = [record objectForKey: key];
               if ([key isEqualToString:@"Id"])
                 value = [(NSArray *)obj objectAtIndex: 0];
@@ -823,7 +821,6 @@
 
               if (enableFieldTypesDescibeForQuery)
                 {
-                  NSLog(@"retrieve type for: %@ - %@", sObj);
                   value = [self adjustFormatForField:key forValue:value inObject:sObj];
                 }
               [sObj setValue: value forField: key];
@@ -900,14 +897,29 @@
   queryFault = [resultDict objectForKey:GWSFaultKey];
   if (queryFault != nil)
     {
-      NSDictionary *fault;
       NSDictionary *faultDetail;
+      NSString *faultName;
 
       faultDetail = [queryFault objectForKey:@"detail"];
-      fault = [faultDetail objectForKey:@"fault"];
-      NSLog(@"fault: %@", fault);
-      NSLog(@"exception code: %@", [fault objectForKey:@"exceptionCode"]);
-      NSLog(@"exception code: %@", [fault objectForKey:@"exceptionMessage"]);
+      faultName = [[faultDetail objectForKey:GWSOrderKey] objectAtIndex: 0];
+      if (faultName)
+	{
+	  NSDictionary *fault;
+	  NSString *exceptionMessage;
+
+	  [logger log: LogInformative: @"[DBSoap queryMore] fault name: %@\n", faultName];
+	  fault = [faultDetail objectForKey:faultName];
+	  exceptionMessage = [fault objectForKey:@"exceptionMessage"];
+
+	  [logger log: LogStandard: @"[DBSoap queryMore] exception code: %@\n", [fault objectForKey:@"exceptionCode"]];
+	  [logger log: LogStandard: @"[DBSoap queryMore] exception: %@\n", exceptionMessage];
+	  [[NSException exceptionWithName:@"DBException" reason:exceptionMessage userInfo:nil] raise];
+	}
+      else
+	{
+	  [logger log: LogInformative: @"[DBSoap query] fault detail: %@\n", faultDetail];
+	}
+      return nil;
     }
 
   queryResult = [resultDict objectForKey:GWSParametersKey];
@@ -918,18 +930,18 @@
 
   if (doneStr != nil)
     {
-      NSLog(@"query more done: %@", doneStr);
+      [logger log: LogDebug: @"[DBSoap queryMore] done: %@\n", doneStr];
       done = NO;
       if ([doneStr isEqualToString:@"true"])
         done = YES;
       else if ([doneStr isEqualToString:@"false"])
         done = NO;
       else
-        NSLog(@"Done, unexpected value: %@", doneStr);
+        [logger log: LogStandard: @"[DBSoap queryMore] Done, unexpected value: %@\n", doneStr];
     }
   else
     {
-      NSLog(@"error, doneStr is nil: unexpected");
+      [logger log: LogStandard: @"[DBSoap queryMore] error, doneStr is nil: unexpected\n"];
       return nil;
     }
 
@@ -947,13 +959,15 @@
       /* if we have only one element, put it in an array */
       if (![records isKindOfClass:[NSArray class]])
         {
-          NSLog(@"query more -> only one element");
           records = [NSArray arrayWithObject:records];
         }
       record = [records objectAtIndex:0];
-      batchSize = [records count];        
-      
-      NSLog(@"records size is: %lu", (unsigned long)batchSize);
+      batchSize = [records count];
+
+      /* since we go deep with describes and further queries, we retain */
+      [records retain];
+
+      [logger log: LogInformative :@"[DBSoap queryMore] records size is: %d\n", batchSize];
       
       /* let's get the fields from the keys of the first record */
       keys = [NSMutableArray arrayWithArray:[record allKeys]];
@@ -968,16 +982,29 @@
       if (![[record objectForKey:@"Id"] isKindOfClass: [NSArray class]])
           [keys removeObject:@"Id"];
 
-      //NSLog(@"keys: %@", keys);
-      
       /* now cycle all the records and read out the fields */
       for (i = 0; i < batchSize; i++)
         {
           DBSObject *sObj;
 	  
           sObj = [[DBSObject alloc] init];
+
+          /* we removed type, but if it is present, set it as a property
+             Further, we describe the type if desired to get field types.
+           */
+          if (typePresent) 
+            {
+              NSDictionary *propDict;
+              NSString *typeStr;
+
+              typeStr = [record objectForKey: @"type"];
+              //NSLog(@"Obj type present: %@", typeStr);
+              propDict = [NSDictionary dictionaryWithObject:typeStr forKey:@"type"];
+              [sObj setObjectProperties: propDict];
+            }
+          
           record = [records objectAtIndex:i];
- 
+          //[logger log: LogDebug: @"[DBSoap queryMore] record :%@\n", record];
           for (j = 0; j < [keys count]; j++)
             {
               id       obj;
@@ -990,21 +1017,18 @@
                   value = [(NSArray *)obj objectAtIndex: 0];
               else
                   value = obj;
-              [sObj setValue: value forField: key];
-            }
-
-          /* we removed type, but if it is present, set it as a property */
-          if (typePresent) 
-            {
-              NSDictionary *propDict;
               
-              propDict = [NSDictionary dictionaryWithObject:[record objectForKey: @"type"] forKey:@"type"];
-              [sObj setObjectProperties: propDict];
+              if (enableFieldTypesDescibeForQuery)
+                {
+                  value = [self adjustFormatForField:key forValue:value inObject:sObj];
+                }
+              [sObj setValue: value forField: key];
             }
 
           [objects addObject:sObj];
           [sObj release];
         }
+      [records release];
     }
   if (!done)
     {
