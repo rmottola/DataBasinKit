@@ -704,7 +704,7 @@
       [logger log: LogStandard: @"[DBSoap query] error, doneStr is nil: unexpected\n"];
       return nil;
     }
-  
+  [result retain];
   if (sizeStr != nil)
     {
       NSUInteger    i;
@@ -828,9 +828,11 @@
   if (!done)
     {
       queryLocator = [result objectForKey:@"queryLocator"];
+      [[queryLocator retain] autorelease];
       [logger log: LogDebug: @"[DBSoap query] should do query more, queryLocator: %@\n", queryLocator];
     }
   
+  [result release];
   return queryLocator;
 }
 
@@ -939,6 +941,7 @@
       return nil;
     }
 
+  [result retain];
   // Size returned in queryMore refers to the original size of the query
   // not to the current batch
   // So we can just check against the actually returned records
@@ -1027,9 +1030,11 @@
   if (!done)
     {
       queryLocator = [result objectForKey:@"queryLocator"];
+      [[queryLocator retain] autorelease];
       [logger log: LogInformative: @"[DBSoap queryMore] should do query more, queryLocator: %@\n", queryLocator];
     }
 
+  [result release];
   return queryLocator;
 }
 
