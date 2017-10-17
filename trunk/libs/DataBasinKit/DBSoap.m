@@ -31,6 +31,8 @@
 #import "DBProgressProtocol.h"
 #import "DBLoggerProtocol.h"
 
+#import "DBSFTypeWrappers.h"
+
 #if defined(__APPLE__) && (MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_4)
 
 @interface NSString (AdditionsReplacement)
@@ -542,7 +544,7 @@
             }
           else if ([fieldType isEqualToString:@"boolean"])
             {
-              retObj = value;
+              retObj = [DBSFBoolean sfBooleanWithString:value];
             }
           else if ([fieldType isEqualToString:@"currency"])
             {

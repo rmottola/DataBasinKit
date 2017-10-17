@@ -47,7 +47,8 @@ DBLoggerProtocol.h \
 DBCSVReader.h \
 DBCSVWriter.h \
 DBHTMLWriter.h \
-DBFileWriter.h 
+DBFileWriter.h \
+DBSFTypeWrappers.h 
 
 #
 # Objective-C Class files
@@ -59,7 +60,8 @@ DBSObject.m \
 DBCSVReader.m \
 DBCSVWriter.m \
 DBHTMLWriter.m \
-DBFileWriter.m
+DBFileWriter.m \
+DBSFTypeWrappers.m
 
 #
 # Makefiles

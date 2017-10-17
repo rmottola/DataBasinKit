@@ -25,6 +25,7 @@
 #import "DBCSVWriter.h"
 #import "DBSObject.h"
 #import "DBLoggerProtocol.h"
+#import "DBSFTypeWrappers.h"
 
 #import <WebServices/GWSConstants.h>
 
@@ -136,8 +137,31 @@ NSString *DBFileFormatCSV = @"CSV";
 	  res = value;
 	}
     }
+  else if ([value isKindOfClass: [DBSFDataType class]])
+    {
+      NSLog(@"SF DataTYpe class: %@", [value class]);
+
+      if (isQualified)
+	{
+	  NSMutableString *s;
+	  NSString *strValue;
+
+	  strValue = [value stringValue];
+	  s = [[NSMutableString alloc] initWithCapacity: [strValue length]+2];
+	  [s appendString: qualifier];
+	  [s appendString: strValue];
+	  [s appendString: qualifier];
+	  res = [NSString stringWithString: s];
+	  [s release];
+	}
+      else
+	{
+	  res = [value stringValue];
+	}
+    }
   else if ([value isKindOfClass: [NSNumber class]])
     {
+      NSLog(@"number class: %@", [value class]);
       // FIXME: this is locale sensitive?
       // FIXME2: maybe give the option to quote also numbers
       if (isQualified)
@@ -220,28 +244,32 @@ NSString *DBFileFormatCSV = @"CSV";
 	      value = [obj valueForField: key];
 	      //NSLog(@"key ---> %@ object %@", key, value);
 	      
-	      if ([value isKindOfClass: [NSString class]] ||[value isKindOfClass: [NSNumber class]] )
+	      if ([value isKindOfClass: [DBSFDataType class]])
+		{
+                  [dataDict setObject:[value stringValue] forKey:key];
+                  [keyOrder addObject:key];
+		}
+	      else if ([value isKindOfClass: [NSString class]] ||[value isKindOfClass: [NSNumber class]] )
 		{
                   [dataDict setObject:value forKey:key];
                   [keyOrder addObject:key];
 		}
-	      else if ([value isKindOfClass: [NSCalendarDate class]])
-		{
-		  // FIXME Date Handling could allow more options
-                  [dataDict setObject:[value description] forKey:key];
-                  [keyOrder addObject:key];
-		}
 	      else if ([value isKindOfClass: [NSDictionary class]])
 		{
-		  // NSLog(@"Dictionary");
 		  [self formatComplexObject:value withRoot:key inDict:dataDict inOrder:keyOrder];
 		}
 	      else
 		{
-		  NSLog(@"unknown class for object %@ of class %@", value, [value class]);
+		  NSLog(@"DBCSVWriter - formatOneLine - unknown class for object %@ of class %@ inside DBSObject", value, [value class]);
 		}
 	    }
 	}
+      else if ([obj isKindOfClass: [DBSFDataType class]])
+        {
+	  //NSLog(@"formatOneLine, we have directly a scalar object, NSString: %@", obj);
+          [dataDict setObject:obj forKey:obj];
+          [keyOrder addObject:obj];
+        }
       else if ([obj isKindOfClass: [NSString class]])
         {
 	  //NSLog(@"formatOneLine, we have directly a scalar object, NSString: %@", obj);
@@ -254,7 +282,10 @@ NSString *DBFileFormatCSV = @"CSV";
           [logger log: LogStandard :@"[DBCSVWriter formatOneLine] we have a NSNumber, unhandled %@:\n", obj];
 	}
       else
-        NSLog(@"unknown class of value: %@", [obj class]);
+	{
+	  [logger log: LogStandard :@"[DBCSVWriter formatOneLine] unknown class of value %@:\n", [obj class]];
+	  NSLog(@"[DBCSVWriter formatOneLine] unknown class of value: %@", [obj class]);
+	}
     }
 
   /* create the string */

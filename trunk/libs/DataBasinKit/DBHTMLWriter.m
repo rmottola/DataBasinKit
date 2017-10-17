@@ -25,6 +25,7 @@
 #import "DBHTMLWriter.h"
 #import "DBSObject.h"
 #import "DBLoggerProtocol.h"
+#import "DBSFTypeWrappers.h"
 
 #import <WebServices/GWSConstants.h>
 
@@ -276,26 +277,24 @@ NSString *DBFileFormatHTML = @"HTML";
             key = [keys objectAtIndex: j];
             value = [obj valueForField: key];
             //NSLog(@"key ---> %@ object %@", key, value);
-            
-            if ([value isKindOfClass: [NSString class]] ||[value isKindOfClass: [NSNumber class]] )
+	    
+            if ([value isKindOfClass: [DBSFDataType class]])
+	      {
+		[dataDict setObject:[value stringValue] forKey:key];
+		[keyOrder addObject:key];
+	      }
+            else if ([value isKindOfClass: [NSString class]] ||[value isKindOfClass: [NSNumber class]] )
               {
                 [dataDict setObject:value forKey:key];
                 [keyOrder addObject:key];
               }
-            else if ([value isKindOfClass: [NSCalendarDate class]])
-              {
-                // FIXME Date Handling could allow more options
-                [dataDict setObject:[value description] forKey:key];
-                [keyOrder addObject:key];
-              }
             else if ([value isKindOfClass: [NSDictionary class]])
               {
-                // NSLog(@"Dictionary");
                 [self formatComplexObject:value withRoot:key inDict:dataDict inOrder:keyOrder];
               }
             else
               {
-                NSLog(@"unknown class for object %@ of class %@", value, [value class]);
+		NSLog(@"DBHTMLWriter - formatOneLine - unknown class for object %@ of class %@ inside DBSObject", value, [value class]);
               }
           }
       }

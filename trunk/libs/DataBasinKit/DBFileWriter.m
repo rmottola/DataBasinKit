@@ -26,6 +26,7 @@
 #import "DBFileWriter.h"
 #import "DBSObject.h"
 #import "DBLoggerProtocol.h"
+#import "DBSFTypeWrappers.h"
 
 #import <WebServices/GWSConstants.h>
 
@@ -227,6 +228,25 @@
           //NSLog(@"formatting complex object with root: %@", s);
           [self formatComplexObject: obj withRoot:s inDict:dict inOrder:order];
         }
+      else if ([obj isKindOfClass: [DBSFDataType class]])
+	{
+	  NSMutableString *s;
+
+          if (root)
+            s = [NSMutableString stringWithString:root];
+          else
+            s = [NSMutableString stringWithString:@""];
+
+          if (root)
+            [s appendString:@"."];
+
+          [s appendString:key];
+
+          extendedFieldName = s;
+	  
+          [dict setObject:obj forKey:extendedFieldName];
+          [order addObject:extendedFieldName];
+	}
       else if ([obj isKindOfClass: [NSString class]] || [obj isKindOfClass: [NSNumber class]])
         {
 	  NSMutableString *s;
