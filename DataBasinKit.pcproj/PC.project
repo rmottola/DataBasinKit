@@ -14,7 +14,8 @@
 	"DBCSVReader.m",
 	"DBCSVWriter.m",
 	"DBHTMLWriter.m",
-	"DBFileWriter.m"
+	"DBFileWriter.m",
+	"DBSFTypeWrappers.m"
     );
     COMPILEROPTIONS = "";
     CPPOPTIONS = "";
@@ -34,7 +35,8 @@
 	"DBCSVReader.h",
 	"DBCSVWriter.h",
 	"DBHTMLWriter.h",
-	"DBFileWriter.h"
+	"DBFileWriter.h",
+	"DBSFTypeWrappers.h"
     );
     IMAGES = (
     );
@@ -78,7 +80,8 @@
 	"DBCSVReader.h",
 	"DBCSVWriter.h",
 	"DBHTMLWriter.h",
-	"DBFileWriter.h"
+	"DBFileWriter.h",
+	"DBSFTypeWrappers.h"
     );
     "SEARCH_HEADER_DIRS" = (
     );

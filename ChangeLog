@@ -1,7 +1,19 @@
+2017-10-17 Riccardo Mottola <rm@gnu.org>
+
+	* DBSFTypeWrappers.h
+	* DBSFTypeWrappers.m
+	* DBFileWriter.m
+	* DBCSVWriter.m
+	* DBHTMLWriter.m
+	New FileType objects to store and wrap specific data types and be able
+	to easily identify them after (NSNumber is not flexible for Bool and
+	other types are needed). Adapt all Writers.
+
 2017-10-12 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m
-	retain/autorelease queryLocator so that it remains usable in the next cycle.
+	retain/autorelease queryLocator so that it remains usable in the next
+	cycle.
 	Retain/Release the result record to make it survive the describe cycle.
 
 2017-10-11 Riccardo Mottola <rm@gnu.org>
