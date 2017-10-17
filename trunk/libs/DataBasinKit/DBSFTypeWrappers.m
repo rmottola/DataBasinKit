@@ -46,7 +46,6 @@
   else if ([str caseInsensitiveCompare:@"yes"] == NSOrderedSame)
     v = YES;
 
-  NSLog(@"init Boolean %@, %d", str, v);
   [self initWithBool:v];
   
   return self;
@@ -70,7 +69,7 @@
 - (NSString *)stringValue
 {
   BOOL v;
-  NSLog(@"Boolean stringValue %d", [self boolValue]);
+
   v = [self boolValue];
   if (v)
     return @"Yes";
