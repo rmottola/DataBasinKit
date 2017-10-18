@@ -30,6 +30,9 @@
 @interface DBSFDataType : NSObject
 {
 }
+- (id) initWithString:(NSString *)str;
+- (NSString *)stringValue;
+
 @end
 
 
@@ -39,9 +42,8 @@
 }
 
 + (DBSFBoolean *)sfBooleanWithString:(NSString *)str;
-- (id) initWithString:(NSString *)str;
 + (DBSFBoolean *) sfBooleanWithBool: (BOOL)val;
-- (id) initWithBool: (BOOL)value;
+- (DBSFBoolean *) initWithBool: (BOOL)value;
 - (BOOL) boolValue;
 
 @end
@@ -51,8 +53,8 @@
   NSNumber *value;
 }
 
-+ (DBSFInteger*) sfIntegerWithInteger: (NSInteger)val;
-- (id) initWithInteger: (NSInteger)val;
++ (DBSFInteger *) sfIntegerWithInteger: (NSInteger)val;
+- (DBSFInteger *) initWithInteger: (NSInteger)val;
 - (NSInteger) integerValue;
 
 @end
@@ -62,8 +64,8 @@
   NSNumber *value;
 }
 
-+ (DBSFDouble*) sfDoubleWithDouble: (double)val;
-- (id) initWithDouble: (double)val;
++ (DBSFDouble *) sfDoubleWithDouble: (double)val;
+- (DBSFDouble *) initWithDouble: (double)val;
 - (double) doubleValue;
 @end
 
@@ -73,7 +75,7 @@
 
 }
 
-+ (NSNumber*) sfCurrencyWithDouble: (double)val;
++ (DBSFCurrency*) sfCurrencyWithDouble: (double)val;
 
 
 @end
