@@ -1,3 +1,8 @@
+2017-10-18 Riccardo Mottola <rm@gnu.org>
+
+	* DBFileWriter.m (formatComplexObject:)
+	Cleanup and optimize nested Field Name concatenation.
+
 2017-10-17 Riccardo Mottola <rm@gnu.org>
 
 	* DBSFTypeWrappers.h
