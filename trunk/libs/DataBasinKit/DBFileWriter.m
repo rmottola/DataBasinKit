@@ -186,8 +186,7 @@
 - (void)formatComplexObject:(NSMutableDictionary *)d withRoot:(NSString *)root inDict:(NSMutableDictionary *)dict inOrder:(NSMutableArray *)order
 {
   NSMutableArray  *keys;
-  unsigned i;
-  NSString *extendedFieldName;
+  NSUInteger i;
 
   if (!d)
     return;
@@ -206,63 +205,35 @@
     {
       id obj;
       NSString *key;
+      NSMutableString *extendedFieldName;
       
       key = [keys objectAtIndex: i];
       obj = [d objectForKey: key];
       if ([key isEqualToString:@"Id"])
 	obj = [obj objectAtIndex: 0];
+
+      if (root)
+        {
+          extendedFieldName  = [NSMutableString stringWithString:root];
+          [extendedFieldName appendString:@"."];
+          [extendedFieldName appendString:key];
+        }
+      else
+        {
+          extendedFieldName  = [NSMutableString stringWithString:key];
+        }
       
       if ([obj isKindOfClass: [NSDictionary class]])
         {
-          NSMutableString *s;
-
-          if (root)
-            s = [NSMutableString stringWithString:root];
-          else
-            s = [NSMutableString stringWithString:@""];
-
-          if (root)
-            [s appendString:@"."];
-          [s appendString:key];
-
-          //NSLog(@"formatting complex object with root: %@", s);
-          [self formatComplexObject: obj withRoot:s inDict:dict inOrder:order];
+          [self formatComplexObject: obj withRoot:extendedFieldName inDict:dict inOrder:order];
         }
       else if ([obj isKindOfClass: [DBSFDataType class]])
 	{
-	  NSMutableString *s;
-
-          if (root)
-            s = [NSMutableString stringWithString:root];
-          else
-            s = [NSMutableString stringWithString:@""];
-
-          if (root)
-            [s appendString:@"."];
-
-          [s appendString:key];
-
-          extendedFieldName = s;
-	  
           [dict setObject:obj forKey:extendedFieldName];
           [order addObject:extendedFieldName];
 	}
       else if ([obj isKindOfClass: [NSString class]] || [obj isKindOfClass: [NSNumber class]])
         {
-	  NSMutableString *s;
-
-          if (root)
-            s = [NSMutableString stringWithString:root];
-          else
-            s = [NSMutableString stringWithString:@""];
-
-          if (root)
-            [s appendString:@"."];
-
-          [s appendString:key];
-
-          extendedFieldName = s;
-          //NSLog(@"formatting scalar object: %@ for key: %@", obj,extendedFieldName);
           [dict setObject:obj forKey:extendedFieldName];
           [order addObject:extendedFieldName];
 	}
