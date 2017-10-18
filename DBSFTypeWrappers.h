@@ -43,7 +43,7 @@
 
 + (DBSFBoolean *)sfBooleanWithString:(NSString *)str;
 + (DBSFBoolean *) sfBooleanWithBool: (BOOL)val;
-- (DBSFBoolean *) initWithBool: (BOOL)value;
+- (id) initWithBool: (BOOL)value;
 - (BOOL) boolValue;
 
 @end
@@ -54,7 +54,7 @@
 }
 
 + (DBSFInteger *) sfIntegerWithInteger: (NSInteger)val;
-- (DBSFInteger *) initWithInteger: (NSInteger)val;
+- (id) initWithInteger: (NSInteger)val;
 - (NSInteger) integerValue;
 
 @end
@@ -65,7 +65,7 @@
 }
 
 + (DBSFDouble *) sfDoubleWithDouble: (double)val;
-- (DBSFDouble *) initWithDouble: (double)val;
+- (id) initWithDouble: (double)val;
 - (double) doubleValue;
 @end
 
