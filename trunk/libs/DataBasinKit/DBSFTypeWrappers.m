@@ -69,7 +69,7 @@
   return self;
 }
 
-- (DBSFBoolean *) initWithBool: (BOOL)val
+- (id) initWithBool: (BOOL)val
 {
   if ((self = [super init]))
     {
@@ -127,7 +127,7 @@
   return self;
 }
 
-- (DBSFInteger *) initWithInteger: (NSInteger)val
+- (id) initWithInteger: (NSInteger)val
 {
   if ((self = [super init]))
     {
@@ -157,7 +157,7 @@
   return [[[DBSFDouble alloc] initWithDouble:val] autorelease];
 }
 
-- (DBSFDouble *) initWithDouble: (double)val
+- (id) initWithDouble: (double)val
 {
   if ((self = [super init]))
     {
