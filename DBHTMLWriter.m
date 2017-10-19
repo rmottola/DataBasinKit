@@ -167,9 +167,7 @@ NSString *DBFileFormatHTML = @"HTML";
 	  s = [[NSMutableString alloc] initWithCapacity: [strValue length]+2];
 
           [s appendString: tagBegin];
-
 	  [s appendString: strValue];
-
           [s appendString: tagEnd];
           
 	  res = [NSString stringWithString: s];
