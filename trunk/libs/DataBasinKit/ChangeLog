@@ -1,3 +1,8 @@
+2017-10-22 Riccardo Mottola <rm@gnu.org>
+
+	* DBFileWriter.m (formatComplexObject:)
+	Skip Id field only if it is an empty string, not otherwise.
+
 2017-10-18 Riccardo Mottola <rm@gnu.org>
 
 	* DBFileWriter.m (formatComplexObject:)

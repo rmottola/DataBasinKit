@@ -197,10 +197,6 @@
   /* remove some fields which get added automatically by salesforce even if not asked for */
   [keys removeObject:@"type"];
   
-  /* remove Id only if it is null, else an array of two populated Id is returned by SF */
-  if (![[d objectForKey:@"Id"] isKindOfClass: [NSArray class]])
-    [keys removeObject:@"Id"];
-
   for (i = 0; i < [keys count]; i++)
     {
       id obj;
@@ -210,8 +206,12 @@
       key = [keys objectAtIndex: i];
       obj = [d objectForKey: key];
       if ([key isEqualToString:@"Id"])
-	obj = [obj objectAtIndex: 0];
-
+	{
+	  if ([obj isKindOfClass: [NSArray class]])
+	    obj = [obj objectAtIndex: 0];
+	  else if ([obj isKindOfClass: [NSString class]] && [obj length] == 0)
+	    continue;
+	}
       if (root)
         {
           extendedFieldName  = [NSMutableString stringWithString:root];
