@@ -546,7 +546,6 @@
 	}
       else if ([fieldType isEqualToString:@"address"])
 	{
-	  NSLog(@"%@ is an address: %@", key, value);
 	  retObj = value;
 	}
       else if ([value isKindOfClass:[NSDictionary class]])
