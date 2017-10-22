@@ -103,7 +103,7 @@
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat: @"<DBSObject %@, %@, %@>", [self name], [self sfId], [self label]];
+  return [NSString stringWithFormat: @"<DBSObject %@, %@, %@, %@>", [self name], [self sfId], [self label], [self type]];
 }
 
 /** <p>returns the current salesforce id, in whichever format it is currently stored.</p>
