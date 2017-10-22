@@ -476,6 +476,8 @@
 {
   id retObj;
   NSString *type;
+  DBSObject *objDetails;
+
 
   type = [sObj type];
   //  NSLog(@"Object Type: %@, key: %@, value %@", type, key, value);
@@ -484,151 +486,143 @@
   if ([type isEqualToString:@"AggregateResult"])
     return value;
 
-  /* special fields not describable, left at is */
-  if ([key isEqualToString:@"ShippingAddress"])
-    return value;
-  if ([key isEqualToString:@"BillingAddress"])
-    return value;
-  if ([key isEqualToString:@"Address"])
-    return value;
 
-  
-  if ([value isKindOfClass:[NSDictionary class]])
+  /* check for described object cache */
+  objDetails = [sObjectDetailsDict objectForKey:type];
+  if (!objDetails)
     {
-      NSString *type2;
-      DBSObject *sObj2;
-      NSMutableDictionary *dict2;
-      NSUInteger i;
-      NSDictionary *propDict;
-      NSArray *keys;
+      NSLog(@"*** describe Start***");
+      // since we are already inside the queryAll lock, we call the unlocked describe version
+      objDetails = [self _describeSObject:type];
+      NSLog(@"*** describe End***");
+      if (objDetails)
+	[sObjectDetailsDict setObject:objDetails forKey:type];
+    }
+  if (objDetails)
+    {
+      NSDictionary *fieldProps;
+      NSString *fieldType;
       
-
-      sObj2 = [[DBSObject alloc] init];
-      type2 = [value objectForKey:@"type"];
-
-      propDict = [NSDictionary dictionaryWithObject:type2 forKey:@"type"];
-      [sObj2 setObjectProperties: propDict];
-
-      // hack until DBSObjects can be handled by writers
-      dict2 = [[NSMutableDictionary alloc] init];
-      
-
-      keys = [(NSDictionary *)value allKeys];
-      //      NSLog(@"we have a complex object: %@ with keys: %@", type2, keys);
-      for (i = 0; i < [keys count]; i++)
+      fieldProps = [objDetails propertiesOfField: key];
+      fieldType = [fieldProps objectForKey:@"type"];
+      if ([fieldType isEqualToString:@"double"])
 	{
-	  id       obj;
-	  id       value2;
-	  NSString *key2;
-	  
-	  key2 = [keys objectAtIndex:i];
-	  
-	  /* special GSWS field */
-	  if (key2 == GWSOrderKey)
-	    continue;
-	  
-	  obj = [value objectForKey: key2];
-	  
-	  if ([key2 isEqualToString:@"Id"])
-	    {
-	      /* when queried, Id is always in an array, else empty string */
-	      if ([obj isKindOfClass: [NSArray class]])
-		value2 = [(NSArray *)obj objectAtIndex: 0];
-	      else
-		continue; /* skip empty Id */
-	    }
-	  else if ([key2 isEqualToString:@"type"])
-	    {
-	      continue;
-	    }
-	  else
-	    value2 = obj;
-	  
-	  if (enableFieldTypesDescribeForQuery)
-	    {
-	      value2 = [self adjustFormatForField:key2 forValue:value2 inObject:sObj2];
-	    }
-	  [sObj2 setValue: value2 forField: key2];
-	  [dict2 setObject: value2 forKey: key2];
+	  NSNumber *n;
+	  double d;
+          
+	  d = [value doubleValue];
+	  n = [NSNumber numberWithDouble:d];
+	  retObj = n;
 	}
-
-      [sObj2 autorelease];
-      [dict2 autorelease];
-      retObj = dict2;
+      else if ([fieldType isEqualToString:@"int"])
+	{
+	  NSNumber *n;
+	  NSInteger i;
+          
+	  i = [value integerValue];
+	  n = [NSNumber numberWithInteger:i];
+	  retObj = n;
+	}
+      else if ([fieldType isEqualToString:@"boolean"])
+	{
+	  retObj = [DBSFBoolean sfBooleanWithString:value];
+	}
+      else if ([fieldType isEqualToString:@"currency"])
+	{
+	  NSNumber *n;
+	  double d;
+          
+	  d = [value doubleValue];
+	  n = [NSNumber numberWithDouble:d];
+	  retObj = n;
+	}
+      else if ([fieldType isEqualToString:@"date"])
+	{
+	  retObj = value;
+	}
+      else if ([fieldType isEqualToString:@"datetime"])
+	{
+	  retObj = value;
+	}
+      else if ([fieldType isEqualToString:@"address"])
+	{
+	  NSLog(@"%@ is an address: %@", key, value);
+	  retObj = value;
+	}
+      else if ([value isKindOfClass:[NSDictionary class]])
+	{
+	  NSString *type2;
+	  DBSObject *sObj2;
+	  NSMutableDictionary *dict2;
+	  NSUInteger i;
+	  NSDictionary *propDict;
+	  NSArray *keys;
+	  
+	  
+	  sObj2 = [[DBSObject alloc] init];
+	  type2 = [value objectForKey:@"type"];
+	  
+	  propDict = [NSDictionary dictionaryWithObject:type2 forKey:@"type"];
+	  [sObj2 setObjectProperties: propDict];
+	  
+	  // hack until DBSObjects can be handled by writers
+	  dict2 = [[NSMutableDictionary alloc] init];
+	  
+	  
+	  keys = [(NSDictionary *)value allKeys];
+	  //      NSLog(@"we have a complex object: %@ with keys: %@", type2, keys);
+	  for (i = 0; i < [keys count]; i++)
+	    {
+	      id       obj;
+	      id       value2;
+	      NSString *key2;
+	      
+	      key2 = [keys objectAtIndex:i];
+	      
+	      /* special GSWS field */
+	      if (key2 == GWSOrderKey)
+		continue;
+	      
+	      obj = [value objectForKey: key2];
+	      
+	      if ([key2 isEqualToString:@"Id"])
+		{
+		  /* when queried, Id is always in an array, else empty string */
+		  if ([obj isKindOfClass: [NSArray class]])
+		    value2 = [(NSArray *)obj objectAtIndex: 0];
+		  else
+		    continue; /* skip empty Id */
+		}
+	      else if ([key2 isEqualToString:@"type"])
+		{
+		  continue;
+		}
+	      else
+		value2 = obj;
+	      
+	      if (enableFieldTypesDescribeForQuery)
+		{
+		  value2 = [self adjustFormatForField:key2 forValue:value2 inObject:sObj2];
+		}
+	      [sObj2 setValue: value2 forField: key2];
+	      [dict2 setObject: value2 forKey: key2];
+	    }
+	  
+	  [sObj2 autorelease];
+	  [dict2 autorelease];
+	  retObj = dict2;
+	}
+      else
+	{
+	  retObj = value;
+	}
     }
   else
     {
-      DBSObject *objDetails;
-
-      /* check for described object cache */
-      objDetails = [sObjectDetailsDict objectForKey:type];
-      if (!objDetails)
-        {
-          NSLog(@"*** describe Start***");
-          // since we are already inside the queryAll lock, we call the unlocked describe version
-          objDetails = [self _describeSObject:type];
-          NSLog(@"*** describe End***");
-          if (objDetails)
-            [sObjectDetailsDict setObject:objDetails forKey:type];
-        }
-      if (objDetails)
-        {
-          NSDictionary *fieldProps;
-          NSString *fieldType;
-
-          fieldProps = [objDetails propertiesOfField: key];
-          fieldType = [fieldProps objectForKey:@"type"];
-          if ([fieldType isEqualToString:@"double"])
-            {
-              NSNumber *n;
-              double d;
-              
-              d = [value doubleValue];
-              n = [NSNumber numberWithDouble:d];
-              retObj = n;
-            }
-          else if ([fieldType isEqualToString:@"int"])
-            {
-              NSNumber *n;
-              NSInteger i;
-              
-              i = [value integerValue];
-              n = [NSNumber numberWithInteger:i];
-              retObj = n;
-            }
-          else if ([fieldType isEqualToString:@"boolean"])
-            {
-              retObj = [DBSFBoolean sfBooleanWithString:value];
-            }
-          else if ([fieldType isEqualToString:@"currency"])
-            {
-              NSNumber *n;
-              double d;
-              
-              d = [value doubleValue];
-              n = [NSNumber numberWithDouble:d];
-              retObj = n;
-            }
-          else if ([fieldType isEqualToString:@"date"])
-            {
-              retObj = value;
-            }
-          else if ([fieldType isEqualToString:@"datetime"])
-            {
-              retObj = value;
-            }
-          else
-            {
-              retObj = value;
-            }
-        }
-      else
-        {
-          [logger log: LogStandard: @"[DBSoap adjustFormatForField] Failed to get field information: %@.%@\n", type, key];
-          retObj = value;
-        }
-
+      [logger log: LogStandard: @"[DBSoap adjustFormatForField] Failed to get field information: %@.%@\n", type, key];
+      retObj = value;
     }
+
   
   return retObj;
 }
