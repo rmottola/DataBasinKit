@@ -1,5 +1,11 @@
 2017-10-22 Riccardo Mottola <rm@gnu.org>
 
+	* DBSoap.m (adjustFormatForField)
+	First check for known datatypes, then expand Dictionaries.
+	Addresses are complex datatypes and we keep them together.
+
+2017-10-22 Riccardo Mottola <rm@gnu.org>
+
 	* DBSoap.h
 	* DBSoap.m
 	Accessors for object describe cache and setting.
