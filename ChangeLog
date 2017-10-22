@@ -4,6 +4,9 @@
 	* DBSoap.m
 	Accessors for object describe cache and setting.
 
+	* DBSoapCSV.m
+	Carry over object cache.
+
 2017-10-22 Riccardo Mottola <rm@gnu.org>
 
 	* DBFileWriter.m (formatComplexObject:)
