@@ -6,6 +6,9 @@
 	* DBSObject.m (description)
 	Output type too.
 
+	* DBSoap.m (adjustFormatForField)
+	Handle complex objects and distiguish between SF objects and special types like Addresses.
+
 2017-10-18 Riccardo Mottola <rm@gnu.org>
 
 	* DBFileWriter.m (formatComplexObject:)

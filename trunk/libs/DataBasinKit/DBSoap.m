@@ -478,27 +478,81 @@
   NSString *type;
 
   type = [sObj type];
-  //NSLog(@"Object Type: %@, key: %@, value %@", type, key, value);
+  //  NSLog(@"Object Type: %@, key: %@, value %@", type, key, value);
 
   /* this is not an object, we cannot describe it */
   if ([type isEqualToString:@"AggregateResult"])
     return value;
+
+  /* special fields not describable, left at is */
+  if ([key isEqualToString:@"ShippingAddress"])
+    return value;
+  if ([key isEqualToString:@"BillingAddress"])
+    return value;
+
   
   if ([value isKindOfClass:[NSDictionary class]])
     {
       NSString *type2;
       DBSObject *sObj2;
+      NSMutableDictionary *dict2;
       NSUInteger i;
       NSDictionary *propDict;
+      NSArray *keys;
+      
 
       sObj2 = [[DBSObject alloc] init];
       type2 = [value objectForKey:@"type"];
+
       propDict = [NSDictionary dictionaryWithObject:type2 forKey:@"type"];
       [sObj2 setObjectProperties: propDict];
 
-      NSLog(@"we have a complex object: %@", type2);
+      // hack until DBSObjects can be handled by writers
+      dict2 = [[NSMutableDictionary alloc] init];
+      
+
+      keys = [(NSDictionary *)value allKeys];
+      //      NSLog(@"we have a complex object: %@ with keys: %@", type2, keys);
+      for (i = 0; i < [keys count]; i++)
+	{
+	  id       obj;
+	  id       value2;
+	  NSString *key2;
+	  
+	  key2 = [keys objectAtIndex:i];
+	  
+	  /* special GSWS field */
+	  if (key2 == GWSOrderKey)
+	    continue;
+	  
+	  obj = [value objectForKey: key2];
+	  
+	  if ([key2 isEqualToString:@"Id"])
+	    {
+	      /* when queried, Id is always in an array, else empty string */
+	      if ([obj isKindOfClass: [NSArray class]])
+		value2 = [(NSArray *)obj objectAtIndex: 0];
+	      else
+		continue; /* skip empty Id */
+	    }
+	  else if ([key2 isEqualToString:@"type"])
+	    {
+	      continue;
+	    }
+	  else
+	    value2 = obj;
+	  
+	  if (enableFieldTypesDescibeForQuery)
+	    {
+	      value2 = [self adjustFormatForField:key2 forValue:value2 inObject:sObj2];
+	    }
+	  [sObj2 setValue: value2 forField: key2];
+	  [dict2 setObject: value2 forKey: key2];
+	}
+
       [sObj2 autorelease];
-      retObj = value;
+      [dict2 autorelease];
+      retObj = dict2;
     }
   else
     {
@@ -523,7 +577,6 @@
 
           fieldProps = [objDetails propertiesOfField: key];
           fieldType = [fieldProps objectForKey:@"type"];
-
           if ([fieldType isEqualToString:@"double"])
             {
               NSNumber *n;
@@ -795,7 +848,6 @@
               NSString *typeStr;
 
               typeStr = [record objectForKey: @"type"];
-              //NSLog(@"Obj type present: %@", typeStr);
               propDict = [NSDictionary dictionaryWithObject:typeStr forKey:@"type"];
               [sObj setObjectProperties: propDict];
             }
