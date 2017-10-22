@@ -280,7 +280,7 @@
       downBatchSize = 500;
       maxSOQLLength = MAX_SOQL_LENGTH;
 
-      enableFieldTypesDescibeForQuery = YES;
+      enableFieldTypesDescribeForQuery = YES;
       returnSuccessResults = YES;
       returnMultipleErrors = YES;
 
@@ -542,7 +542,7 @@
 	  else
 	    value2 = obj;
 	  
-	  if (enableFieldTypesDescibeForQuery)
+	  if (enableFieldTypesDescribeForQuery)
 	    {
 	      value2 = [self adjustFormatForField:key2 forValue:value2 inObject:sObj2];
 	    }
@@ -867,7 +867,7 @@
               else
                 value = obj;
 
-              if (enableFieldTypesDescibeForQuery)
+              if (enableFieldTypesDescribeForQuery)
                 {
                   value = [self adjustFormatForField:key forValue:value inObject:sObj];
                 }
@@ -1069,7 +1069,7 @@
               else
                   value = obj;
               
-              if (enableFieldTypesDescibeForQuery)
+              if (enableFieldTypesDescribeForQuery)
                 {
                   value = [self adjustFormatForField:key forValue:value inObject:sObj];
                 }
@@ -2927,10 +2927,33 @@
   return str;
 }
 
-/** clean the cache of descibed objects (sObjectDetailsDict) */
+/** clean the cache of described objects (sObjectDetailsDict) */
 - (void)flushObjectDetails
 {
   [sObjectDetailsDict removeAllObjects];
 }
+
+- (void)setEnableFieldTypesDescribeForQuery:(BOOL)flag
+{
+  enableFieldTypesDescribeForQuery = YES;
+}
+
+/** returns the cache of described objects */
+- (NSMutableDictionary *)sObjectDetailsDict
+{
+  return sObjectDetailsDict;
+}
+
+/** sets the cache of described objects */
+- (void)setSObjectDetailsDict:(NSMutableDictionary *)md
+{
+  if (sObjectDetailsDict != md)
+    {
+      [sObjectDetailsDict release];
+      sObjectDetailsDict = md;
+      [sObjectDetailsDict retain];
+    }
+}
+  
 
 @end

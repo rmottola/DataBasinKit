@@ -84,7 +84,7 @@
   NSRecursiveLock *lockBusy;
 
   /** describe each object in a query to get field types */
-  BOOL enableFieldTypesDescibeForQuery;
+  BOOL enableFieldTypesDescribeForQuery;
 
   /** return positive results */
   BOOL returnSuccessResults;
@@ -122,6 +122,9 @@
 - (DBSObject *)describeSObject: (NSString *)objectType;
 - (NSString *)identifyObjectById:(NSString *)sfId;
 - (void)flushObjectDetails;
+- (void)setEnableFieldTypesDescribeForQuery:(BOOL)flag;
+- (NSMutableDictionary *)sObjectDetailsDict;
+- (void)setSObjectDetailsDict:(NSMutableDictionary *)md;
 
 - (NSString *) sessionId;
 - (void) setSessionId:(NSString *)session;
