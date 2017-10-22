@@ -489,6 +489,8 @@
     return value;
   if ([key isEqualToString:@"BillingAddress"])
     return value;
+  if ([key isEqualToString:@"Address"])
+    return value;
 
   
   if ([value isKindOfClass:[NSDictionary class]])
@@ -569,7 +571,6 @@
           if (objDetails)
             [sObjectDetailsDict setObject:objDetails forKey:type];
         }
-      
       if (objDetails)
         {
           NSDictionary *fieldProps;
@@ -628,7 +629,7 @@
         }
 
     }
-
+  
   return retObj;
 }
   
@@ -2831,6 +2832,10 @@
 - (DBSObject *)describeSObject: (NSString *)objectType
 {
   DBSObject *sObj;
+
+  sObj = [sObjectDetailsDict objectForKey:objectType];
+  if (sObj)
+    return sObj;
   
   [lockBusy lock];
   if (busyCount)
@@ -2853,7 +2858,9 @@
       [localException raise];
     }
   NS_ENDHANDLER  
-  
+
+  [sObjectDetailsDict setObject:sObj forKey:objectType];
+    
   [lockBusy lock];
   busyCount--;
   [lockBusy unlock];
