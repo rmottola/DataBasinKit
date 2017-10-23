@@ -193,6 +193,28 @@
 
   keys = [NSMutableArray arrayWithArray:[d allKeys]];
   [keys removeObject:GWSOrderKey];
+
+  if ([root hasSuffix:@"Address"])
+    {
+      NSMutableString *str;
+
+      str = [[NSMutableString alloc] init];
+      for (i = 0; i < [keys count]; i++)
+	{
+	  NSString *s;
+
+	  s = [d objectForKey:[keys objectAtIndex:i]];
+	  if (s && [s length])
+	    {
+	      if ([str length])
+		[str appendString: @" - "];
+	      [str appendString:s];
+	    }
+	}
+      [dict setObject:str forKey:root];
+      [order addObject:root];
+      [str release];
+    }
   
   /* remove some fields which get added automatically by salesforce even if not asked for */
   [keys removeObject:@"type"];
