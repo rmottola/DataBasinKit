@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8504AC8E1FA12180001D2035 /* DBSFTypeWrappers.h in Headers */ = {isa = PBXBuildFile; fileRef = 8504AC8C1FA12180001D2035 /* DBSFTypeWrappers.h */; };
+		8504AC8F1FA12180001D2035 /* DBSFTypeWrappers.m in Sources */ = {isa = PBXBuildFile; fileRef = 8504AC8D1FA12180001D2035 /* DBSFTypeWrappers.m */; };
 		850A48A4191297BF00B9303D /* DataBasinKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 850A48A3191297BF00B9303D /* DataBasinKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		850A48BB1912D4CB00B9303D /* DBCSVReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 850A48AF1912D4CB00B9303D /* DBCSVReader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		850A48BC1912D4CB00B9303D /* DBCSVReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 850A48B01912D4CB00B9303D /* DBCSVReader.m */; };
@@ -35,6 +37,8 @@
 		0867D6A5FE840307C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		8504AC8C1FA12180001D2035 /* DBSFTypeWrappers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBSFTypeWrappers.h; sourceTree = "<group>"; };
+		8504AC8D1FA12180001D2035 /* DBSFTypeWrappers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBSFTypeWrappers.m; sourceTree = "<group>"; };
 		850A48A3191297BF00B9303D /* DataBasinKit.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DataBasinKit.h; sourceTree = "<group>"; };
 		850A48AF1912D4CB00B9303D /* DBCSVReader.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DBCSVReader.h; sourceTree = "<group>"; };
 		850A48B01912D4CB00B9303D /* DBCSVReader.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DBCSVReader.m; sourceTree = "<group>"; };
@@ -113,6 +117,8 @@
 		08FB77AEFE84172EC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				8504AC8C1FA12180001D2035 /* DBSFTypeWrappers.h */,
+				8504AC8D1FA12180001D2035 /* DBSFTypeWrappers.m */,
 				850A48AF1912D4CB00B9303D /* DBCSVReader.h */,
 				850A48B01912D4CB00B9303D /* DBCSVReader.m */,
 				850A48B11912D4CB00B9303D /* DBCSVWriter.h */,
@@ -176,6 +182,7 @@
 				850A48C51912D4CB00B9303D /* DBSObject.h in Headers */,
 				8534AFED1DAB9919005F5ECD /* DBHTMLWriter.h in Headers */,
 				850FFFBB1F71DA8700B86D18 /* DBFileWriter.h in Headers */,
+				8504AC8E1FA12180001D2035 /* DBSFTypeWrappers.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,6 +256,7 @@
 				850A48C61912D4CB00B9303D /* DBSObject.m in Sources */,
 				8534AFEE1DAB9919005F5ECD /* DBHTMLWriter.m in Sources */,
 				850FFFBC1F71DA8700B86D18 /* DBFileWriter.m in Sources */,
+				8504AC8F1FA12180001D2035 /* DBSFTypeWrappers.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

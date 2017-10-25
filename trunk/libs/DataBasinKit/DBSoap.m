@@ -774,6 +774,7 @@
       else
 	{
           [logger log: LogStandard : @"[DBSoap query] Could not parse Size string: %@\n", sizeStr];
+          [result release];
           return nil;
         }
       
