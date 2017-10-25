@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8504AC8E1FA12180001D2035 /* DBSFTypeWrappers.h in Headers */ = {isa = PBXBuildFile; fileRef = 8504AC8C1FA12180001D2035 /* DBSFTypeWrappers.h */; };
+		8504AC8E1FA12180001D2035 /* DBSFTypeWrappers.h in Headers */ = {isa = PBXBuildFile; fileRef = 8504AC8C1FA12180001D2035 /* DBSFTypeWrappers.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8504AC8F1FA12180001D2035 /* DBSFTypeWrappers.m in Sources */ = {isa = PBXBuildFile; fileRef = 8504AC8D1FA12180001D2035 /* DBSFTypeWrappers.m */; };
 		850A48A4191297BF00B9303D /* DataBasinKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 850A48A3191297BF00B9303D /* DataBasinKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		850A48BB1912D4CB00B9303D /* DBCSVReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 850A48AF1912D4CB00B9303D /* DBCSVReader.h */; settings = {ATTRIBUTES = (Public, ); }; };
