@@ -290,6 +290,14 @@ NSString *DBFileFormatHTML = @"HTML";
               {
                 [self formatComplexObject:value withRoot:key inDict:dataDict inOrder:keyOrder];
               }
+            else if ([value isKindOfClass: [NSArray class]])
+              {
+                NSString *s;
+
+                s = [NSString stringWithFormat:@"%lu subitems", (unsigned long)[(NSArray *)value count]];
+                [dataDict setObject:s forKey:key];
+                [keyOrder addObject:key];
+              }
             else
               {
 		NSLog(@"DBHTMLWriter - formatOneLine - unknown class for object %@ of class %@ inside DBSObject", value, [value class]);
