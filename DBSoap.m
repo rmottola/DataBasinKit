@@ -488,9 +488,6 @@
   if ([type isEqualToString:@"AggregateResult"])
     return value;
 
-  /* if we don't know anything better, return object as is */
-  retObj = value;
-
   /* check for described object cache */
   objDetails = [sObjectDetailsDict objectForKey:type];
   if (!objDetails)
