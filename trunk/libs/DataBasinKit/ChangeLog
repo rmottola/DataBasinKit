@@ -1,5 +1,10 @@
 2017-10-30 Riccardo Mottola <rm@gnu.org>
 
+	* DBSoap.m
+	Extract object and result parsing into adjustFormatForField and extractQueryRecords
+
+2017-10-30 Riccardo Mottola <rm@gnu.org>
+
 	* DBCSVWriter.m
 	* DBHTMLWriter.m
 	Don't choke on arrays of objects coming from nested queries.

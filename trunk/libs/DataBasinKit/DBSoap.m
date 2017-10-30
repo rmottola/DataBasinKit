@@ -69,6 +69,8 @@
 @interface DBSoap (PrivateMethods)
 - (DBSObject *)_describeSObject: (NSString *)objectType;
 - (NSArray *)_describeGlobal;
+- (id)adjustFormatForField:(NSString *)key forValue:(id)value inObject:(DBSObject *)sObj;
+- (void)extractQueryRecords:(NSArray *)records toObjects:(NSMutableArray *)objects;
 @end
 
 @implementation DBSoap
@@ -486,6 +488,8 @@
   if ([type isEqualToString:@"AggregateResult"])
     return value;
 
+  /* if we don't know anything better, return object as is */
+  retObj = value;
 
   /* check for described object cache */
   objDetails = [sObjectDetailsDict objectForKey:type];
@@ -550,66 +554,128 @@
 	}
       else if ([value isKindOfClass:[NSDictionary class]])
 	{
-	  NSString *type2;
-	  DBSObject *sObj2;
-	  NSMutableDictionary *dict2;
-	  NSUInteger i;
-	  NSDictionary *propDict;
-	  NSArray *keys;
+          NSArray *records;
+          BOOL done;
+
+          /* a dictionary might be a single complex object or an array of nested objects */
+          records = [value objectForKey:@"records"];
+          if (records)
+            {
+              NSString       *doneStr;
+              NSString       *sizeStr;
+              NSMutableArray *objArray;
+              unsigned long  size;
+
+              objArray = [[NSMutableArray alloc] init];
+
+              NSLog(@"adjustFormatForField : we have a nested array of objects: %lu", [records count]);
+              doneStr = [(NSDictionary *)value objectForKey:@"done"];
+              sizeStr = [(NSDictionary *)value objectForKey:@"size"];
+              if (doneStr != nil)
+                {
+                  [logger log: LogDebug: @"[DBSoap adjustFormatForField] done: %@\n", doneStr];
+                  done = NO;
+                  if ([doneStr isEqualToString:@"true"])
+                    done = YES;
+                  else if ([doneStr isEqualToString:@"false"])
+                    done = NO;
+                  else
+                    [logger log: LogStandard: @"[DBSoap adjustFormatForField] done, unexpected value: %@\n", doneStr];
+                }
+
+              size = 0;
+              if (sizeStr != nil)
+                {
+                  NSScanner *scan;
+                  long long ll;
+                  
+                  scan = [NSScanner scannerWithString:sizeStr];
+                  if ([scan scanLongLong:&ll])
+                    {
+                      size = (unsigned long)ll;
+                      [logger log: LogInformative: @"[DBSoap adjustFormatForField] Declared size is: %lu\n", size];
+                    }
+                  else
+                    {
+                      [logger log: LogStandard : @"[DBSoap adjustFormatForField] Could not parse Size string: %@\n", sizeStr];
+                      NSLog(@"Error parsing subquery size string");
+                      size = 0;
+                      value = nil;
+                    }
+                }
+              
+              /* if we have only one element, put it in an array */
+              if (size == 1)
+                {
+                  records = [NSArray arrayWithObject:records];
+                }
+              
+
+              [self extractQueryRecords:records toObjects:objArray];
+              retObj = [objArray autorelease];
+            }
+          else
+            {
+              NSString *type2;
+              DBSObject *sObj2;
+              NSMutableDictionary *dict2;
+              NSUInteger i;
+              NSDictionary *propDict;
+              NSArray *keys;
+          
+              sObj2 = [[DBSObject alloc] init];
+              type2 = [value objectForKey:@"type"];
+	  
+              propDict = [NSDictionary dictionaryWithObject:type2 forKey:@"type"];
+              [sObj2 setObjectProperties: propDict];
+	  
+              // hack until DBSObjects can be handled by writers
+              dict2 = [[NSMutableDictionary alloc] init];
 	  
 	  
-	  sObj2 = [[DBSObject alloc] init];
-	  type2 = [value objectForKey:@"type"];
-	  
-	  propDict = [NSDictionary dictionaryWithObject:type2 forKey:@"type"];
-	  [sObj2 setObjectProperties: propDict];
-	  
-	  // hack until DBSObjects can be handled by writers
-	  dict2 = [[NSMutableDictionary alloc] init];
-	  
-	  
-	  keys = [(NSDictionary *)value allKeys];
-	  //      NSLog(@"we have a complex object: %@ with keys: %@", type2, keys);
-	  for (i = 0; i < [keys count]; i++)
-	    {
-	      id       obj;
-	      id       value2;
-	      NSString *key2;
+              keys = [(NSDictionary *)value allKeys];
+              //      NSLog(@"we have a complex object: %@ with keys: %@", type2, keys);
+              for (i = 0; i < [keys count]; i++)
+                {
+                  id       obj;
+                  id       value2;
+                  NSString *key2;
 	      
-	      key2 = [keys objectAtIndex:i];
+                  key2 = [keys objectAtIndex:i];
 	      
-	      /* special GSWS field */
-	      if (key2 == GWSOrderKey)
-		continue;
+                  /* special GSWS field */
+                  if (key2 == GWSOrderKey)
+                    continue;
 	      
-	      obj = [value objectForKey: key2];
+                  obj = [value objectForKey: key2];
 	      
-	      if ([key2 isEqualToString:@"Id"])
-		{
-		  /* when queried, Id is always in an array, else empty string */
-		  if ([obj isKindOfClass: [NSArray class]])
-		    value2 = [(NSArray *)obj objectAtIndex: 0];
-		  else
-		    continue; /* skip empty Id */
-		}
-	      else if ([key2 isEqualToString:@"type"])
-		{
-		  continue;
-		}
-	      else
-		value2 = obj;
+                  if ([key2 isEqualToString:@"Id"])
+                    {
+                      /* when queried, Id is always in an array, else empty string */
+                      if ([obj isKindOfClass: [NSArray class]])
+                        value2 = [(NSArray *)obj objectAtIndex: 0];
+                      else
+                        continue; /* skip empty Id */
+                    }
+                  else if ([key2 isEqualToString:@"type"])
+                    {
+                      continue;
+                    }
+                  else
+                    value2 = obj;
 	      
-	      if (enableFieldTypesDescribeForQuery)
-		{
-		  value2 = [self adjustFormatForField:key2 forValue:value2 inObject:sObj2];
-		}
-	      [sObj2 setValue: value2 forField: key2];
-	      [dict2 setObject: value2 forKey: key2];
-	    }
+                  if (enableFieldTypesDescribeForQuery)
+                    {
+                      value2 = [self adjustFormatForField:key2 forValue:value2 inObject:sObj2];
+                    }
+                  [sObj2 setValue: value2 forField: key2];
+                  [dict2 setObject: value2 forKey: key2];
+                }
 	  
-	  [sObj2 autorelease];
-	  [dict2 autorelease];
-	  retObj = dict2;
+              [sObj2 autorelease];
+              [dict2 autorelease];
+              retObj = dict2;
+            }
 	}
       else
 	{
@@ -625,7 +691,84 @@
   
   return retObj;
 }
-  
+
+- (void)extractQueryRecords:(NSArray *)records toObjects:(NSMutableArray *)objects
+{
+  NSUInteger     i;
+  NSUInteger     batchSize;
+  NSMutableArray *keys;
+  BOOL typePresent;
+  NSDictionary          *record;
+
+  [records retain];
+  batchSize = [records count];
+
+  record = [records objectAtIndex:0];
+
+  [logger log: LogInformative :@"[DBSoap extractQueryRecords] records size is: %d\n", batchSize];
+      
+  /* let's get the fields from the keys of the first record */
+  keys = [NSMutableArray arrayWithArray:[record allKeys]];
+  [keys removeObject:GWSOrderKey];
+
+  /* remove some fields which get added automatically by salesforce even if not asked for */
+  typePresent = [keys containsObject:@"type"];
+  if (typePresent)
+    [keys removeObject:@"type"];
+      
+  /* remove Id only if it is null, else an array of two populated Id is returned by SF */
+  if (![[record objectForKey:@"Id"] isKindOfClass: [NSArray class]])
+    [keys removeObject:@"Id"];
+
+      
+  /* now cycle all the records and read out the fields */
+  for (i = 0; i < batchSize; i++)
+    {
+      NSUInteger   j;
+      DBSObject    *sObj;
+        
+      sObj = [[DBSObject alloc] init];
+
+      /* we removed type, but if it is present, set it as a property
+         Further, we describe the type if desired to get field types.
+      */
+      if (typePresent) 
+        {
+          NSDictionary *propDict;
+          NSString *typeStr;
+
+          typeStr = [record objectForKey: @"type"];
+          propDict = [NSDictionary dictionaryWithObject:typeStr forKey:@"type"];
+          [sObj setObjectProperties: propDict];
+        }
+
+      record = [records objectAtIndex:i];
+      //[logger log: LogDebug: @"[DBSoap query] record :%@\n", record];
+      for (j = 0; j < [keys count]; j++)
+        {
+          id       obj;
+          id       value;
+          NSString *key;
+            
+          key = [keys objectAtIndex:j];
+          obj = [record objectForKey: key];
+          if ([key isEqualToString:@"Id"])
+            value = [(NSArray *)obj objectAtIndex: 0];
+          else
+            value = obj;
+
+          if (enableFieldTypesDescribeForQuery)
+            {
+              value = [self adjustFormatForField:key forValue:value inObject:sObj];
+            }
+          [sObj setValue: value forField: key];
+        }
+
+      [objects addObject:sObj];
+      [sObj release];
+    }
+  [records release];
+}
 
 - (NSString *)_query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects declaredSize:(NSUInteger *)ds progressMonitor:(id<DBProgressProtocol>)p
 {
@@ -641,7 +784,6 @@
   BOOL                  done;
   NSString              *queryLocator;
   NSArray               *records;
-  NSDictionary          *record;
   NSDictionary          *queryFault;
   NSDictionary          *coderError;
   NSString              *sizeStr;
@@ -756,13 +898,8 @@
   [result retain];
   if (sizeStr != nil)
     {
-      NSUInteger    i;
-      NSUInteger    j;
-      NSUInteger    batchSize;
-      NSMutableArray *keys;
       NSScanner *scan;
       long long ll;
-      BOOL typePresent;
 
       scan = [NSScanner scannerWithString:sizeStr];
       if ([scan scanLongLong:&ll])
@@ -788,91 +925,27 @@
             {
               records = [NSArray arrayWithObject:records];
             }
-          record = [records objectAtIndex:0];
-          batchSize = [records count];
+          [self extractQueryRecords:records toObjects:objects];
         }
       else
-        {
-          record = nil;
-          batchSize = 0;
-        }
-
-      /* since we go deep with describes and further queries, we retain */
-      [records retain];
-      
-      [logger log: LogInformative :@"[DBSoap query] records size is: %d\n", batchSize];
-      /* let's get the fields from the keys of the first record */
-      keys = [NSMutableArray arrayWithArray:[record allKeys]];
-      [keys removeObject:GWSOrderKey];
-      
-      /* remove some fields which get added automatically by salesforce even if not asked for */
-      typePresent = [keys containsObject:@"type"];
-      if (typePresent)
-        [keys removeObject:@"type"];
-      
-      /* remove Id only if it is null, else an array of two populated Id is returned by SF */
-      if (![[record objectForKey:@"Id"] isKindOfClass: [NSArray class]])
-        [keys removeObject:@"Id"];
-      
-      /* Count() is not like to aggregate count(Id) and returns no AggregateResult
-	 but returns just a size count without an actual records array.
-	 Thus we fake one single object as AggregateResult. */
-      if (batchSize == 0 && done && isCountQuery)
-	{
-	  DBSObject *sObj;
-        
-          sObj = [[DBSObject alloc] init];
-	  [sObj setValue: [NSNumber numberWithUnsignedLong:size] forField: @"count"];
-	  [objects addObject:sObj];
-	  [sObj release];
-	}
-
-      /* now cycle all the records and read out the fields */
-      for (i = 0; i < batchSize; i++)
-        {
-          DBSObject *sObj;
-        
-          sObj = [[DBSObject alloc] init];
-
-          /* we removed type, but if it is present, set it as a property
-             Further, we describe the type if desired to get field types.
-           */
-          if (typePresent) 
+        {     
+          /* Count() is not like to aggregate count(Id) and returns no AggregateResult
+             but returns just a size count without an actual records array.
+             Thus we fake one single object as AggregateResult. */
+          if (done && isCountQuery)
             {
-              NSDictionary *propDict;
-              NSString *typeStr;
-
-              typeStr = [record objectForKey: @"type"];
-              propDict = [NSDictionary dictionaryWithObject:typeStr forKey:@"type"];
-              [sObj setObjectProperties: propDict];
+              DBSObject *sObj;
+        
+              sObj = [[DBSObject alloc] init];
+              [sObj setValue: [NSNumber numberWithUnsignedLong:size] forField: @"count"];
+              [objects addObject:sObj];
+              [sObj release];
             }
-
-          record = [records objectAtIndex:i];
-	  //[logger log: LogDebug: @"[DBSoap query] record :%@\n", record];
-          for (j = 0; j < [keys count]; j++)
+          else
             {
-              id       obj;
-              id       value;
-              NSString *key;
-            
-              key = [keys objectAtIndex:j];
-              obj = [record objectForKey: key];
-              if ([key isEqualToString:@"Id"])
-                value = [(NSArray *)obj objectAtIndex: 0];
-              else
-                value = obj;
-
-              if (enableFieldTypesDescribeForQuery)
-                {
-                  value = [self adjustFormatForField:key forValue:value inObject:sObj];
-                }
-              [sObj setValue: value forField: key];
+              NSLog(@"[DBSoap query] unexpected: no records but not a complete count query");
             }
-
-          [objects addObject:sObj];
-          [sObj release];
         }
-      [records release];
     }
   if (!done)
     {
@@ -901,7 +974,6 @@
   BOOL                  done;
   NSString              *queryLocator;
   NSArray               *records;
-  NSDictionary          *record;
   NSDictionary          *queryFault;
 
   /* if the destination array is nil, exit */
@@ -996,85 +1068,12 @@
   // So we can just check against the actually returned records
   if (records != nil)
     {
-      NSUInteger     i;
-      NSUInteger     j;
-      NSUInteger     batchSize;
-      NSMutableArray *keys;
-      BOOL typePresent;
-      
       /* if we have only one element, put it in an array */
       if (![records isKindOfClass:[NSArray class]])
         {
           records = [NSArray arrayWithObject:records];
         }
-      record = [records objectAtIndex:0];
-      batchSize = [records count];
-
-      /* since we go deep with describes and further queries, we retain */
-      [records retain];
-
-      [logger log: LogInformative :@"[DBSoap queryMore] records size is: %d\n", batchSize];
-      
-      /* let's get the fields from the keys of the first record */
-      keys = [NSMutableArray arrayWithArray:[record allKeys]];
-      [keys removeObject:GWSOrderKey];
-
-      /* remove some fields which get added automatically by salesforce even if not asked for */
-      typePresent = [keys containsObject:@"type"];
-      if (typePresent)
-        [keys removeObject:@"type"];
-      
-      /* remove Id only if it is null, else an array of two populated Id is returned by SF */
-      if (![[record objectForKey:@"Id"] isKindOfClass: [NSArray class]])
-          [keys removeObject:@"Id"];
-
-      /* now cycle all the records and read out the fields */
-      for (i = 0; i < batchSize; i++)
-        {
-          DBSObject *sObj;
-	  
-          sObj = [[DBSObject alloc] init];
-
-          /* we removed type, but if it is present, set it as a property
-             Further, we describe the type if desired to get field types.
-           */
-          if (typePresent) 
-            {
-              NSDictionary *propDict;
-              NSString *typeStr;
-
-              typeStr = [record objectForKey: @"type"];
-              //NSLog(@"Obj type present: %@", typeStr);
-              propDict = [NSDictionary dictionaryWithObject:typeStr forKey:@"type"];
-              [sObj setObjectProperties: propDict];
-            }
-          
-          record = [records objectAtIndex:i];
-          //[logger log: LogDebug: @"[DBSoap queryMore] record :%@\n", record];
-          for (j = 0; j < [keys count]; j++)
-            {
-              id       obj;
-              id       value;
-              NSString *key;
-              
-              key = [keys objectAtIndex:j];
-              obj = [record objectForKey: key];
-              if ([key isEqualToString:@"Id"])
-                  value = [(NSArray *)obj objectAtIndex: 0];
-              else
-                  value = obj;
-              
-              if (enableFieldTypesDescribeForQuery)
-                {
-                  value = [self adjustFormatForField:key forValue:value inObject:sObj];
-                }
-              [sObj setValue: value forField: key];
-            }
-
-          [objects addObject:sObj];
-          [sObj release];
-        }
-      [records release];
+      [self extractQueryRecords:records toObjects:objects];
     }
   if (!done)
     {
