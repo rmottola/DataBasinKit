@@ -282,7 +282,7 @@
       downBatchSize = 500;
       maxSOQLLength = MAX_SOQL_LENGTH;
 
-      enableFieldTypesDescribeForQuery = YES;
+      enableFieldTypesDescribeForQuery = NO;
       returnSuccessResults = YES;
       returnMultipleErrors = YES;
 
@@ -474,6 +474,15 @@
   [sessionId retain];
 }
 
+/**
+ <p>The passed <i>value</i> is transformed from a String to a specific Type
+ (using a DBSTypeWrapper if recognized) using information of the object <i>sObj</i>
+ through an object describes.<br>
+ Besides Strings the value could be complex being either a special type like an Address
+ or a nested result of a query.</p>
+
+ <p>Currently, queryMore is not performed for nested results</p>
+ */
 - (id)adjustFormatForField:(NSString *)key forValue:(id)value inObject:(DBSObject *)sObj
 {
   id retObj;
@@ -578,6 +587,11 @@
                     done = NO;
                   else
                     [logger log: LogStandard: @"[DBSoap adjustFormatForField] done, unexpected value: %@\n", doneStr];
+                  if (!done)
+                    {
+                      // TODO we could retrieve more objects
+                      [logger log: LogStandard: @"[DBSoap adjustFormatForField] nested query contains more results. queryMore not performed"];
+                    }
                 }
 
               size = 0;
@@ -689,6 +703,9 @@
   return retObj;
 }
 
+/*
+  Parses a result: this can be the main result but can also be nested in case of a subquery (nested query)
+ */
 - (void)extractQueryRecords:(NSArray *)records toObjects:(NSMutableArray *)objects
 {
   NSUInteger     i;
@@ -2930,9 +2947,14 @@
   [sObjectDetailsDict removeAllObjects];
 }
 
+- (BOOL)enableFieldTypesDescribeForQuery
+{
+  return enableFieldTypesDescribeForQuery;
+}
+
 - (void)setEnableFieldTypesDescribeForQuery:(BOOL)flag
 {
-  enableFieldTypesDescribeForQuery = YES;
+  enableFieldTypesDescribeForQuery = flag;
 }
 
 /** returns the cache of described objects */

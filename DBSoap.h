@@ -122,6 +122,7 @@
 - (DBSObject *)describeSObject: (NSString *)objectType;
 - (NSString *)identifyObjectById:(NSString *)sfId;
 - (void)flushObjectDetails;
+- (BOOL)enableFieldTypesDescribeForQuery;
 - (void)setEnableFieldTypesDescribeForQuery:(BOOL)flag;
 - (NSMutableDictionary *)sObjectDetailsDict;
 - (void)setSObjectDetailsDict:(NSMutableDictionary *)md;
