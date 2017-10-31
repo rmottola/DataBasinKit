@@ -60,6 +60,7 @@
   [dbSoap setService:serv];
   [dbSoap setLogger:logger];
   [dbSoap setDownBatchSize:[db downBatchSize]];
+  [dbSoap setEnableFieldTypesDescribeForQuery:[db enableFieldTypesDescribeForQuery]];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
   
   fields = nil;
@@ -166,6 +167,7 @@
   [dbSoap setService:serv];
   [dbSoap setLogger:logger];
   [dbSoap setDownBatchSize:2000];
+  [dbSoap setEnableFieldTypesDescribeForQuery:[db enableFieldTypesDescribeForQuery]];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
   
   queryFields = nil;
