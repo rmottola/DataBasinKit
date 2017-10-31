@@ -41,6 +41,7 @@
 }
 
 - (id)initWithHandle:(NSFileHandle *)fileHandle;
+- (void)setFileFormat:(NSString *)f;
 - (void)setLogger:(id<DBLoggerProtocol>)l;
 - (BOOL)writeFieldsOrdered;
 - (void)setWriteFieldsOrdered:(BOOL)flag;

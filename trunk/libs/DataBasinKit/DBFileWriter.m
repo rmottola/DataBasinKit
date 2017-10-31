@@ -50,6 +50,10 @@
   [super dealloc];
 }
 
+- (void)setFileFormat:(NSString *)f
+{
+}
+
 
 - (void)setLogger:(id<DBLoggerProtocol>)l
 {
