@@ -54,6 +54,9 @@ NSString *DBFileFormatCSV = @"CSV";
   [super dealloc];
 }
 
+- (void)setFileFormat:(NSString *)f
+{
+}
 
 - (void)setIsQualified: (BOOL)flag
 {
