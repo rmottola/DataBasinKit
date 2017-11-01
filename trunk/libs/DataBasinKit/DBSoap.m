@@ -517,21 +517,11 @@
       fieldType = [fieldProps objectForKey:@"type"];
       if ([fieldType isEqualToString:@"double"])
 	{
-	  NSNumber *n;
-	  double d;
-          
-	  d = [value doubleValue];
-	  n = [NSNumber numberWithDouble:d];
-	  retObj = n;
+          retObj = [DBSFDouble sfDoubleWithString:value];
 	}
       else if ([fieldType isEqualToString:@"int"])
 	{
-	  NSNumber *n;
-	  NSInteger i;
-          
-	  i = [value integerValue];
-	  n = [NSNumber numberWithInteger:i];
-	  retObj = n;
+          retObj = [DBSFInteger sfIntegerWithString:value];
 	}
       else if ([fieldType isEqualToString:@"boolean"])
 	{
@@ -539,12 +529,7 @@
 	}
       else if ([fieldType isEqualToString:@"currency"])
 	{
-	  NSNumber *n;
-	  double d;
-          
-	  d = [value doubleValue];
-	  n = [NSNumber numberWithDouble:d];
-	  retObj = n;
+          retObj = [DBSFCurrency sfCurrencyWithString:value];
 	}
       else if ([fieldType isEqualToString:@"date"])
 	{
