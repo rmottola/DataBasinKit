@@ -71,13 +71,24 @@
 - (double) doubleValue;
 @end
 
+@interface DBSFPercentage : DBSFDouble
+{
+  
+}
+
++ (DBSFPercentage*) sfPercentageWithString: (NSString *)str;
++ (DBSFPercentage*) sfPercentageWithDouble: (double)val;
+
+
+@end
+
 
 @interface DBSFCurrency : DBSFDouble
 {
 
 }
 
-+ (DBSFDouble*) sfCurrencyWithString: (NSString *)str;
++ (DBSFCurrency*) sfCurrencyWithString: (NSString *)str;
 + (DBSFCurrency*) sfCurrencyWithDouble: (double)val;
 
 

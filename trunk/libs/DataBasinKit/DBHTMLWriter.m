@@ -143,9 +143,12 @@ NSString *DBFileFormatHTML = @"HTML";
 
       res = [NSString stringWithString: s];
       [s release];
-
     }
-  else if ([value isKindOfClass: [NSNumber class]])
+  else if ([value isKindOfClass: [NSNumber class]] ||
+           [value isKindOfClass: [DBSFInteger class]] ||
+           [value isKindOfClass: [DBSFDouble class]] ||
+           [value isKindOfClass: [DBSFPercentage class]] ||
+           [value isKindOfClass: [DBSFCurrency class]])
     {
       if (headerFlag)
         tagBegin = @"<th>";
@@ -173,6 +176,31 @@ NSString *DBFileFormatHTML = @"HTML";
 	  res = [NSString stringWithString: s];
 	  [s release];
 	}
+    }
+  else if ([value isKindOfClass: [DBSFDataType class]])
+    {
+      NSMutableString *s;
+      NSString *strValue;
+    
+      if (headerFlag)
+        tagBegin = @"<th>";
+      else
+        {
+          if (format == DBFileFormatXLS)
+            tagBegin = @"<td style=\"vnd.ms-excel.numberformat:@\">";
+          else
+            tagBegin = @"<td>";
+        }
+    
+      strValue = [value stringValue];
+      s = [[NSMutableString alloc] initWithCapacity:5];
+    
+      [s appendString: tagBegin]; 
+      [s appendString: strValue];
+      [s appendString: tagEnd];
+      
+      res = [NSString stringWithString: s];
+      [s release];
     }
   else
     {
@@ -278,7 +306,7 @@ NSString *DBFileFormatHTML = @"HTML";
 	    
             if ([value isKindOfClass: [DBSFDataType class]])
 	      {
-		[dataDict setObject:[value stringValue] forKey:key];
+		[dataDict setObject:value forKey:key];
 		[keyOrder addObject:key];
 	      }
             else if ([value isKindOfClass: [NSString class]] ||[value isKindOfClass: [NSNumber class]] )
