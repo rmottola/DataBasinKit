@@ -53,6 +53,7 @@
   NSNumber *value;
 }
 
++ (DBSFInteger*) sfIntegerWithString: (NSString *)str;
 + (DBSFInteger *) sfIntegerWithInteger: (NSInteger)val;
 - (id) initWithInteger: (NSInteger)val;
 - (NSInteger) integerValue;
@@ -64,6 +65,7 @@
   NSNumber *value;
 }
 
++ (DBSFDouble*) sfDoubleWithString: (NSString *)str;
 + (DBSFDouble *) sfDoubleWithDouble: (double)val;
 - (id) initWithDouble: (double)val;
 - (double) doubleValue;
@@ -75,6 +77,7 @@
 
 }
 
++ (DBSFDouble*) sfCurrencyWithString: (NSString *)str;
 + (DBSFCurrency*) sfCurrencyWithDouble: (double)val;
 
 
