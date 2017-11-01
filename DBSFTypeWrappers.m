@@ -195,10 +195,36 @@
 
 @end
 
+@implementation DBSFPercentage
+
++ (DBSFPercentage*) sfPercentageWithString: (NSString *)str
+{
+  double d;
+  
+  d = [str doubleValue];
+  return [self sfPercentageWithDouble: d];
+}
+
+
++ (DBSFPercentage*) sfPercentageWithDouble: (double)val
+{
+  return [[[DBSFPercentage alloc] initWithDouble:val] autorelease];
+}
+
+- (NSString *)stringValue
+{
+  NSString *s;
+
+  s = [value stringValue];
+  s = [s stringByAppendingString:@" %"];
+  return s;
+}
+
+@end
 
 @implementation DBSFCurrency
 
-+ (DBSFDouble*) sfCurrencyWithString: (NSString *)str
++ (DBSFCurrency*) sfCurrencyWithString: (NSString *)str
 {
   double d;
   

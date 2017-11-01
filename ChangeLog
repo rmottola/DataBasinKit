@@ -2,6 +2,14 @@
 
 	* DBSFTypeWrappers.h
         * DBSFTypeWrappers.m
+	* DBSoap.m
+	* DBHTMLWriter.m
+        Handle Percentage.
+
+2017-11-01 Riccardo Mottola <rm@gnu.org>
+
+	* DBSFTypeWrappers.h
+        * DBSFTypeWrappers.m
         Implement missing class methods.
 
 	* DBSoap.m

@@ -531,6 +531,10 @@
 	{
           retObj = [DBSFCurrency sfCurrencyWithString:value];
 	}
+      else if ([fieldType isEqualToString:@"percent"])
+	{
+          retObj = [DBSFPercentage sfPercentageWithString:value];
+	}
       else if ([fieldType isEqualToString:@"date"])
 	{
 	  retObj = value;
