@@ -4,6 +4,9 @@
         * DBSFTypeWrappers.m
         Implement missing class methods.
 
+	* DBSoap.m
+        Initialize DBSFDataTypes better.
+
 2017-10-31 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m
