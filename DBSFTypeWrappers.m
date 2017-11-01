@@ -34,7 +34,7 @@
 
 - (NSString *)stringValue
 {
-  NSLog(@"Subclass responsibility - initWithString");
+  NSLog(@"Subclass responsibility - stringValue");
   return nil;
 }
 
@@ -152,9 +152,26 @@
 
 @implementation DBSFDouble
 
++ (DBSFDouble*) sfDoubleWithString: (NSString *)str
+{
+  double d;
+  
+  d = [str doubleValue];
+  return [self sfDoubleWithDouble: d];
+}
+
 + (DBSFDouble*) sfDoubleWithDouble: (double)val
 {
   return [[[DBSFDouble alloc] initWithDouble:val] autorelease];
+}
+
+- (DBSFDouble *) initWithString:(NSString *)str
+{
+  double d;
+  
+  d = [str doubleValue];
+  [self initWithDouble:d];
+  return self;
 }
 
 - (id) initWithDouble: (double)val
@@ -171,10 +188,24 @@
   return [value doubleValue];
 }
 
+- (NSString *)stringValue
+{
+  return [value stringValue];
+}
+
 @end
 
 
 @implementation DBSFCurrency
+
++ (DBSFDouble*) sfCurrencyWithString: (NSString *)str
+{
+  double d;
+  
+  d = [str doubleValue];
+  return [self sfCurrencyWithDouble: d];
+}
+
 
 + (DBSFCurrency*) sfCurrencyWithDouble: (double)val
 {
