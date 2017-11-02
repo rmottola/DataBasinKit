@@ -537,11 +537,11 @@
 	}
       else if ([fieldType isEqualToString:@"date"])
 	{
-	  retObj = value;
+          retObj = [DBSFDate sfDateWithString:value];
 	}
       else if ([fieldType isEqualToString:@"datetime"])
 	{
-	  retObj = value;
+          retObj = [DBSFDateTime sfDateWithString:value];
 	}
       else if ([fieldType isEqualToString:@"address"])
 	{
