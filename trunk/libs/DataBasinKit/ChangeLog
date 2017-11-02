@@ -1,3 +1,10 @@
+2017-11-02 Riccardo Mottola <rm@gnu.org>
+
+	* DBSFTypeWrappers.h
+        * DBSFTypeWrappers.m
+	* DBSoap.m
+        Date and DateTime types.
+
 2017-11-01 Riccardo Mottola <rm@gnu.org>
 
 	* DBSFTypeWrappers.h

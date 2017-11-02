@@ -241,12 +241,77 @@
 @end
 
 
-@implementation DBSFDate
+@implementation DBSFDateTime
+
++ (DBSFDateTime *)sfDateWithString:(NSString *)str
+{
+  NSDate *d;
+  NSRange rangeOfT;
+  
+  d = nil;
+  rangeOfT = [str rangeOfString:@"T"];
+  if (rangeOfT.location != NSNotFound)
+    {
+      NSString *sD, *sT;
+      NSString *s;
+    
+      sD = [str substringToIndex:rangeOfT.location];
+      sT = [str substringFromIndex:rangeOfT.location + 1];
+      sT = [sT substringToIndex:8];
+      NSLog(@"|%@| |%@|", sD, sT);
+      s = [NSString stringWithFormat:@"%@ %@ +0000", sD, sT];
+      d = [NSDate dateWithString:s];
+    }
+  return [[[DBSFDate alloc] initWithDate:d] autorelease];
+}
+
+
+
++ (DBSFDateTime *)sfDateWithDate: (NSDate *)val
+{
+  return [[[DBSFDate alloc] initWithDate:val] autorelease];
+}
+
+- (id) initWithDate: (NSDate *)value
+{
+  if ((self = [super init]))
+    {
+      date = value;
+    }
+  return self;
+}
+
+- (NSDate *) dateValue
+{
+  return date;
+}
+
+- (NSString *)stringValue
+{
+  NSString *s;
+  
+  s = [date description];
+  return s;
+}
+
 
 @end
 
 
-@implementation DBSFDateTime
+@implementation DBSFDate
+
++ (DBSFDateTime *)sfDateWithString:(NSString *)str
+{
+  NSDate *d;
+  NSString *s;
+  
+  s = [str stringByAppendingString:@" 00:00:00 +0000"];
+  d = [NSDate dateWithString:s];
+  return [[[DBSFDate alloc] initWithDate:d] autorelease];
+}
+
+
+
 
 @end
 

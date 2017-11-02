@@ -53,7 +53,7 @@
   NSNumber *value;
 }
 
-+ (DBSFInteger*) sfIntegerWithString: (NSString *)str;
++ (DBSFInteger *) sfIntegerWithString: (NSString *)str;
 + (DBSFInteger *) sfIntegerWithInteger: (NSInteger)val;
 - (id) initWithInteger: (NSInteger)val;
 - (NSInteger) integerValue;
@@ -65,7 +65,7 @@
   NSNumber *value;
 }
 
-+ (DBSFDouble*) sfDoubleWithString: (NSString *)str;
++ (DBSFDouble *) sfDoubleWithString: (NSString *)str;
 + (DBSFDouble *) sfDoubleWithDouble: (double)val;
 - (id) initWithDouble: (double)val;
 - (double) doubleValue;
@@ -94,16 +94,20 @@
 
 @end
 
-@interface DBSFDate : DBSFDataType
+@interface DBSFDateTime : DBSFDataType
 {
   NSDate *date;
 }
 
++ (DBSFDateTime *)sfDateWithString:(NSString *)str;
++ (DBSFDateTime *)sfDateWithDate: (NSDate *)val;
+- (id) initWithDate: (NSDate *)value;
+- (NSDate *) dateValue;
+
 @end
 
-@interface DBSFDateTime : DBSFDataType
+@interface DBSFDate : DBSFDateTime
 {
-  NSDate *date;
 }
 
 @end
