@@ -30,7 +30,9 @@
 @interface DBSFDataType : NSObject
 {
 }
+
 - (id) initWithString:(NSString *)str;
+- (id) initWithSFString:(NSString *)str;
 - (NSString *)stringValue;
 
 @end
@@ -41,7 +43,6 @@
   BOOL value;
 }
 
-+ (DBSFBoolean *)sfBooleanWithString:(NSString *)str;
 + (DBSFBoolean *) sfBooleanWithBool: (BOOL)val;
 - (id) initWithBool: (BOOL)value;
 - (BOOL) boolValue;
@@ -53,7 +54,6 @@
   NSNumber *value;
 }
 
-+ (DBSFInteger *) sfIntegerWithString: (NSString *)str;
 + (DBSFInteger *) sfIntegerWithInteger: (NSInteger)val;
 - (id) initWithInteger: (NSInteger)val;
 - (NSInteger) integerValue;
@@ -65,7 +65,6 @@
   NSNumber *value;
 }
 
-+ (DBSFDouble *) sfDoubleWithString: (NSString *)str;
 + (DBSFDouble *) sfDoubleWithDouble: (double)val;
 - (id) initWithDouble: (double)val;
 - (double) doubleValue;
@@ -76,7 +75,6 @@
   
 }
 
-+ (DBSFPercentage*) sfPercentageWithString: (NSString *)str;
 + (DBSFPercentage*) sfPercentageWithDouble: (double)val;
 
 
@@ -88,7 +86,6 @@
 
 }
 
-+ (DBSFCurrency*) sfCurrencyWithString: (NSString *)str;
 + (DBSFCurrency*) sfCurrencyWithDouble: (double)val;
 
 
@@ -99,7 +96,6 @@
   NSDate *date;
 }
 
-+ (DBSFDateTime *)sfDateWithString:(NSString *)str;
 + (DBSFDateTime *)sfDateWithDate: (NSDate *)val;
 - (id) initWithDate: (NSDate *)value;
 - (NSDate *) dateValue;

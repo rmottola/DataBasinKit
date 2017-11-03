@@ -517,31 +517,31 @@
       fieldType = [fieldProps objectForKey:@"type"];
       if ([fieldType isEqualToString:@"double"])
 	{
-          retObj = [DBSFDouble sfDoubleWithString:value];
+          retObj = [[[DBSFDouble alloc] initWithSFString:value] autorelease];
 	}
       else if ([fieldType isEqualToString:@"int"])
 	{
-          retObj = [DBSFInteger sfIntegerWithString:value];
+          retObj = [[[DBSFInteger alloc] initWithSFString:value] autorelease];
 	}
       else if ([fieldType isEqualToString:@"boolean"])
 	{
-	  retObj = [DBSFBoolean sfBooleanWithString:value];
+	  retObj = [[[DBSFBoolean alloc] initWithSFString:value] autorelease];
 	}
       else if ([fieldType isEqualToString:@"currency"])
 	{
-          retObj = [DBSFCurrency sfCurrencyWithString:value];
+          retObj = [[[DBSFCurrency alloc] initWithSFString:value] autorelease];
 	}
       else if ([fieldType isEqualToString:@"percent"])
 	{
-          retObj = [DBSFPercentage sfPercentageWithString:value];
+          retObj = [[[DBSFPercentage alloc] initWithSFString:value] autorelease];
 	}
       else if ([fieldType isEqualToString:@"date"])
 	{
-          retObj = [DBSFDate sfDateWithString:value];
+          retObj = [[[DBSFDate alloc] initWithSFString:value] autorelease];
 	}
       else if ([fieldType isEqualToString:@"datetime"])
 	{
-          retObj = [DBSFDateTime sfDateWithString:value];
+          retObj = [[[DBSFDateTime alloc] initWithSFString:value] autorelease];
 	}
       else if ([fieldType isEqualToString:@"address"])
 	{
