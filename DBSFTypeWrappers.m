@@ -323,9 +323,8 @@
   s = nil;
   if (date)
     {
-      cd = [[NSCalendarDate alloc] initWithTimeIntervalSince1970:[date timeIntervalSince1970]];
+      cd = [NSCalendarDate dateWithTimeIntervalSince1970:[date timeIntervalSince1970]];
       s = [cd descriptionWithCalendarFormat:@"%Y-%m-%d"];
-      [cd release];
     }
   return s;
 }
