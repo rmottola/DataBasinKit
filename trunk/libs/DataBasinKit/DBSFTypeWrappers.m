@@ -247,7 +247,7 @@
 {
   NSDate *d;
   NSRange rangeOfT;
-  
+
   d = nil;
   rangeOfT = [str rangeOfString:@"T"];
   if (rangeOfT.location != NSNotFound)
@@ -258,11 +258,12 @@
       sD = [str substringToIndex:rangeOfT.location];
       sT = [str substringFromIndex:rangeOfT.location + 1];
       sT = [sT substringToIndex:8];
-      NSLog(@"|%@| |%@|", sD, sT);
+      //      NSLog(@"|%@| |%@|", sD, sT);
       s = [NSString stringWithFormat:@"%@ %@ +0000", sD, sT];
       d = [NSDate dateWithString:s];
     }
-  return [[[DBSFDate alloc] initWithDate:d] autorelease];
+
+  return [[[DBSFDateTime alloc] initWithDate:d] autorelease];
 }
 
 
@@ -289,8 +290,12 @@
 - (NSString *)stringValue
 {
   NSString *s;
-  
-  s = [date description];
+
+  s = nil;
+  if (date)
+    {
+      s = [date description];
+    }
   return s;
 }
 
@@ -304,12 +309,26 @@
 {
   NSDate *d;
   NSString *s;
-  
+
   s = [str stringByAppendingString:@" 00:00:00 +0000"];
   d = [NSDate dateWithString:s];
   return [[[DBSFDate alloc] initWithDate:d] autorelease];
 }
 
+- (NSString *)stringValue
+{
+  NSString *s;
+  NSCalendarDate *cd;
+
+  s = nil;
+  if (date)
+    {
+      cd = [[NSCalendarDate alloc] initWithTimeIntervalSince1970:[date timeIntervalSince1970]];
+      s = [cd descriptionWithCalendarFormat:@"%Y-%m-%d"];
+      [cd release];
+    }
+  return s;
+}
 
 
 
