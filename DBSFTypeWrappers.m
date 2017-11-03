@@ -296,7 +296,6 @@
 - (id)initWithString:(NSString *)str
 {
   NSDate *d;
-  NSRange rangeOfT;
 
   d = nil;
   if (str)
