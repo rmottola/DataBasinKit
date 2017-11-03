@@ -32,6 +32,12 @@
   return nil;
 }
 
+- (id) initWithSFString:(NSString *)str
+{
+  NSLog(@"Subclass responsibility - initWithSFString");
+  return nil;
+}
+
 - (NSString *)stringValue
 {
   NSLog(@"Subclass responsibility - stringValue");
@@ -42,11 +48,6 @@
 
 @implementation DBSFBoolean
 
-
-+ (DBSFBoolean *)sfBooleanWithString:(NSString *)str
-{
-  return [[[DBSFBoolean alloc] initWithString:str] autorelease];
-}
 
 + (DBSFBoolean *)sfBooleanWithBool:(BOOL)v
 {
@@ -67,6 +68,11 @@
   [self initWithBool:v];
   
   return self;
+}
+
+- (id)initWithSFString:(NSString *)str
+{
+  return [self initWithString:str];
 }
 
 - (id) initWithBool: (BOOL)val
@@ -105,13 +111,6 @@
   [super dealloc];
 }
 
-+ (DBSFInteger*) sfIntegerWithString: (NSString *)str
-{
-  NSInteger i;
-
-  i = [str integerValue];
-  return [self sfIntegerWithInteger: i];
-}
 
 + (DBSFInteger *) sfIntegerWithInteger: (NSInteger)val
 {
@@ -125,6 +124,11 @@
   i = [str integerValue];
   [self initWithInteger:i];
   return self;
+}
+
+- (id)initWithSFString:(NSString *)str
+{
+  return [self initWithString:str];
 }
 
 - (id) initWithInteger: (NSInteger)val
@@ -174,6 +178,16 @@
   return self;
 }
 
+- (DBSFDouble *) initWithSFString:(NSString *)str
+{
+  double d;
+  
+  d = [str doubleValue];
+  [self initWithDouble:d];
+  return self;
+}
+
+
 - (id) initWithDouble: (double)val
 {
   if ((self = [super init]))
@@ -197,19 +211,41 @@
 
 @implementation DBSFPercentage
 
-+ (DBSFPercentage*) sfPercentageWithString: (NSString *)str
-{
-  double d;
-  
-  d = [str doubleValue];
-  return [self sfPercentageWithDouble: d];
-}
 
 
 + (DBSFPercentage*) sfPercentageWithDouble: (double)val
 {
   return [[[DBSFPercentage alloc] initWithDouble:val] autorelease];
 }
+
+- (id) initWithString: (NSString *)str
+{
+  if (str && [str length])
+    {
+      double d;
+      NSRange rangeOfPercent;
+
+      rangeOfPercent = [str rangeOfString:@"%"];
+      if (rangeOfPercent.location != NSNotFound)
+        str = [str substringToIndex:rangeOfPercent.location];
+      d = [str doubleValue];
+      self =  [self initWithDouble: d];
+    }
+  return self;
+}
+
+- (id) initWithSFString: (NSString *)str
+{
+  if (str && [str length])
+    {
+      double d;
+      
+      d = [str doubleValue];
+      self =  [self initWithDouble: d];
+    }
+  return self;
+}
+
 
 - (NSString *)stringValue
 {
@@ -243,7 +279,36 @@
 
 @implementation DBSFDateTime
 
-+ (DBSFDateTime *)sfDateWithString:(NSString *)str
+
+- (void)dealloc
+{
+  [date release];
+  [super dealloc];
+}
+
+
+
++ (DBSFDateTime *)sfDateWithDate: (NSDate *)val
+{
+  return [[[DBSFDate alloc] initWithDate:val] autorelease];
+}
+
+- (id)initWithString:(NSString *)str
+{
+  NSDate *d;
+  NSRange rangeOfT;
+
+  d = nil;
+  if (str)
+    {
+      d = [NSDate dateWithString:str];
+      self = [self initWithDate:d];
+    }
+
+  return self;
+}
+
+- (id)initWithSFString:(NSString *)str
 {
   NSDate *d;
   NSRange rangeOfT;
@@ -261,23 +326,19 @@
       //      NSLog(@"|%@| |%@|", sD, sT);
       s = [NSString stringWithFormat:@"%@ %@ +0000", sD, sT];
       d = [NSDate dateWithString:s];
+      self = [self initWithDate:d];
     }
 
-  return [[[DBSFDateTime alloc] initWithDate:d] autorelease];
+  return self;
 }
 
-
-
-+ (DBSFDateTime *)sfDateWithDate: (NSDate *)val
-{
-  return [[[DBSFDate alloc] initWithDate:val] autorelease];
-}
 
 - (id) initWithDate: (NSDate *)value
 {
   if ((self = [super init]))
     {
       date = value;
+      [date retain];
     }
   return self;
 }
@@ -305,14 +366,24 @@
 
 @implementation DBSFDate
 
-+ (DBSFDateTime *)sfDateWithString:(NSString *)str
+- (id)initWithString:(NSString *)str
+{
+  NSDate *d;
+
+  d = [NSDate dateWithString:str];
+  self = [self initWithDate:d];
+  return self;
+}
+
+- (id)initWithSFString:(NSString *)str
 {
   NSDate *d;
   NSString *s;
 
   s = [str stringByAppendingString:@" 00:00:00 +0000"];
   d = [NSDate dateWithString:s];
-  return [[[DBSFDate alloc] initWithDate:d] autorelease];
+  self = [self initWithDate:d];
+  return self;
 }
 
 - (NSString *)stringValue
