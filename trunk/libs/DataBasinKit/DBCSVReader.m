@@ -87,10 +87,15 @@
 	      [logger log:LogStandard :@"[DBCVSReader initWithPath] could not determine line ending style\n"];
 	  }
 
-	linesArray = [[fileContentString componentsSeparatedByString:newLine] retain];
+	linesArray = [fileContentString componentsSeparatedByString:newLine];
+	if (linesArray && [linesArray count])
+	  [linesArray retain];
+	else
+	  linesArray = nil;
+	
         [self setQualifier:@"\""];
         [self setSeparator:@","];
-        if (parseHeader)
+        if (linesArray && parseHeader)
           {
             [self parseHeaders];
             currentLine++;
@@ -123,8 +128,19 @@
       isQualified = NO;
       [qualifier release];
       qualifier = [q retain];
-      if ([[[linesArray objectAtIndex:0] substringToIndex:[qualifier length]] isEqualToString: qualifier])
-        isQualified = YES;
+      if (linesArray && [linesArray count])
+	{
+	  NSString *l;
+	  
+	  l = [linesArray objectAtIndex:0];
+	  if ([l length] > 0)
+	    {
+	      if ([[l substringToIndex:[qualifier length]] isEqualToString: qualifier])
+		isQualified = YES;
+	    }
+	  else
+	    [logger log:LogStandard :@"[DBCVSReader setQualifier] Header Line empty?\n"];
+	}
       [logger log:LogStandard :@"[DBCVSReader setQualifier] Is file qualified? %d\n", isQualified];
     }
 }
