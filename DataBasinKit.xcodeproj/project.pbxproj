@@ -26,6 +26,10 @@
 		850FFFBB1F71DA8700B86D18 /* DBFileWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 850FFFB91F71DA8700B86D18 /* DBFileWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		850FFFBC1F71DA8700B86D18 /* DBFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 850FFFBA1F71DA8700B86D18 /* DBFileWriter.m */; };
 		85125B25192031A6000E6004 /* ChangeLog in Resources */ = {isa = PBXBuildFile; fileRef = 85125B24192031A6000E6004 /* ChangeLog */; };
+		8532DBCD1FB632AC0040F7B6 /* DBSoap+Creating.m in Sources */ = {isa = PBXBuildFile; fileRef = 8532DBC91FB632AC0040F7B6 /* DBSoap+Creating.m */; };
+		8532DBCE1FB632AC0040F7B6 /* DBSoap+Deleting.m in Sources */ = {isa = PBXBuildFile; fileRef = 8532DBCA1FB632AC0040F7B6 /* DBSoap+Deleting.m */; };
+		8532DBCF1FB632AC0040F7B6 /* DBSoap+Selecting.m in Sources */ = {isa = PBXBuildFile; fileRef = 8532DBCB1FB632AC0040F7B6 /* DBSoap+Selecting.m */; };
+		8532DBD01FB632AC0040F7B6 /* DBSoap+Updating.m in Sources */ = {isa = PBXBuildFile; fileRef = 8532DBCC1FB632AC0040F7B6 /* DBSoap+Updating.m */; };
 		8534AFED1DAB9919005F5ECD /* DBHTMLWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8534AFEB1DAB9919005F5ECD /* DBHTMLWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8534AFEE1DAB9919005F5ECD /* DBHTMLWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 8534AFEC1DAB9919005F5ECD /* DBHTMLWriter.m */; };
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
@@ -56,6 +60,10 @@
 		850FFFB91F71DA8700B86D18 /* DBFileWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBFileWriter.h; sourceTree = "<group>"; };
 		850FFFBA1F71DA8700B86D18 /* DBFileWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBFileWriter.m; sourceTree = "<group>"; };
 		85125B24192031A6000E6004 /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ChangeLog; sourceTree = "<group>"; };
+		8532DBC91FB632AC0040F7B6 /* DBSoap+Creating.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DBSoap+Creating.m"; sourceTree = "<group>"; };
+		8532DBCA1FB632AC0040F7B6 /* DBSoap+Deleting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DBSoap+Deleting.m"; sourceTree = "<group>"; };
+		8532DBCB1FB632AC0040F7B6 /* DBSoap+Selecting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DBSoap+Selecting.m"; sourceTree = "<group>"; };
+		8532DBCC1FB632AC0040F7B6 /* DBSoap+Updating.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DBSoap+Updating.m"; sourceTree = "<group>"; };
 		8534AFEB1DAB9919005F5ECD /* DBHTMLWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBHTMLWriter.h; sourceTree = "<group>"; };
 		8534AFEC1DAB9919005F5ECD /* DBHTMLWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBHTMLWriter.m; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -117,14 +125,18 @@
 		08FB77AEFE84172EC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				850A48B51912D4CB00B9303D /* DBSoap.h */,
+				850A48B61912D4CB00B9303D /* DBSoap.m */,
+				8532DBC91FB632AC0040F7B6 /* DBSoap+Creating.m */,
+				8532DBCA1FB632AC0040F7B6 /* DBSoap+Deleting.m */,
+				8532DBCB1FB632AC0040F7B6 /* DBSoap+Selecting.m */,
+				8532DBCC1FB632AC0040F7B6 /* DBSoap+Updating.m */,
 				8504AC8C1FA12180001D2035 /* DBSFTypeWrappers.h */,
 				8504AC8D1FA12180001D2035 /* DBSFTypeWrappers.m */,
 				850A48AF1912D4CB00B9303D /* DBCSVReader.h */,
 				850A48B01912D4CB00B9303D /* DBCSVReader.m */,
 				850A48B11912D4CB00B9303D /* DBCSVWriter.h */,
 				850A48B21912D4CB00B9303D /* DBCSVWriter.m */,
-				850A48B51912D4CB00B9303D /* DBSoap.h */,
-				850A48B61912D4CB00B9303D /* DBSoap.m */,
 				850A48B71912D4CB00B9303D /* DBSoapCSV.h */,
 				850A48B81912D4CB00B9303D /* DBSoapCSV.m */,
 				850A48B91912D4CB00B9303D /* DBSObject.h */,
@@ -257,6 +269,10 @@
 				8534AFEE1DAB9919005F5ECD /* DBHTMLWriter.m in Sources */,
 				850FFFBC1F71DA8700B86D18 /* DBFileWriter.m in Sources */,
 				8504AC8F1FA12180001D2035 /* DBSFTypeWrappers.m in Sources */,
+				8532DBCD1FB632AC0040F7B6 /* DBSoap+Creating.m in Sources */,
+				8532DBCE1FB632AC0040F7B6 /* DBSoap+Deleting.m in Sources */,
+				8532DBCF1FB632AC0040F7B6 /* DBSoap+Selecting.m in Sources */,
+				8532DBD01FB632AC0040F7B6 /* DBSoap+Updating.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

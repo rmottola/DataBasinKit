@@ -177,6 +177,7 @@
 	      [queryObjectsArray release];
 	      [sessionHeaderDict release];
 	      [headerDict release];
+              [resultArray release];
 	      return nil;
 	    }
 
