@@ -22,10 +22,10 @@ include $(GNUSTEP_MAKEFILES)/common.make
 #
 # Framework
 #
-VERSION = 0.9
+VERSION = 1.0
 PACKAGE_NAME = DataBasinKit
 FRAMEWORK_NAME = DataBasinKit
-DataBasinKit_CURRENT_VERSION_NAME = 0.9
+DataBasinKit_CURRENT_VERSION_NAME = 1.0
 DataBasinKit_DEPLOY_WITH_CURRENT_VERSION = yes
 
 
@@ -61,7 +61,11 @@ DBCSVReader.m \
 DBCSVWriter.m \
 DBHTMLWriter.m \
 DBFileWriter.m \
-DBSFTypeWrappers.m
+DBSFTypeWrappers.m \
+DBSoap+Updating.m \
+DBSoap+Creating.m \
+DBSoap+Selecting.m \
+DBSoap+Deleting.m
 
 #
 # Makefiles

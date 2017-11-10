@@ -144,4 +144,42 @@
 
 @end
 
+@interface DBSoap (Selecting)
 
+- (NSString *)_query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects declaredSize:(NSUInteger *)ds progressMonitor:(id<DBProgressProtocol>)p;
+
+- (NSString *)_queryMore :(NSString *)locator toArray:(NSMutableArray *)objects;
+
+- (NSMutableArray *)_queryFull :(NSString *)queryString queryAll:(BOOL)all progressMonitor:(id<DBProgressProtocol>)p;
+
+- (void)_queryIdentify :(NSString *)queryString with: (NSArray *)identifiers queryAll:(BOOL)all fromArray:(NSArray *)fromArray toArray:(NSMutableArray *)outArray withBatchSize:(int)batchSize progressMonitor:(id<DBProgressProtocol>)p;
+
+@end
+
+
+@interface DBSoap (Updating)
+
+- (NSMutableArray *)_update :(NSString *)objectName fromArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p;
+
+@end
+
+
+@interface DBSoap (Creating)
+
+- (NSMutableArray *)_create :(NSString *)objectName fromArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p;
+
+@end
+
+
+@interface DBSoap (Deleting)
+
+- (NSMutableArray *)_delete :(NSArray *)array progressMonitor:(id<DBProgressProtocol>)p;
+
+@end
+
+@interface DBSoap (PrivateMethods)
+- (DBSObject *)_describeSObject: (NSString *)objectType;
+- (NSArray *)_describeGlobal;
+- (id)adjustFormatForField:(NSString *)key forValue:(id)value inObject:(DBSObject *)sObj;
+- (void)extractQueryRecords:(NSArray *)records toObjects:(NSMutableArray *)objects;
+@end

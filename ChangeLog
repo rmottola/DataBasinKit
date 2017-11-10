@@ -1,3 +1,13 @@
+2017-11-10  Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.h
+	* DBSoap.m
+	* DBSoap+Creating.m
+	* DBSoap+Deleting.m
+	* DBSoap+Updating.m
+	* DBSoap+Selecting.m
+	Factor out CRUD method to separate files in categoris: better readibility.
+
 2017-11-09 Riccardo Mottola <rm@gnu.org>
 
 	* DBCSVReader.m
