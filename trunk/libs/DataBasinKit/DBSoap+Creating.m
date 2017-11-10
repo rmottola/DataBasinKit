@@ -149,6 +149,10 @@
 	      [logger log: LogStandard: @"[DBSoap create] fault code: %@\n", faultCode];
 	      [logger log: LogStandard: @"[DBSoap create] fault String: %@\n", faultString];
 	      [[NSException exceptionWithName:@"DBException" reason:faultString userInfo:nil] raise];
+	      [queryObjectsArray release];
+	      [sessionHeaderDict release];
+	      [headerDict release];
+	      return nil;
 	    }
 
 	  queryResult = [resultDict objectForKey:GWSParametersKey];
