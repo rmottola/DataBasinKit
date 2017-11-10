@@ -161,6 +161,11 @@
 	    {
 	      [logger log: LogStandard: @"[DBSoap create] Error:%@\n", queryError];
 	      [[NSException exceptionWithName:@"DBException" reason:@"Coder Error, check log" userInfo:nil] raise];
+              [queryObjectsArray release];
+              [sessionHeaderDict release];
+              [headerDict release];
+              [resultArray release];
+	      return nil;
 	    }
 	  queryFault = [resultDict objectForKey:GWSFaultKey];
 	  if (queryFault != nil)
@@ -175,6 +180,8 @@
 	      [logger log: LogStandard: @"[DBSoap create] fault String: %@\n", faultString];
 	      [[NSException exceptionWithName:@"DBException" reason:faultString userInfo:nil] raise];
 	      [queryObjectsArray release];
+              [sessionHeaderDict release];
+              [headerDict release];
               [resultArray release];
 	      return nil;
 	    }
@@ -281,6 +288,8 @@
     }
   [logger log: LogDebug: @"[DBSoap create] Outer cycle ended\n"];
   [queryObjectsArray release];
+  [sessionHeaderDict release];
+  [headerDict release];
 
   return [resultArray autorelease];
 }

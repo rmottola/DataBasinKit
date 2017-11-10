@@ -127,6 +127,7 @@
 	  [logger log: LogStandard: @"[DBSoap query] exception code: %@\n", [fault objectForKey:@"exceptionCode"]];
 	  [logger log: LogStandard: @"[DBSoap query] exception: %@\n", exceptionMessage];
 	  [[NSException exceptionWithName:@"DBException" reason:exceptionMessage userInfo:nil] raise];
+          return nil;
 	}
       else
 	{
@@ -294,6 +295,7 @@
 	  [logger log: LogStandard: @"[DBSoap queryMore] exception code: %@\n", [fault objectForKey:@"exceptionCode"]];
 	  [logger log: LogStandard: @"[DBSoap queryMore] exception: %@\n", exceptionMessage];
 	  [[NSException exceptionWithName:@"DBException" reason:exceptionMessage userInfo:nil] raise];
+          return nil;
 	}
       else
 	{

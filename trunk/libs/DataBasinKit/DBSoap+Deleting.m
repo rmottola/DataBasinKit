@@ -118,6 +118,9 @@
 	      NSLog(@"fault code: %@", faultCode);
 	      NSLog(@"fault String: %@", faultString);
 	      [[NSException exceptionWithName:@"DBException" reason:faultString userInfo:nil] raise];
+              [batchObjArray release];
+              [resultArray release];
+	      return nil;
 	    }
   
 	  queryResult = [resultDict objectForKey:GWSParametersKey];
