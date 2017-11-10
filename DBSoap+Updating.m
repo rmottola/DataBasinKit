@@ -159,6 +159,11 @@
 	    {
 	      [logger log: LogStandard: @"[DBSoap update] Error:%@\n", queryError];
 	      [[NSException exceptionWithName:@"DBException" reason:@"Coder Error, check log" userInfo:nil] raise];
+              [queryObjectsArray release];
+              [sessionHeaderDict release];
+              [headerDict release];
+              [resultArray release];
+              return nil;
 	    }
 	  queryFault = [resultDict objectForKey:GWSFaultKey];
 	  if (queryFault != nil)
@@ -171,6 +176,11 @@
 	      [logger log: LogStandard: @"[DBSoap update] fault code: %@\n", faultCode];
 	      [logger log: LogStandard: @"[DBSoap update] fault String: %@\n", faultString];
 	      [[NSException exceptionWithName:@"DBException" reason:faultString userInfo:nil] raise];
+              [queryObjectsArray release];
+              [sessionHeaderDict release];
+              [headerDict release];
+              [resultArray release];
+              return nil;
 	    }
 
 
