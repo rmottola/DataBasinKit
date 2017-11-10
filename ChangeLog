@@ -1,6 +1,11 @@
 2017-11-10  Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap+Creating.m
+	Support nillable fields also in create.
+
+2017-11-10  Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap+Creating.m
 	Better exception handling.
 
 2017-11-10  Riccardo Mottola <rm@gnu.org>

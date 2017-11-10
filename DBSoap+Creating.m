@@ -82,7 +82,8 @@
       id                  result;
       NSDictionary        *queryFault;
       NSDictionary        *queryError;
-   
+      NSMutableArray      *fieldsToNullArr;
+      
       //NSLog(@"inner cycle: %d", batchCounter);
       sObj = [NSMutableDictionary dictionaryWithCapacity: 2];
       [sObj setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
@@ -95,19 +96,43 @@
       [sObj setObject: sObjType forKey:@"type"];
       [sObjKeyOrder addObject:@"type"];
 
+      /* now we separate fields into two categories:
+	 - fields with empty strings are considered NULL
+	 - fields with a value are considered to update */
       fieldNames = [sObject fieldNames];
       fieldCount = [fieldNames count];
-
+      fieldsToNullArr = [[NSMutableArray alloc] init];
+      
       for (i = 0; i < fieldCount; i++)
 	{
 	  NSString *keyName;
-
+	  NSString *fieldValue;
+	  
 	  keyName = [fieldNames objectAtIndex:i];
-	  [sObj setObject: [sObject valueForField:keyName] forKey:keyName];
-	  [sObjKeyOrder addObject:keyName];
+	  fieldValue = [sObject valueForField:keyName];
+	  if ([fieldValue length])
+	    {
+	      [sObj setObject:fieldValue forKey:keyName];
+	      [sObjKeyOrder addObject:keyName];
+	    }
+	  else
+	    {
+	      [fieldsToNullArr addObject:keyName];
+	    }
 	}
       [sObj setObject: sObjKeyOrder forKey: GWSOrderKey];
       [queryObjectsArray addObject: sObj];
+
+      if ([fieldsToNullArr count])
+	{
+	  NSDictionary *sObjNillablesList;
+
+	  sObjNillablesList = [NSDictionary dictionaryWithObjectsAndKeys: fieldsToNullArr, GWSSOAPValueKey, nil];      
+	  [sObj setObject:sObjNillablesList forKey: @"fieldsToNull"];
+	  [sObjKeyOrder addObject:@"fieldsToNull"];
+	}
+      [fieldsToNullArr release];
+    
 
       if (batchCounter == upBatchSize-1 || totalCounter == [objects count]-1)
 	{
