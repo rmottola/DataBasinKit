@@ -49,9 +49,9 @@
 @implementation DBSFBoolean
 
 
-+ (DBSFBoolean *)sfBooleanWithBool:(BOOL)v
++ (DBSFBoolean *)sfBooleanWithBool:(BOOL)val
 {
-  return [[[DBSFBoolean alloc] initWithBool:v] autorelease];
+  return [[[DBSFBoolean alloc] initWithBool:val] autorelease];
 }
 
 - (id)initWithString:(NSString *)str

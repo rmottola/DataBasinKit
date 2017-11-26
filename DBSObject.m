@@ -32,7 +32,7 @@
 @implementation DBSObject
 
 /** <p>Returns the corresponding 18-character case-insensitive
-    salesforce Id given the 15-character version <i>id15</i>
+    salesforce Id given the 15-character version <em>id15</em></p>
 */
 + (NSString *)idTo18: (NSString *) id15
 {
@@ -216,7 +216,7 @@ converting it if necessary.</p>
   return fieldNames;
 }
 
-/** <p>Returns the value of field <i>field</i><p>
+/** <p>Returns the value of field <em>field</em></p>
 */
 - (id)valueForField: (NSString *)field
 {

@@ -1,4 +1,4 @@
-/*
+/**  -*- mode: objc -*-
   Project: DataBasin
 
   Copyright (C) 2012-2015 Free Software Foundation
@@ -27,7 +27,7 @@
 
 @protocol DBProgressProtocol <NSObject>
 
-/** Sets the maximum value expected on which to calculate progress on.<br>
+/** Sets the maximum value expected on which to calculate progress on.<br/>
     E.g. it could be the maximum expected number of records.
   */
 -(void)setMaximumValue:(unsigned long)max;
