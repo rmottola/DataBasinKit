@@ -44,7 +44,7 @@
 }
 
 + (DBSFBoolean *) sfBooleanWithBool: (BOOL)val;
-- (id) initWithBool: (BOOL)value;
+- (id) initWithBool: (BOOL)val;
 - (BOOL) boolValue;
 
 @end
