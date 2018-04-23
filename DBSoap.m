@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2017 Free Software Foundation
+  Copyright (C) 2008-2018 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -227,7 +227,7 @@
 /** Returns the standard URL for login into production, https. Use this as login: parameter */
 + (NSURL *)loginURLProduction
 {
-  return [NSURL URLWithString:@"https://www.salesforce.com/services/Soap/u/37.0"];
+  return [NSURL URLWithString:@"https://login.salesforce.com/services/Soap/u/37.0"];
 }
 
 /** Returns the standard URL for login into sandbox, https. Use this as login: parameter */
