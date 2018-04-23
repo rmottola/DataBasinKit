@@ -227,13 +227,13 @@
 /** Returns the standard URL for login into production, https. Use this as login: parameter */
 + (NSURL *)loginURLProduction
 {
-  return [NSURL URLWithString:@"https://login.salesforce.com/services/Soap/u/37.0"];
+  return [NSURL URLWithString:@"https://login.salesforce.com/services/Soap/u/42.0"];
 }
 
 /** Returns the standard URL for login into sandbox, https. Use this as login: parameter */
 + (NSURL *)loginURLTest
 {
-  return [NSURL URLWithString:@"https://test.salesforce.com/services/Soap/u/37.0"];
+  return [NSURL URLWithString:@"https://test.salesforce.com/services/Soap/u/42.0"];
 }
 
 /** returns a GWSerivce inited usefully for DBSoap */
