@@ -40,7 +40,6 @@
   NSEnumerator          *enumerator;
   unsigned              batchCounter;
   NSMutableArray        *batchObjArray;
-  id                    objToDelete;
   NSString              *idStr;
 
   if ([array count] == 0)
@@ -72,6 +71,7 @@
       id                    result;
       NSDictionary          *queryFault;
       NSDictionary          *queryObjectsDict;
+      id                    objToDelete;
 
       objToDelete = [enumerator nextObject];
       if ([objToDelete isKindOfClass:[DBSObject class]])
