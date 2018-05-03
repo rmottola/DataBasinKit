@@ -65,7 +65,7 @@
   else if ([str caseInsensitiveCompare:@"yes"] == NSOrderedSame)
     v = YES;
 
-  [self initWithBool:v];
+  self = [self initWithBool:v];
   
   return self;
 }
@@ -122,7 +122,7 @@
   NSInteger i;
 
   i = [str integerValue];
-  [self initWithInteger:i];
+  self = [self initWithInteger:i];
   return self;
 }
 
@@ -174,7 +174,7 @@
   double d;
   
   d = [str doubleValue];
-  [self initWithDouble:d];
+  self = [self initWithDouble:d];
   return self;
 }
 
@@ -183,7 +183,7 @@
   double d;
   
   d = [str doubleValue];
-  [self initWithDouble:d];
+  self = [self initWithDouble:d];
   return self;
 }
 
