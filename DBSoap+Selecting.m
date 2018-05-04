@@ -633,6 +633,7 @@
   NSString              *fieldListStr;
   NSMutableDictionary   *parmsDict;
   NSMutableDictionary   *queryParmDict;
+  NSMutableArray        *queryParamOrder;
   NSDictionary          *resultDict;
   NSDictionary          *queryResult;
   id                    result;
@@ -649,7 +650,8 @@
   resultArray = [[NSMutableArray alloc] init];
 
   fieldListStr = [fieldList componentsJoinedByString:@","];
-
+  
+  [logger log: LogDebug :@"[DBSoap retrieve] %lu Fields %@ objects...\n", (unsigned long)[fieldList count], fieldListStr];
   [logger log: LogDebug :@"[DBSoap retrieve] retrieving %u objects...\n", [objectList count]];
 
   /* prepare the header */
@@ -669,10 +671,16 @@
   [queryParmDict setObject: objectType forKey: @"sObjectType"];
   queryObjectsDict = [NSDictionary dictionaryWithObjectsAndKeys: objectList, GWSSOAPValueKey, nil];
   [queryParmDict setObject: queryObjectsDict forKey: @"ids"];
+  
+  queryParamOrder = [NSMutableArray arrayWithCapacity: 2];
+  [queryParamOrder addObject: @"fieldList"];
+  [queryParamOrder addObject: @"sObjectType"];
+  [queryParamOrder addObject: @"ids"];
+  [queryParmDict setObject: queryParamOrder forKey: GWSOrderKey];
 	  
   parmsDict = [NSMutableDictionary dictionaryWithCapacity: 1];
   [parmsDict setObject: queryParmDict forKey: @"retrieve"];
-  [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];  
+  [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];
   
   /* make the query */  
   resultDict = [service invokeMethod: @"retrieve"
@@ -705,8 +713,7 @@
   
   queryResult = [resultDict objectForKey:GWSParametersKey];
   result = [queryResult objectForKey:@"result"];
-  // NSLog(@"result: %@", result);
-
+  
   if (result != nil)
     {
       NSArray        *results;
