@@ -630,13 +630,7 @@
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
   NSMutableArray        *resultArray;
-  NSEnumerator          *enumerator;
-  unsigned              batchCounter;
-  NSMutableArray        *batchObjArray;
-  NSString              *idStr;
   NSString              *fieldListStr;
-  NSUInteger            i;
-  NSMutableArray        *sObjects;
   NSMutableDictionary   *parmsDict;
   NSMutableDictionary   *queryParmDict;
   NSDictionary          *resultDict;
@@ -705,7 +699,6 @@
       NSLog(@"fault code: %@", faultCode);
       NSLog(@"fault String: %@", faultString);
       [[NSException exceptionWithName:@"DBException" reason:faultString userInfo:nil] raise];
-      [batchObjArray release];
       [resultArray release];
       return nil;
     }
@@ -716,8 +709,6 @@
 
   if (result != nil)
     {
-      id resultRow;
-      NSEnumerator   *objEnu;
       NSArray        *results;
 	      
       /* if only one element gets returned, GWS can't interpret it as an array */
@@ -728,7 +719,6 @@
     
       [self extractQueryRecords:results toObjects:resultArray];
     }
- 
 
   return [resultArray autorelease];
 }
