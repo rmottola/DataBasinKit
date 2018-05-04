@@ -1526,6 +1526,67 @@
   return resArray;
 }
 
+- (NSMutableArray *)retrieveWithQuery:(NSString *)queryString andObjects:(NSArray *)objectList
+{
+  NSArray *fields;
+  NSString *objectName;
+  
+  if (objectList == nil)
+    return nil;
+
+  if ([objectList count] == 0)
+    return nil;
+
+  
+  fields = [DBSoap fieldsByParsingQuery:queryString];
+  if (fields && [fields count] > 0)
+    {
+      NSRange fromPosition;
+      NSString *fromSubstring = nil;
+
+      fromPosition = [queryString rangeOfString:@"from " options:NSCaseInsensitiveSearch];
+      if (fromPosition.location != NSNotFound)
+        fromSubstring = [queryString substringFromIndex: fromPosition.location + 5];
+    
+      objectName = fromSubstring; // FIXME this is rough
+    
+      return [self retrieveFields:fields ofObject:objectName fromArray:objectList];
+    }
+}
+
+- (NSMutableArray *)retrieveFields:(NSArray *)fieldList ofObject:(NSString*)objectType fromArray:(NSArray *)objectList
+{
+  NSMutableArray *resArray;
+  
+  [lockBusy lock];
+  if (busyCount)
+    {
+      [logger log: LogStandard :@"[DBSoap retrieveFields] called but busy\n"];
+      [lockBusy unlock];
+      return nil;
+    }
+  busyCount++;
+  [lockBusy unlock];
+  
+  resArray = nil;
+  NS_DURING
+    resArray = [self _retrieveFields:fieldList ofObject:objectType fromObjects:objectList];;
+  NS_HANDLER
+    {
+      [lockBusy lock];
+      busyCount--;
+      [lockBusy unlock];
+      [localException raise];
+    }
+  NS_ENDHANDLER
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+  
+  return resArray;
+}
+
 /** runs a describe global to retrieve all all the objects and returns an array of DBSobjects */
 - (NSArray *)describeGlobal
 {

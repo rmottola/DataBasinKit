@@ -293,8 +293,7 @@
 		85125AC619155DE2000E6004 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -311,6 +310,7 @@
 				MACH_O_TYPE = mh_dylib;
 				PRODUCT_NAME = DataBasinKit;
 				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = "";
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Development;
@@ -318,6 +318,7 @@
 		85125AC719155DE2000E6004 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				COPY_PHASE_STRIP = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -331,6 +332,7 @@
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";
 				MACH_O_TYPE = mh_dylib;
 				PRODUCT_NAME = DataBasinKit;
+				SDKROOT = "";
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Deployment;
@@ -338,6 +340,7 @@
 		85125AC819155DE2000E6004 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
@@ -348,6 +351,7 @@
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";
 				MACH_O_TYPE = mh_dylib;
 				PRODUCT_NAME = DataBasinKit;
+				SDKROOT = "";
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Default;

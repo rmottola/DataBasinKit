@@ -261,6 +261,125 @@
   [identifierArray release];
 }
 
+- (void)retrieve :(NSString *)queryString fromReader:(DBCSVReader *)reader toWriter:(DBFileWriter *)writer withBatchSize:(int)bSize progressMonitor:(id<DBProgressProtocol>)p
+{
+  NSArray        *inFieldNames;
+  NSUInteger      inFieldCount;
+  NSArray        *dataSet;
+  NSMutableArray *identifierArray;
+  NSUInteger     i;
+  NSUInteger     batchSize;
+  NSArray        *queryFields;
+  GWSService     *serv;
+  DBSoap         *dbSoap;
+  BOOL           firstBatchIteration;
+  NSUInteger     retrieveBatchSize;
+
+  retrieveBatchSize = RETRIEVE_BATCH_SIZE;
+  if (bSize > 0 && bSize < RETRIEVE_BATCH_SIZE)
+    retrieveBatchSize = bSize;
+  
+  /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
+  dbSoap = [[DBSoap alloc] init];
+  serv = [DBSoap gwserviceForDBSoap];
+  [dbSoap setSessionId:[db sessionId]];
+  [serv setURL:[db serverUrl]];  
+  [dbSoap setService:serv];
+  [dbSoap setLogger:logger];
+  [dbSoap setEnableFieldTypesDescribeForQuery:[db enableFieldTypesDescribeForQuery]];
+  [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
+  
+  queryFields = nil;
+  if ([writer writeFieldsOrdered])
+    {
+      queryFields = [DBSoap fieldsByParsingQuery:queryString];
+      [logger log: LogDebug :@"[DBSoapCSV retrieve] query parsed fields: %@\n", queryFields];
+    }
+
+  [p reset];
+
+  [writer writeStart];
+  /* retrieve objects to create */
+  
+  /* first the fields */
+  [p setCurrentDescription:@"Loading data"];
+  inFieldNames = [reader fieldNames];
+  inFieldCount = [inFieldNames count];
+  dataSet = [reader readDataSet];
+  [logger log: LogDebug :@"[DBSoapCSV retrieve] field names: %@\n", inFieldNames];
+  
+  if (inFieldCount == 1)
+    {
+      identifierArray = [[NSMutableArray arrayWithCapacity: [dataSet count]] retain];
+      for (i = 0; i < [dataSet count]; i++)
+        [identifierArray addObject: [[dataSet objectAtIndex: i] objectAtIndex: 0]];
+    }
+  else
+    {
+      identifierArray = (NSMutableArray *)dataSet;
+      [identifierArray retain];
+    }
+  
+  [p setMaximumValue:[identifierArray count]];
+
+  [p setCurrentDescription:@"Retrieving."];
+
+  firstBatchIteration = YES; /* we keep track of the first batch since we need to write the header only once*/
+  while ([identifierArray count] > 0 && ![p shouldStop])
+    {
+      NSRange subArrayRange;
+      NSArray *batchOfIdentifiers;
+      NSAutoreleasePool *arp;
+      NSMutableArray *sObjects;
+
+      arp = [[NSAutoreleasePool alloc] init];
+      subArrayRange = NSMakeRange(0, [identifierArray count]);
+      if ([identifierArray count] > retrieveBatchSize)
+        subArrayRange = NSMakeRange(0, retrieveBatchSize);
+      batchOfIdentifiers = [identifierArray subarrayWithRange:subArrayRange];
+      [batchOfIdentifiers retain];
+      [identifierArray removeObjectsInRange:subArrayRange];
+
+      sObjects = nil;
+      NS_DURING
+        sObjects = [db retrieveWithQuery:queryString andObjects:batchOfIdentifiers];
+      NS_HANDLER
+        [identifierArray release];
+        [dbSoap release];
+        [localException raise];
+        [batchOfIdentifiers release];
+        [arp release];
+      NS_ENDHANDLER
+
+      [p incrementCurrentValue: [batchOfIdentifiers count]];
+      [batchOfIdentifiers release];
+      [p setCurrentDescription:@"Writing data"];
+      batchSize = [sObjects count];
+      [sObjects retain];
+      if (batchSize > 0 )
+        {
+          if (firstBatchIteration)
+            {
+              if ([writer writeFieldsOrdered])
+                {
+                  [writer setFieldNames: queryFields andWriteThem:YES];
+                }
+              else
+                {
+                  [writer setFieldNames: [sObjects objectAtIndex: 0] andWriteThem:YES];
+                }
+              firstBatchIteration = NO;
+            }
+          [writer writeDataSet: sObjects];
+        }
+      [sObjects release];
+      [arp release];
+    }
+  [writer writeEnd];
+  [dbSoap release];  
+  [identifierArray release];
+}
+
 - (NSMutableArray *)create :(NSString *)objectName fromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p
 {
   NSEnumerator   *enumerator;
