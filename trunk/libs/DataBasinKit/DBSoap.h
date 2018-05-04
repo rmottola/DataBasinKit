@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2017 Free Software Foundation
+  Copyright (C) 2008-2018 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -39,6 +39,7 @@
 #define MAX_SOQL_LENGTH 20000
 #define MAX_SOQL WHERE_LENGTH 4000
 #define MAX_BATCH_SIZE 200
+#define RETRIEVE_BATCH_SIZE 2000
 
 #define CLIENT_NAME @"DataBasin"
 
@@ -115,6 +116,13 @@
 - (NSMutableArray *)update :(NSString *)objectName fromArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p;
 - (NSMutableArray *)delete :(NSArray *)array progressMonitor:(id<DBProgressProtocol>)p;
 
+- (NSMutableArray *)retrieveWithQuery:(NSString *)queryString andObjects:(NSArray *)objectList;
+- (NSMutableArray *)retrieveFields:(NSArray *)fieldList ofObject:(NSString *)objectType fromArray:(NSArray *)objectList;
+
+
+- (NSMutableArray *)getUpdated :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
+- (NSMutableArray *)getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
+
 - (NSArray *)describeGlobal;
 - (NSArray *)sObjects;
 - (NSArray *)sObjectNames;
@@ -153,6 +161,9 @@
 - (NSMutableArray *)_queryFull :(NSString *)queryString queryAll:(BOOL)all progressMonitor:(id<DBProgressProtocol>)p;
 
 - (void)_queryIdentify :(NSString *)queryString with: (NSArray *)identifiers queryAll:(BOOL)all fromArray:(NSArray *)fromArray toArray:(NSMutableArray *)outArray withBatchSize:(int)batchSize progressMonitor:(id<DBProgressProtocol>)p;
+
+- (NSMutableArray *)_retrieveFields:(NSArray *)fieldList ofObject:(NSString*)objectType fromObjects:(NSArray *)objectList;
+
 
 @end
 

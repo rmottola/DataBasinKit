@@ -1,7 +1,7 @@
 /*
    Project: DataBasinKit
 
-   Copyright (C) 2008-2017 Free Software Foundation
+   Copyright (C) 2008-2018 Free Software Foundation
 
    Author: multix
 
@@ -360,6 +360,7 @@
   
   sObjects = [[NSMutableArray alloc] init];
   
+  ds = 0;
   qLoc = [self _query: queryString queryAll:all toArray:sObjects declaredSize:&ds progressMonitor:p];
   [logger log: LogInformative: @"[DBSoap queryFull]: query locator after first query: %@\n", qLoc];
   while (qLoc != nil  && ![p shouldStop])
@@ -622,6 +623,114 @@
 
       [p incrementCurrentValue: b];
     }
+}
+
+- (NSMutableArray *)_retrieveFields:(NSArray *)fieldList ofObject:(NSString*)objectType fromObjects:(NSArray *)objectList
+{
+  NSMutableDictionary   *headerDict;
+  NSMutableDictionary   *sessionHeaderDict;
+  NSMutableArray        *resultArray;
+  NSEnumerator          *enumerator;
+  unsigned              batchCounter;
+  NSMutableArray        *batchObjArray;
+  NSString              *idStr;
+  NSString              *fieldListStr;
+  NSUInteger            i;
+  NSMutableArray        *sObjects;
+  NSMutableDictionary   *parmsDict;
+  NSMutableDictionary   *queryParmDict;
+  NSDictionary          *resultDict;
+  NSDictionary          *queryResult;
+  id                    result;
+  NSDictionary          *queryFault;
+  NSDictionary          *coderError;
+  NSDictionary          *queryObjectsDict;
+  
+  if (objectList == nil || fieldList == nil)
+    return nil;
+  
+  if ([objectList count] == 0 || [fieldList count] == 0)
+    return nil;
+
+  resultArray = [[NSMutableArray alloc] init];
+
+  fieldListStr = [fieldList componentsJoinedByString:@","];
+
+  [logger log: LogDebug :@"[DBSoap retrieve] retrieving %u objects...\n", [objectList count]];
+
+  /* prepare the header */
+  sessionHeaderDict = [NSMutableDictionary dictionaryWithCapacity: 2];
+  [sessionHeaderDict setObject: sessionId forKey: @"sessionId"];
+  [sessionHeaderDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
+
+  headerDict = [NSMutableDictionary dictionaryWithCapacity: 2];
+  [headerDict setObject: sessionHeaderDict forKey: @"SessionHeader"];
+  [headerDict setObject: GWSSOAPUseLiteral forKey: GWSSOAPUseKey];
+
+  /* prepare the parameters */
+  queryParmDict = [NSMutableDictionary dictionaryWithCapacity: 2];
+  [queryParmDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
+
+  [queryParmDict setObject: fieldListStr forKey: @"fieldList"];
+  [queryParmDict setObject: objectType forKey: @"sObjectType"];
+  queryObjectsDict = [NSDictionary dictionaryWithObjectsAndKeys: objectList, GWSSOAPValueKey, nil];
+  [queryParmDict setObject: queryObjectsDict forKey: @"ids"];
+	  
+  parmsDict = [NSMutableDictionary dictionaryWithCapacity: 1];
+  [parmsDict setObject: queryParmDict forKey: @"retrieve"];
+  [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];  
+  
+  /* make the query */  
+  resultDict = [service invokeMethod: @"retrieve"
+                         parameters : parmsDict
+                              order : nil
+                            timeout : standardTimeoutSec];
+
+  [logger log: LogDebug: @"[DBSoap retrieve] result: %@\n", resultDict];
+  coderError = [resultDict objectForKey:GWSErrorKey];
+  if (coderError != nil)
+    {
+      [logger log: LogStandard :@"[DBSoap retrieve] error: %@\n", coderError];
+      [[NSException exceptionWithName:@"DBException" reason:@"Coder Error, check log" userInfo:nil] raise];
+    }
+  
+  queryFault = [resultDict objectForKey:GWSFaultKey];
+  if (queryFault != nil)
+    {
+      NSString *faultCode;
+      NSString *faultString;
+	      
+      faultCode = [queryFault objectForKey:@"faultcode"];
+      faultString = [queryFault objectForKey:@"faultstring"];
+      NSLog(@"fault code: %@", faultCode);
+      NSLog(@"fault String: %@", faultString);
+      [[NSException exceptionWithName:@"DBException" reason:faultString userInfo:nil] raise];
+      [batchObjArray release];
+      [resultArray release];
+      return nil;
+    }
+  
+  queryResult = [resultDict objectForKey:GWSParametersKey];
+  result = [queryResult objectForKey:@"result"];
+  // NSLog(@"result: %@", result);
+
+  if (result != nil)
+    {
+      id resultRow;
+      NSEnumerator   *objEnu;
+      NSArray        *results;
+	      
+      /* if only one element gets returned, GWS can't interpret it as an array */
+      if (!([result isKindOfClass: [NSArray class]]))
+        results = [NSArray arrayWithObject: result];
+      else
+        results = (NSArray *)result;
+    
+      [self extractQueryRecords:results toObjects:resultArray];
+    }
+ 
+
+  return [resultArray autorelease];
 }
 
 
