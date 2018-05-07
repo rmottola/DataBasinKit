@@ -149,7 +149,7 @@
           /* now we safely if the field has aliases */
           r = [field rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
           if (r.location != NSNotFound)
-            { /* alias */
+            { /* we probably have alias */
               NSArray *subComponents;
 	      NSRange rParRange; // look for the right parenthesis
 
@@ -197,9 +197,9 @@
 	      /* the field is not aliased and we know we have an aggregate query, count () separated by space was handled above
 		 salesforce returns Expr0 for count(id) but count for count()
 	      */
-	      NSLog(@"no spaces, but we have count, the field is: %@", field);
 	      if ([field caseInsensitiveCompare:@"count()"] == NSOrderedSame)
 		{
+                  NSLog(@"no spaces, but we have count, the field is: %@", field);
 		  field = @"count";
 		}
 	      else if ([field rangeOfString:@")"].location != NSNotFound)
@@ -248,7 +248,6 @@
   
   /* salesforce WSDL specifies it to be literal */
   [coder setUseLiteral:YES];
-  
   
   gws = [[GWSService alloc] init];
   
@@ -411,9 +410,7 @@
   
   enumerator = [loginResult keyEnumerator];
   while ((key = [enumerator nextObject]))
-  {
     [logger log: LogDebug: @"[DBSoap Login]:%@ - %@\n", key, [loginResult objectForKey:key]]; 
-  }
   
  
   loginResult2 = [loginResult objectForKey:@"result"];
@@ -421,9 +418,7 @@
   
   enumerator = [loginResult2 keyEnumerator];
   while ((key = [enumerator nextObject]))
-  {
     [logger log: LogDebug: @"[DBSoap Login]:%@ - %@\n", key, [loginResult2 objectForKey:key]]; 
-  }
     
   [sessionId release];
   sessionId = [loginResult2 objectForKey:@"sessionId"];
@@ -431,7 +426,7 @@
   
   passwordExpired = NO;
   if ([[loginResult2 objectForKey:@"passwordExpired"] isEqualToString:@"true"])
-      passwordExpired = YES;
+    passwordExpired = YES;
   
   userInfoResult = [loginResult2 objectForKey:@"userInfo"];
   userInfo = [[NSMutableDictionary dictionaryWithCapacity:5] retain];
@@ -1527,6 +1522,9 @@
   return resArray;
 }
 
+/** retrieves given a query from a apecific object given an array of SF ID
+ actually invokes retrieveFields after having parsed the query for Fields
+ */
 - (NSMutableArray *)retrieveWithQuery:(NSString *)queryString andObjects:(NSArray *)objectList
 {
   NSArray *fields;
@@ -1555,6 +1553,8 @@
     }
 }
 
+
+/** retrieves fields (fieldList) from a apecific object given an array of SF IDs */
 - (NSMutableArray *)retrieveFields:(NSArray *)fieldList ofObject:(NSString*)objectType fromArray:(NSArray *)objectList
 {
   NSMutableArray *resArray;
