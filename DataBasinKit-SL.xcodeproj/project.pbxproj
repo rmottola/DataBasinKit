@@ -1,0 +1,421 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8504AC8E1FA12180001D2035 /* DBSFTypeWrappers.h in Headers */ = {isa = PBXBuildFile; fileRef = 8504AC8C1FA12180001D2035 /* DBSFTypeWrappers.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8504AC8F1FA12180001D2035 /* DBSFTypeWrappers.m in Sources */ = {isa = PBXBuildFile; fileRef = 8504AC8D1FA12180001D2035 /* DBSFTypeWrappers.m */; };
+		850A48A4191297BF00B9303D /* DataBasinKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 850A48A3191297BF00B9303D /* DataBasinKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		850A48BB1912D4CB00B9303D /* DBCSVReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 850A48AF1912D4CB00B9303D /* DBCSVReader.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		850A48BC1912D4CB00B9303D /* DBCSVReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 850A48B01912D4CB00B9303D /* DBCSVReader.m */; };
+		850A48BD1912D4CB00B9303D /* DBCSVWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 850A48B11912D4CB00B9303D /* DBCSVWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		850A48BE1912D4CB00B9303D /* DBCSVWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 850A48B21912D4CB00B9303D /* DBCSVWriter.m */; };
+		850A48BF1912D4CB00B9303D /* DBLoggerProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 850A48B31912D4CB00B9303D /* DBLoggerProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		850A48C01912D4CB00B9303D /* DBProgressProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 850A48B41912D4CB00B9303D /* DBProgressProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		850A48C11912D4CB00B9303D /* DBSoap.h in Headers */ = {isa = PBXBuildFile; fileRef = 850A48B51912D4CB00B9303D /* DBSoap.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		850A48C21912D4CB00B9303D /* DBSoap.m in Sources */ = {isa = PBXBuildFile; fileRef = 850A48B61912D4CB00B9303D /* DBSoap.m */; };
+		850A48C31912D4CB00B9303D /* DBSoapCSV.h in Headers */ = {isa = PBXBuildFile; fileRef = 850A48B71912D4CB00B9303D /* DBSoapCSV.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		850A48C41912D4CB00B9303D /* DBSoapCSV.m in Sources */ = {isa = PBXBuildFile; fileRef = 850A48B81912D4CB00B9303D /* DBSoapCSV.m */; };
+		850A48C51912D4CB00B9303D /* DBSObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 850A48B91912D4CB00B9303D /* DBSObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		850A48C61912D4CB00B9303D /* DBSObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 850A48BA1912D4CB00B9303D /* DBSObject.m */; };
+		850A48D819131EC500B9303D /* WebServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 850A48D719131EC500B9303D /* WebServices.framework */; };
+		850FFFBB1F71DA8700B86D18 /* DBFileWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 850FFFB91F71DA8700B86D18 /* DBFileWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		850FFFBC1F71DA8700B86D18 /* DBFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 850FFFBA1F71DA8700B86D18 /* DBFileWriter.m */; };
+		85125B25192031A6000E6004 /* ChangeLog in Resources */ = {isa = PBXBuildFile; fileRef = 85125B24192031A6000E6004 /* ChangeLog */; };
+		8532DBCD1FB632AC0040F7B6 /* DBSoap+Creating.m in Sources */ = {isa = PBXBuildFile; fileRef = 8532DBC91FB632AC0040F7B6 /* DBSoap+Creating.m */; };
+		8532DBCE1FB632AC0040F7B6 /* DBSoap+Deleting.m in Sources */ = {isa = PBXBuildFile; fileRef = 8532DBCA1FB632AC0040F7B6 /* DBSoap+Deleting.m */; };
+		8532DBCF1FB632AC0040F7B6 /* DBSoap+Selecting.m in Sources */ = {isa = PBXBuildFile; fileRef = 8532DBCB1FB632AC0040F7B6 /* DBSoap+Selecting.m */; };
+		8532DBD01FB632AC0040F7B6 /* DBSoap+Updating.m in Sources */ = {isa = PBXBuildFile; fileRef = 8532DBCC1FB632AC0040F7B6 /* DBSoap+Updating.m */; };
+		8534AFED1DAB9919005F5ECD /* DBHTMLWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8534AFEB1DAB9919005F5ECD /* DBHTMLWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8534AFEE1DAB9919005F5ECD /* DBHTMLWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 8534AFEC1DAB9919005F5ECD /* DBHTMLWriter.m */; };
+		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
+		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		0867D6A5FE840307C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		8504AC8C1FA12180001D2035 /* DBSFTypeWrappers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBSFTypeWrappers.h; sourceTree = "<group>"; };
+		8504AC8D1FA12180001D2035 /* DBSFTypeWrappers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBSFTypeWrappers.m; sourceTree = "<group>"; };
+		850A48A3191297BF00B9303D /* DataBasinKit.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DataBasinKit.h; sourceTree = "<group>"; };
+		850A48AF1912D4CB00B9303D /* DBCSVReader.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DBCSVReader.h; sourceTree = "<group>"; };
+		850A48B01912D4CB00B9303D /* DBCSVReader.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DBCSVReader.m; sourceTree = "<group>"; };
+		850A48B11912D4CB00B9303D /* DBCSVWriter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DBCSVWriter.h; sourceTree = "<group>"; };
+		850A48B21912D4CB00B9303D /* DBCSVWriter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DBCSVWriter.m; sourceTree = "<group>"; };
+		850A48B31912D4CB00B9303D /* DBLoggerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DBLoggerProtocol.h; sourceTree = "<group>"; };
+		850A48B41912D4CB00B9303D /* DBProgressProtocol.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DBProgressProtocol.h; sourceTree = "<group>"; };
+		850A48B51912D4CB00B9303D /* DBSoap.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DBSoap.h; sourceTree = "<group>"; };
+		850A48B61912D4CB00B9303D /* DBSoap.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DBSoap.m; sourceTree = "<group>"; };
+		850A48B71912D4CB00B9303D /* DBSoapCSV.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DBSoapCSV.h; sourceTree = "<group>"; };
+		850A48B81912D4CB00B9303D /* DBSoapCSV.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DBSoapCSV.m; sourceTree = "<group>"; };
+		850A48B91912D4CB00B9303D /* DBSObject.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DBSObject.h; sourceTree = "<group>"; };
+		850A48BA1912D4CB00B9303D /* DBSObject.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DBSObject.m; sourceTree = "<group>"; };
+		850A48D719131EC500B9303D /* WebServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebServices.framework; path = /Library/Frameworks/WebServices.framework; sourceTree = "<absolute>"; };
+		850FFFB91F71DA8700B86D18 /* DBFileWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBFileWriter.h; sourceTree = "<group>"; };
+		850FFFBA1F71DA8700B86D18 /* DBFileWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBFileWriter.m; sourceTree = "<group>"; };
+		85125B24192031A6000E6004 /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ChangeLog; sourceTree = "<group>"; };
+		8532DBC91FB632AC0040F7B6 /* DBSoap+Creating.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DBSoap+Creating.m"; sourceTree = "<group>"; };
+		8532DBCA1FB632AC0040F7B6 /* DBSoap+Deleting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DBSoap+Deleting.m"; sourceTree = "<group>"; };
+		8532DBCB1FB632AC0040F7B6 /* DBSoap+Selecting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DBSoap+Selecting.m"; sourceTree = "<group>"; };
+		8532DBCC1FB632AC0040F7B6 /* DBSoap+Updating.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DBSoap+Updating.m"; sourceTree = "<group>"; };
+		8534AFEB1DAB9919005F5ECD /* DBHTMLWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBHTMLWriter.h; sourceTree = "<group>"; };
+		8534AFEC1DAB9919005F5ECD /* DBHTMLWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBHTMLWriter.m; sourceTree = "<group>"; };
+		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8DC2EF5B0486A6940098B216 /* DataBasinKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DataBasinKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DC2EF560486A6940098B216 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */,
+				850A48D819131EC500B9303D /* WebServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DFFF38A50411DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DC2EF5B0486A6940098B216 /* DataBasinKit.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* DataBasinKit */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77AEFE84172EC02AAC07 /* Classes */,
+				32C88DFF0371C24200C91783 /* Other Sources */,
+				089C1665FE841158C02AAC07 /* Resources */,
+				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
+				034768DFFF38A50411DB9C8B /* Products */,
+			);
+			name = DataBasinKit;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */,
+				1058C7B2FEA5585E11CA2CBB /* Other Frameworks */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C1665FE841158C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				85125B24192031A6000E6004 /* ChangeLog */,
+				8DC2EF5A0486A6940098B216 /* Info.plist */,
+				089C1666FE841158C02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77AEFE84172EC02AAC07 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				850A48B51912D4CB00B9303D /* DBSoap.h */,
+				850A48B61912D4CB00B9303D /* DBSoap.m */,
+				8532DBC91FB632AC0040F7B6 /* DBSoap+Creating.m */,
+				8532DBCA1FB632AC0040F7B6 /* DBSoap+Deleting.m */,
+				8532DBCB1FB632AC0040F7B6 /* DBSoap+Selecting.m */,
+				8532DBCC1FB632AC0040F7B6 /* DBSoap+Updating.m */,
+				8504AC8C1FA12180001D2035 /* DBSFTypeWrappers.h */,
+				8504AC8D1FA12180001D2035 /* DBSFTypeWrappers.m */,
+				850A48AF1912D4CB00B9303D /* DBCSVReader.h */,
+				850A48B01912D4CB00B9303D /* DBCSVReader.m */,
+				850A48B11912D4CB00B9303D /* DBCSVWriter.h */,
+				850A48B21912D4CB00B9303D /* DBCSVWriter.m */,
+				850A48B71912D4CB00B9303D /* DBSoapCSV.h */,
+				850A48B81912D4CB00B9303D /* DBSoapCSV.m */,
+				850A48B91912D4CB00B9303D /* DBSObject.h */,
+				850A48BA1912D4CB00B9303D /* DBSObject.m */,
+				8534AFEB1DAB9919005F5ECD /* DBHTMLWriter.h */,
+				8534AFEC1DAB9919005F5ECD /* DBHTMLWriter.m */,
+				850FFFB91F71DA8700B86D18 /* DBFileWriter.h */,
+				850FFFBA1F71DA8700B86D18 /* DBFileWriter.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7B2FEA5585E11CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				850A48D719131EC500B9303D /* WebServices.framework */,
+				0867D69BFE84028FC02AAC07 /* Foundation.framework */,
+				0867D6A5FE840307C02AAC07 /* AppKit.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		32C88DFF0371C24200C91783 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				850A48B41912D4CB00B9303D /* DBProgressProtocol.h */,
+				850A48B31912D4CB00B9303D /* DBLoggerProtocol.h */,
+				850A48A3191297BF00B9303D /* DataBasinKit.h */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8DC2EF500486A6940098B216 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				850A48A4191297BF00B9303D /* DataBasinKit.h in Headers */,
+				850A48BB1912D4CB00B9303D /* DBCSVReader.h in Headers */,
+				850A48BD1912D4CB00B9303D /* DBCSVWriter.h in Headers */,
+				850A48BF1912D4CB00B9303D /* DBLoggerProtocol.h in Headers */,
+				850A48C01912D4CB00B9303D /* DBProgressProtocol.h in Headers */,
+				850A48C11912D4CB00B9303D /* DBSoap.h in Headers */,
+				850A48C31912D4CB00B9303D /* DBSoapCSV.h in Headers */,
+				850A48C51912D4CB00B9303D /* DBSObject.h in Headers */,
+				8534AFED1DAB9919005F5ECD /* DBHTMLWriter.h in Headers */,
+				850FFFBB1F71DA8700B86D18 /* DBFileWriter.h in Headers */,
+				8504AC8E1FA12180001D2035 /* DBSFTypeWrappers.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		8DC2EF4F0486A6940098B216 /* DataBasinKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 85125AC519155DE2000E6004 /* Build configuration list for PBXNativeTarget "DataBasinKit" */;
+			buildPhases = (
+				8DC2EF500486A6940098B216 /* Headers */,
+				8DC2EF520486A6940098B216 /* Resources */,
+				8DC2EF540486A6940098B216 /* Sources */,
+				8DC2EF560486A6940098B216 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DataBasinKit;
+			productInstallPath = "$(HOME)/Library/Frameworks";
+			productName = DataBasinKit;
+			productReference = 8DC2EF5B0486A6940098B216 /* DataBasinKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 85125AC919155DE2000E6004 /* Build configuration list for PBXProject "DataBasinKit" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 0867D691FE84028FC02AAC07 /* DataBasinKit */;
+			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8DC2EF4F0486A6940098B216 /* DataBasinKit */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8DC2EF520486A6940098B216 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */,
+				85125B25192031A6000E6004 /* ChangeLog in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DC2EF540486A6940098B216 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				850A48BC1912D4CB00B9303D /* DBCSVReader.m in Sources */,
+				850A48BE1912D4CB00B9303D /* DBCSVWriter.m in Sources */,
+				850A48C21912D4CB00B9303D /* DBSoap.m in Sources */,
+				850A48C41912D4CB00B9303D /* DBSoapCSV.m in Sources */,
+				850A48C61912D4CB00B9303D /* DBSObject.m in Sources */,
+				8534AFEE1DAB9919005F5ECD /* DBHTMLWriter.m in Sources */,
+				850FFFBC1F71DA8700B86D18 /* DBFileWriter.m in Sources */,
+				8504AC8F1FA12180001D2035 /* DBSFTypeWrappers.m in Sources */,
+				8532DBCD1FB632AC0040F7B6 /* DBSoap+Creating.m in Sources */,
+				8532DBCE1FB632AC0040F7B6 /* DBSoap+Deleting.m in Sources */,
+				8532DBCF1FB632AC0040F7B6 /* DBSoap+Selecting.m in Sources */,
+				8532DBD01FB632AC0040F7B6 /* DBSoap+Updating.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C1666FE841158C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C1667FE841158C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		85125AC619155DE2000E6004 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_EXCEPTIONS = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				MACH_O_TYPE = mh_dylib;
+				PRODUCT_NAME = DataBasinKit;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = "";
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Development;
+		};
+		85125AC719155DE2000E6004 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_EXCEPTIONS = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				MACH_O_TYPE = mh_dylib;
+				PRODUCT_NAME = DataBasinKit;
+				SDKROOT = "";
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Deployment;
+		};
+		85125AC819155DE2000E6004 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				MACH_O_TYPE = mh_dylib;
+				PRODUCT_NAME = DataBasinKit;
+				SDKROOT = "";
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Default;
+		};
+		85125ACA19155DE2000E6004 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_MODEL_TUNING = "";
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SYMROOT = "$(PROJECT_DIR)/build";
+			};
+			name = Development;
+		};
+		85125ACB19155DE2000E6004 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_MODEL_TUNING = "";
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+			};
+			name = Deployment;
+		};
+		85125ACC19155DE2000E6004 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_MODEL_TUNING = "";
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		85125AC519155DE2000E6004 /* Build configuration list for PBXNativeTarget "DataBasinKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				85125AC619155DE2000E6004 /* Development */,
+				85125AC719155DE2000E6004 /* Deployment */,
+				85125AC819155DE2000E6004 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		85125AC919155DE2000E6004 /* Build configuration list for PBXProject "DataBasinKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				85125ACA19155DE2000E6004 /* Development */,
+				85125ACB19155DE2000E6004 /* Deployment */,
+				85125ACC19155DE2000E6004 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}
