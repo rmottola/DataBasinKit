@@ -89,6 +89,7 @@
   if (query == nil)
     return nil;
 
+  query = [query stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
   components = nil;
   fields = nil;
   fromPosition = [query rangeOfString:@"from" options:NSCaseInsensitiveSearch];
@@ -1548,7 +1549,7 @@
       if (fromPosition.location != NSNotFound)
         fromSubstring = [queryString substringFromIndex: fromPosition.location + 5];
     
-      objectName = fromSubstring; // FIXME this is rough
+      objectName = [fromSubstring stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
       return [self retrieveFields:fields ofObject:objectName fromArray:objectList];
     }
