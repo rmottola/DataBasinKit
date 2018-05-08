@@ -331,13 +331,14 @@
       NSArray *batchOfIdentifiers;
       NSAutoreleasePool *arp;
       NSMutableArray *sObjects;
-
+      
       arp = [[NSAutoreleasePool alloc] init];
       subArrayRange = NSMakeRange(0, [identifierArray count]);
       if ([identifierArray count] > retrieveBatchSize)
         subArrayRange = NSMakeRange(0, retrieveBatchSize);
       batchOfIdentifiers = [identifierArray subarrayWithRange:subArrayRange];
       [batchOfIdentifiers retain];
+      NSLog(@"retrieve batch iteration, remaining count is: %lu, subarray size: %lu",  [identifierArray count], [batchOfIdentifiers count]);
       [identifierArray removeObjectsInRange:subArrayRange];
 
       sObjects = nil;
@@ -351,11 +352,11 @@
         [arp release];
       NS_ENDHANDLER
 
+      [sObjects retain];
       [p incrementCurrentValue: [batchOfIdentifiers count]];
       [batchOfIdentifiers release];
       [p setCurrentDescription:@"Writing data"];
       batchSize = [sObjects count];
-      [sObjects retain];
       if (batchSize > 0 )
         {
           if (firstBatchIteration)
