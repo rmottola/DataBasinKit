@@ -1,3 +1,8 @@
+2018-05-08  Riccardo Mottola <rm@gnu.org>
+
+	* DBSoapCSV.m
+	Fix: use cloned connection for query execution.
+
 2018-05-04  Riccardo Mottola <rm@gnu.org>
 
 	* DBSoapCSV.h

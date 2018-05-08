@@ -224,7 +224,7 @@
 
       sObjects = [[NSMutableArray alloc] init];
       NS_DURING
-        [db queryIdentify:queryString with:inFieldNames queryAll:all fromArray:batchOfIdentifiers toArray: sObjects withBatchSize:bSize progressMonitor: p];
+        [dbSoap queryIdentify:queryString with:inFieldNames queryAll:all fromArray:batchOfIdentifiers toArray: sObjects withBatchSize:bSize progressMonitor: p];
       NS_HANDLER
         [identifierArray release];
         [sObjects release];
@@ -343,7 +343,7 @@
 
       sObjects = nil;
       NS_DURING
-        sObjects = [db retrieveWithQuery:queryString andObjects:batchOfIdentifiers];
+        sObjects = [dbSoap retrieveWithQuery:queryString andObjects:batchOfIdentifiers];
       NS_HANDLER
         [identifierArray release];
         [dbSoap release];
@@ -428,7 +428,7 @@
 
   resultArray = nil;
   NS_DURING
-    resultArray = [db create:objectName fromArray:sObjectsArray progressMonitor:p];
+    resultArray = [dbSoap create:objectName fromArray:sObjectsArray progressMonitor:p];
   NS_HANDLER
     [sObjectsArray release];
     [dbSoap release];
@@ -492,7 +492,7 @@
 
   resultArray = nil;
   NS_DURING
-    resultArray = [db update:objectName fromArray:sObjectsArray progressMonitor:p];
+    resultArray = [dbSoap update:objectName fromArray:sObjectsArray progressMonitor:p];
   NS_HANDLER
     [sObjectsArray release];
     [dbSoap release];
@@ -528,7 +528,7 @@
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
   
   NS_DURING 
-    object = [db describeSObject: objectType];
+    object = [dbSoap describeSObject: objectType];
   NS_HANDLER
     [dbSoap release];
     [localException raise];
