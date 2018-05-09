@@ -136,7 +136,6 @@
       if (firstParenthesisPosition.location != NSNotFound && firstParenthesisPosition.location < fromPosition.location)
          hasAggregate = YES;
 
-//      NSLog(@"Does query have aggregate? %d", hasAggregate);
       fields = [NSMutableArray arrayWithCapacity:[components count]];
       for (i = 0; i < [components count]; i++)
         {
@@ -693,10 +692,23 @@
   BOOL typePresent;
   NSDictionary          *record;
 
+  if (records == nil || [records count] == 0)
+    return;
+
   [records retain];
   batchSize = [records count];
-
   record = [records objectAtIndex:0];
+
+  if ([record isKindOfClass:[NSString class]])
+    {
+      NSLog(@"unexpected: we got a string");
+      if ([(NSString *)record length] == 0)
+        {
+          NSLog(@"and it is even empty");
+          [records release];
+          return;
+        }
+    }
 
   [logger log: LogInformative :@"[DBSoap extractQueryRecords] records size is: %d\n", batchSize];
       
