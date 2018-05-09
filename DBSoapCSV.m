@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2017 Free Software Foundation
+  Copyright (C) 2008-2018 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -45,7 +45,7 @@
 
 - (void)query :(NSString *)queryString queryAll:(BOOL)all toWriter:(DBFileWriter *)writer progressMonitor:(id<DBProgressProtocol>)p
 {
-  int            batchSize;
+  NSUInteger     batchSize;
   NSArray        *fields;
   NSString       *qLoc;
   NSMutableArray *sObjects;
@@ -600,7 +600,7 @@
 
   resultArray = nil;
   NS_DURING
-    resultArray = [db delete:objectsArray progressMonitor:p];
+    resultArray = [dbSoap delete:objectsArray progressMonitor:p];
   NS_HANDLER
     [objectsArray release];
     [dbSoap release];
