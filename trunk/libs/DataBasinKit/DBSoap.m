@@ -1563,6 +1563,7 @@
     
       return [self retrieveFields:fields ofObject:objectName fromArray:objectList];
     }
+  return nil;
 }
 
 
