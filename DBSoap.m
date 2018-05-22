@@ -300,7 +300,8 @@
 {
   return upBatchSize;
 }
-/** sets the size of the batches in which recors are inserted, updated or deleted */
+
+/** Sets the size of the batches in which records are inserted, updated or deleted */
 - (void)setUpBatchSize:(unsigned)size
 {
   upBatchSize = size;
@@ -310,6 +311,7 @@
 {
   return downBatchSize;
 }
+
 /** Set the maximum suggested query size (download). Maximum effective is 2000, standard is 500. */
 - (void)setDownBatchSize:(unsigned)size
 {
@@ -322,7 +324,7 @@
 }
 
 /** Set the maximum used lenght for a SOQL statement. Maximum is defined by MAX_SOQL_LENGTH but
-  if a query returns QUERY_TOO_COMPLICATED the size must be reduced. A large value is capped to MAX */
+  if a query returns QUERY_TOO_COMPLICATED the size must be reduced. A large value is capped to MAX_SOQL_LENGTH */
 - (void)setMaxSOQLLength:(unsigned)size
 {
   if (size < MAX_SOQL_LENGTH)
@@ -441,12 +443,11 @@
 
   /* since Salesforce seems to be stubborn and returns an https connection
      even if we initiate a non-secure one, we force it to http */
-  if ([[serverUrl substringToIndex:5] isEqualToString:@"https"])
-  {
-    [logger log: LogInformative: @"[DBSoap Login]: preferences set to https....\n"];
-    if (!useHttps)
+  if ([[serverUrl substringToIndex:5] isEqualToString:@"https"] && !useHttps)
+    {
+      [logger log: LogInformative: @"[DBSoap Login]: preferences set to http, forcing....\n"];
       serverUrl = [@"http" stringByAppendingString:[serverUrl substringFromIndex:5]];
-  }
+    }
   
   if (sessionId == nil)
   {
@@ -846,7 +847,7 @@
       NSArray *propertiesArray;
       NSMutableDictionary *propertiesDict;
       DBSObject *dbObj;
-      unsigned j;
+      NSUInteger j;
     
       sObj = [sobjects objectAtIndex: i];
       propertiesArray = [sObj objectForKey: GWSOrderKey];
@@ -892,7 +893,7 @@
 {
   if (sObjectNamesList == nil)
     {
-      unsigned i;
+      NSUInteger i;
 
       if (sObjectList == nil)
 	sObjectList = [[self describeGlobal] retain];
@@ -933,7 +934,7 @@
   NSArray               *records;
   NSArray               *recordTypeObjs;
   NSDictionary          *record;
-  unsigned              i;
+  NSUInteger            i;
   NSMutableArray        *keys;
   DBSObject             *object;
   NSMutableDictionary   *propDict;
@@ -1584,7 +1585,7 @@
   
   resArray = nil;
   NS_DURING
-    resArray = [self _retrieveFields:fieldList ofObject:objectType fromObjects:objectList];;
+    resArray = [self _retrieveFields:fieldList ofObject:objectType fromObjects:objectList];
   NS_HANDLER
     {
       [lockBusy lock];
