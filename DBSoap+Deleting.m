@@ -1,7 +1,7 @@
 /*
    Project: DataBasinKit
 
-   Copyright (C) 2009-2017 Free Software Foundation
+   Copyright (C) 2009-2018 Free Software Foundation
 
    Author: multix
 
@@ -211,6 +211,135 @@
   return [resultArray autorelease];
 }
 
+- (NSDictionary *)_getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate
+{
+  NSMutableDictionary   *headerDict;
+  NSMutableDictionary   *sessionHeaderDict;
+  
+  NSMutableDictionary   *parmsDict;
+  NSMutableDictionary   *queryParmDict;
+  NSMutableArray        *parmsOrder;
+  NSDictionary          *resultDict;
+  NSDictionary          *queryResult;
+  id                    result;
+  NSDictionary          *queryFault;
 
+  NSMutableDictionary   *returnDict;
+  
+  NSString *startDateStr;
+  NSString *endDateStr;
+
+  returnDict = nil;
+
+  startDateStr = nil;
+  if (startDate)
+    {
+      NSCalendarDate *cd;
+      
+      cd = [NSCalendarDate dateWithTimeIntervalSince1970:[startDate timeIntervalSince1970]];
+      startDateStr = [cd descriptionWithCalendarFormat:@"%Y-%m-%dT%H:%M:%S.%FZ"];
+    }
+
+  endDateStr = nil;
+  if (endDate)
+    {
+      NSCalendarDate *cd;
+      
+      cd = [NSCalendarDate dateWithTimeIntervalSince1970:[endDate timeIntervalSince1970]];
+      endDateStr = [cd descriptionWithCalendarFormat:@"%Y-%m-%dT%H:%M:%S.%FZ"];
+    }
+
+  NSLog(@"getting deleted objects of: %@", objectType);
+  NSLog(@"from %@ to %@", startDateStr, endDateStr);
+
+  /* prepare the header */
+  sessionHeaderDict = [NSMutableDictionary dictionaryWithCapacity: 2];
+  [sessionHeaderDict setObject: sessionId forKey: @"sessionId"];
+  [sessionHeaderDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
+
+  headerDict = [NSMutableDictionary dictionaryWithCapacity: 2];
+  [headerDict setObject: sessionHeaderDict forKey: @"SessionHeader"];
+  [headerDict setObject: GWSSOAPUseLiteral forKey: GWSSOAPUseKey];
+
+  queryParmDict = [NSMutableDictionary dictionaryWithCapacity: 4];
+  [queryParmDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
+
+  [queryParmDict setObject: objectType forKey: @"objectType"];
+  [queryParmDict setObject: startDateStr forKey: @"startDate"];
+  [queryParmDict setObject: endDateStr forKey: @"endDate"];
+
+  parmsOrder = [NSMutableArray arrayWithCapacity: 3];
+  [parmsOrder addObject:@"objectType"];
+  [parmsOrder addObject:@"startDate"];
+  [parmsOrder addObject:@"endDate"];
+  [queryParmDict setObject: parmsOrder forKey: GWSOrderKey];
+  
+
+  parmsDict = [NSMutableDictionary dictionaryWithCapacity: 1];
+  [parmsDict setObject: queryParmDict forKey: @"getDeleted"];
+  [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];
+  
+  /* make the query */  
+  resultDict = [service invokeMethod: @"getDeleted"
+			 parameters : parmsDict
+			      order : nil
+			    timeout : standardTimeoutSec];
+
+  queryFault = [resultDict objectForKey:GWSFaultKey];
+  if (queryFault != nil)
+    {
+      NSString *faultCode;
+      NSString *faultString;
+	      
+      faultCode = [queryFault objectForKey:@"faultcode"];
+      faultString = [queryFault objectForKey:@"faultstring"];
+      NSLog(@"fault code: %@", faultCode);
+      NSLog(@"fault String: %@", faultString);
+      [[NSException exceptionWithName:@"DBException" reason:faultString userInfo:nil] raise];
+      [resultDict release];
+      return nil;
+    }
+  
+  queryResult = [resultDict objectForKey:GWSParametersKey];
+  result = [queryResult objectForKey:@"result"];
+  NSLog(@"result: %@", result);
+
+  if (result != nil)
+    {
+      id deletedRecords;
+      id earliestDateAvailable;
+      id latestDateCovered;
+      NSUInteger i;
+      NSMutableArray *returnRecords;
+
+      deletedRecords = [result objectForKey:@"deletedRecords"];
+      latestDateCovered = [result objectForKey:@"latestDateCovered"];
+      earliestDateAvailable = [result objectForKey:@"earliestDateAvailable"];
+
+      returnDict = [NSMutableDictionary dictionary];
+      returnRecords = [[NSMutableArray alloc] initWithCapacity: [deletedRecords count]];
+
+      [returnDict setObject:returnRecords forKey:@"deletedRecords"];
+      [returnDict setObject:latestDateCovered forKey:@"latestDateCovered"];
+      [returnDict setObject:earliestDateAvailable forKey:@"earliestDateAvailable"];
+      [returnRecords release];
+      
+      NSLog(@"%@", deletedRecords);
+      NSLog(@"%@", latestDateCovered);
+      NSLog(@"%@", earliestDateAvailable);
+      for (i = 0; i < [deletedRecords count]; i++)
+	{
+	  id record;
+
+	  record = [deletedRecords objectAtIndex:i];
+	  [returnRecords addObject:record];
+	  NSLog(@"%lu: %@", i, deletedRecords);
+	}
+    }
+
+  [resultDict release];
+  
+  return returnDict;
+}
 
 @end

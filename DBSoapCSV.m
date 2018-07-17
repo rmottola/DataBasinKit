@@ -506,6 +506,51 @@
   return resultArray;
 }
 
+
+- (void)getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate toWriter:(DBFileWriter *)writer progressMonitor:(id<DBProgressProtocol>)p
+{
+  NSUInteger      i;
+  NSUInteger     size;
+  NSDictionary   *deletedDict;
+  NSArray        *deletedArray;
+  NSDictionary   *properties;
+  NSArray        *fields;
+  NSArray        *keys;
+  NSMutableArray *set;
+  GWSService     *serv;
+  DBSoap         *dbSoap;
+  
+  /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
+  dbSoap = [[DBSoap alloc] init];
+  serv = [DBSoap gwserviceForDBSoap];
+  [dbSoap setSessionId:[db sessionId]];
+  [serv setURL:[db serverUrl]];  
+  [dbSoap setService:serv];
+  [dbSoap setLogger:logger];
+  [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
+  
+  NS_DURING 
+    deletedDict = [dbSoap getDeleted: objectType :startDate :endDate];
+  NS_HANDLER
+    [dbSoap release];
+    [localException raise];
+    return;
+  NS_ENDHANDLER
+  
+  deletedArray = [deletedDict objectForKey:@"deletedRecords"];
+  size = [deletedArray count];
+
+  [writer writeStart];
+  
+  keys = [[deletedArray objectAtIndex: 0] allKeys];
+  [writer setFieldNames:[NSArray arrayWithArray:keys] andWriteThem:YES];
+    
+  [writer writeDataSet:deletedArray];
+  [writer writeEnd];
+  [set release];
+  [dbSoap release];
+}
+
 - (void)describeSObject: (NSString *)objectType toWriter:(DBFileWriter *)writer
 {
   NSUInteger      i;
