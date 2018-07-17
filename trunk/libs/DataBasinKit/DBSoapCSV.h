@@ -49,6 +49,9 @@
 - (NSMutableArray *)create :(NSString *)objectName fromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p;
 - (NSMutableArray *)update :(NSString *)objectName fromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p;
 - (NSMutableArray *)deleteFromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p;
+
+- (void)getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate toWriter:(DBFileWriter *)writer progressMonitor:(id<DBProgressProtocol>)p;
+
 - (void)describeSObject: (NSString *)objectType toWriter:(DBFileWriter *)writer;
 
 

@@ -1568,7 +1568,7 @@
 }
 
 
-/** retrieves fields (fieldList) from a apecific object given an array of SF IDs */
+/** retrieves fields (fieldList) from a specific object given an array of SF IDs */
 - (NSMutableArray *)retrieveFields:(NSArray *)fieldList ofObject:(NSString*)objectType fromArray:(NSArray *)objectList
 {
   NSMutableArray *resArray;
@@ -1600,6 +1600,40 @@
   [lockBusy unlock];
   
   return resArray;
+}
+
+/** retrieves IDs of a deleted objects given a time interval */
+- (NSMutableArray *)getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
+{
+  NSMutableDictionary *resDict;
+  
+  [lockBusy lock];
+  if (busyCount)
+    {
+      [logger log: LogStandard :@"[DBSoap getDeleted] called but busy\n"];
+      [lockBusy unlock];
+      return nil;
+    }
+  busyCount++;
+  [lockBusy unlock];
+  
+  resDict = nil;
+  NS_DURING
+    resDict = [self _getDeleted :objectType :startDate :endDate];
+  NS_HANDLER
+    {
+      [lockBusy lock];
+      busyCount--;
+      [lockBusy unlock];
+      [localException raise];
+    }
+  NS_ENDHANDLER
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+  
+  return resDict;
 }
 
 /** runs a describe global to retrieve all all the objects and returns an array of DBSobjects */

@@ -1,4 +1,4 @@
-/*
+ /*
   Project: DataBasin
 
   Copyright (C) 2008-2018 Free Software Foundation
@@ -115,13 +115,14 @@
 - (NSMutableArray *)create :(NSString *)objectName fromArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p;
 - (NSMutableArray *)update :(NSString *)objectName fromArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p;
 - (NSMutableArray *)delete :(NSArray *)array progressMonitor:(id<DBProgressProtocol>)p;
+- (NSMutableArray *)undelete :(NSArray *)array progressMonitor:(id<DBProgressProtocol>)p;
 
 - (NSMutableArray *)retrieveWithQuery:(NSString *)queryString andObjects:(NSArray *)objectList;
 - (NSMutableArray *)retrieveFields:(NSArray *)fieldList ofObject:(NSString *)objectType fromArray:(NSArray *)objectList;
 
 
 - (NSMutableArray *)getUpdated :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
-- (NSMutableArray *)getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
+- (NSDictionary *)getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
 
 - (NSArray *)describeGlobal;
 - (NSArray *)sObjects;
@@ -185,6 +186,8 @@
 @interface DBSoap (Deleting)
 
 - (NSMutableArray *)_delete :(NSArray *)array progressMonitor:(id<DBProgressProtocol>)p;
+- (NSMutableArray *)_undelete :(NSArray *)array progressMonitor:(id<DBProgressProtocol>)p;
+- (NSDictionary *)_getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
 
 @end
 
