@@ -1,3 +1,8 @@
+2018-07-18  Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap+Deleting.m
+	Fix memory error
+
 2018-07-17  Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap+Deleting.m

@@ -316,7 +316,7 @@
       latestDateCovered = [result objectForKey:@"latestDateCovered"];
       earliestDateAvailable = [result objectForKey:@"earliestDateAvailable"];
 
-      returnDict = [NSMutableDictionary dictionary];
+      returnDict = [[NSMutableDictionary alloc] initWithCapacity: 3];
       returnRecords = [[NSMutableArray alloc] initWithCapacity: [deletedRecords count]];
 
       [returnDict setObject:returnRecords forKey:@"deletedRecords"];
@@ -324,22 +324,20 @@
       [returnDict setObject:earliestDateAvailable forKey:@"earliestDateAvailable"];
       [returnRecords release];
       
-      NSLog(@"%@", deletedRecords);
-      NSLog(@"%@", latestDateCovered);
-      NSLog(@"%@", earliestDateAvailable);
+      NSLog(@"deleted records: %@", deletedRecords);
+      NSLog(@"latest: %@", latestDateCovered);
+      NSLog(@"earliest: %@", earliestDateAvailable);
       for (i = 0; i < [deletedRecords count]; i++)
 	{
 	  id record;
 
 	  record = [deletedRecords objectAtIndex:i];
 	  [returnRecords addObject:record];
-	  NSLog(@"%lu: %@", i, deletedRecords);
+	  NSLog(@"%lu: %@", i, record);
 	}
     }
 
-  [resultDict release];
-  
-  return returnDict;
+  return [returnDict autorelease];
 }
 
 @end
