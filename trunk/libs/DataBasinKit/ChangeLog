@@ -1,3 +1,10 @@
+2018-07-19  Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.h
+	* DBSoap.m
+	* DBSoap+Updating.m
+	implement getUpdated API.
+
 2018-07-18  Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap+Deleting.m
@@ -10,7 +17,7 @@
 	* DBSoap.m
 	* DBSoapCSV.h
 	* DBSoapCSV.m
-	implement getUpdate API
+	implement getDeleted API
 
 2018-05-08  Riccardo Mottola <rm@gnu.org>
 

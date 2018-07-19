@@ -172,6 +172,7 @@
 @interface DBSoap (Updating)
 
 - (NSMutableArray *)_update :(NSString *)objectName fromArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p;
+- (NSMutableDictionary *)_getUpdated :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
 
 @end
 

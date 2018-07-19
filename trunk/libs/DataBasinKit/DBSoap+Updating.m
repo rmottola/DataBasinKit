@@ -1,7 +1,7 @@
 /*
    Project: DataBasinKit
 
-  Copyright (C) 2009-2017 Free Software Foundation
+  Copyright (C) 2009-2018 Free Software Foundation
 
    Author: multix
 
@@ -304,5 +304,129 @@
   return [resultArray autorelease];
 }
 
+- (NSMutableDictionary *)_getUpdated :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate
+{
+  NSMutableDictionary   *headerDict;
+  NSMutableDictionary   *sessionHeaderDict;
+  
+  NSMutableDictionary   *parmsDict;
+  NSMutableDictionary   *queryParmDict;
+  NSMutableArray        *parmsOrder;
+  NSDictionary          *resultDict;
+  NSDictionary          *queryResult;
+  id                    result;
+  NSDictionary          *queryFault;
+
+  NSMutableDictionary   *returnDict;
+  
+  NSString *startDateStr;
+  NSString *endDateStr;
+
+  returnDict = nil;
+
+  startDateStr = nil;
+  if (startDate)
+    {
+      NSCalendarDate *cd;
+      
+      cd = [NSCalendarDate dateWithTimeIntervalSince1970:[startDate timeIntervalSince1970]];
+      startDateStr = [cd descriptionWithCalendarFormat:@"%Y-%m-%dT%H:%M:%S.%FZ"];
+    }
+
+  endDateStr = nil;
+  if (endDate)
+    {
+      NSCalendarDate *cd;
+      
+      cd = [NSCalendarDate dateWithTimeIntervalSince1970:[endDate timeIntervalSince1970]];
+      endDateStr = [cd descriptionWithCalendarFormat:@"%Y-%m-%dT%H:%M:%S.%FZ"];
+    }
+
+  NSLog(@"getting updated objects of: %@", objectType);
+  NSLog(@"from %@ to %@", startDateStr, endDateStr);
+
+  /* prepare the header */
+  sessionHeaderDict = [NSMutableDictionary dictionaryWithCapacity: 2];
+  [sessionHeaderDict setObject: sessionId forKey: @"sessionId"];
+  [sessionHeaderDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
+
+  headerDict = [NSMutableDictionary dictionaryWithCapacity: 2];
+  [headerDict setObject: sessionHeaderDict forKey: @"SessionHeader"];
+  [headerDict setObject: GWSSOAPUseLiteral forKey: GWSSOAPUseKey];
+
+  queryParmDict = [NSMutableDictionary dictionaryWithCapacity: 4];
+  [queryParmDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
+
+  [queryParmDict setObject: objectType forKey: @"objectType"];
+  [queryParmDict setObject: startDateStr forKey: @"startDate"];
+  [queryParmDict setObject: endDateStr forKey: @"endDate"];
+
+  parmsOrder = [NSMutableArray arrayWithCapacity: 3];
+  [parmsOrder addObject:@"objectType"];
+  [parmsOrder addObject:@"startDate"];
+  [parmsOrder addObject:@"endDate"];
+  [queryParmDict setObject: parmsOrder forKey: GWSOrderKey];
+  
+
+  parmsDict = [NSMutableDictionary dictionaryWithCapacity: 1];
+  [parmsDict setObject: queryParmDict forKey: @"getUpdated"];
+  [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];
+  
+  /* make the query */  
+  resultDict = [service invokeMethod: @"getUpdated"
+			 parameters : parmsDict
+			      order : nil
+			    timeout : standardTimeoutSec];
+
+  queryFault = [resultDict objectForKey:GWSFaultKey];
+  if (queryFault != nil)
+    {
+      NSString *faultCode;
+      NSString *faultString;
+	      
+      faultCode = [queryFault objectForKey:@"faultcode"];
+      faultString = [queryFault objectForKey:@"faultstring"];
+      NSLog(@"fault code: %@", faultCode);
+      NSLog(@"fault String: %@", faultString);
+      [[NSException exceptionWithName:@"DBException" reason:faultString userInfo:nil] raise];
+      [resultDict release];
+      return nil;
+    }
+  
+  queryResult = [resultDict objectForKey:GWSParametersKey];
+  result = [queryResult objectForKey:@"result"];
+  NSLog(@"result: %@", result);
+
+  if (result != nil)
+    {
+      id updatedRecords;
+      id latestDateCovered;
+      NSUInteger i;
+      NSMutableArray *returnRecords;
+
+      updatedRecords = [result objectForKey:@"ids"];
+      latestDateCovered = [result objectForKey:@"latestDateCovered"];
+
+      returnDict = [[NSMutableDictionary alloc] initWithCapacity: 2];
+      returnRecords = [[NSMutableArray alloc] initWithCapacity: [updatedRecords count]];
+
+      [returnDict setObject:returnRecords forKey:@"updatedRecords"];
+      [returnDict setObject:latestDateCovered forKey:@"latestDateCovered"];
+      [returnRecords release];
+      
+      NSLog(@"updated records: %@", updatedRecords);
+      NSLog(@"latest: %@", latestDateCovered);
+      for (i = 0; i < [updatedRecords count]; i++)
+	{
+	  id record;
+
+	  record = [updatedRecords objectAtIndex:i];
+	  [returnRecords addObject:record];
+	  NSLog(@"%lu: %@", i, record);
+	}
+    }
+
+  return [returnDict autorelease];
+}
 
 @end
