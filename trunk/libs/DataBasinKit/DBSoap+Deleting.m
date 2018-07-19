@@ -211,7 +211,7 @@
   return [resultArray autorelease];
 }
 
-- (NSDictionary *)_getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate
+- (NSMutableDictionary *)_getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate
 {
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;

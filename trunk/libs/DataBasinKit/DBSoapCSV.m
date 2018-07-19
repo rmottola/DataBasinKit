@@ -509,12 +509,9 @@
 
 - (void)getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate toWriter:(DBFileWriter *)writer progressMonitor:(id<DBProgressProtocol>)p
 {
-  NSUInteger      i;
   NSUInteger     size;
   NSDictionary   *deletedDict;
   NSArray        *deletedArray;
-  NSDictionary   *properties;
-  NSArray        *fields;
   NSArray        *keys;
   NSMutableArray *set;
   GWSService     *serv;
