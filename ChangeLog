@@ -2,6 +2,13 @@
 
 	* DBSoap.h
 	* DBSoap.m
+	* DBSoap+Deleting.m
+	Undelete API.
+
+2018-07-19  Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.h
+	* DBSoap.m
 	* DBSoap+Updating.m
 	implement getUpdated API.
 

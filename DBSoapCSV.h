@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2017 Free Software Foundation
+  Copyright (C) 2008-2018 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -49,6 +49,7 @@
 - (NSMutableArray *)create :(NSString *)objectName fromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p;
 - (NSMutableArray *)update :(NSString *)objectName fromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p;
 - (NSMutableArray *)deleteFromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p;
+- (NSMutableArray *)undeleteFromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p;
 
 - (void)getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate toWriter:(DBFileWriter *)writer progressMonitor:(id<DBProgressProtocol>)p;
 

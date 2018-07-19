@@ -1535,6 +1535,40 @@
   return resArray;
 }
 
+/** unelete the contents of array, which can be either strings of IDs or DBSObjects */
+- (NSMutableArray *)undelete :(NSArray *)array progressMonitor:(id<DBProgressProtocol>)p;
+{
+  NSMutableArray *resArray;
+  
+  [lockBusy lock];
+  if (busyCount)
+    {
+      [logger log: LogStandard :@"[DBSoap undelete] called but busy\n"];
+      [lockBusy unlock];
+      return nil;
+    }
+  busyCount++;
+  [lockBusy unlock];
+
+  resArray = nil;
+  NS_DURING
+    resArray = [self _undelete:array progressMonitor:p];
+  NS_HANDLER
+    {
+      [lockBusy lock];
+      busyCount--;
+      [lockBusy unlock];
+      [localException raise];
+    }
+  NS_ENDHANDLER
+
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+  
+  return resArray;
+}
+
 /** retrieves given a query from a apecific object given an array of SF ID
  actually invokes retrieveFields after having parsed the query for Fields
  */
