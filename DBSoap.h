@@ -121,8 +121,8 @@
 - (NSMutableArray *)retrieveFields:(NSArray *)fieldList ofObject:(NSString *)objectType fromArray:(NSArray *)objectList;
 
 
-- (NSMutableArray *)getUpdated :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
-- (NSDictionary *)getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
+- (NSMutableDictionary *)getUpdated :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
+- (NSMutableDictionary *)getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
 
 - (NSArray *)describeGlobal;
 - (NSArray *)sObjects;
@@ -187,7 +187,7 @@
 
 - (NSMutableArray *)_delete :(NSArray *)array progressMonitor:(id<DBProgressProtocol>)p;
 - (NSMutableArray *)_undelete :(NSArray *)array progressMonitor:(id<DBProgressProtocol>)p;
-- (NSDictionary *)_getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
+- (NSMutableDictionary *)_getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
 
 @end
 

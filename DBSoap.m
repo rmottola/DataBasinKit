@@ -1603,7 +1603,7 @@
 }
 
 /** retrieves IDs of a deleted objects given a time interval */
-- (NSMutableArray *)getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
+- (NSMutableDictionary *)getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
 {
   NSMutableDictionary *resDict;
   
