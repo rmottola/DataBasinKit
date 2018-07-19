@@ -1602,7 +1602,41 @@
   return resArray;
 }
 
-/** retrieves IDs of a deleted objects given a time interval */
+/** retrieves IDs of updated objects given a time interval */
+- (NSMutableDictionary *)getUpdated :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
+{
+  NSMutableDictionary *resDict;
+  
+  [lockBusy lock];
+  if (busyCount)
+    {
+      [logger log: LogStandard :@"[DBSoap getUpdated] called but busy\n"];
+      [lockBusy unlock];
+      return nil;
+    }
+  busyCount++;
+  [lockBusy unlock];
+  
+  resDict = nil;
+  NS_DURING
+    resDict = [self _getUpdated :objectType :startDate :endDate];
+  NS_HANDLER
+    {
+      [lockBusy lock];
+      busyCount--;
+      [lockBusy unlock];
+      [localException raise];
+    }
+  NS_ENDHANDLER
+  
+  [lockBusy lock];
+  busyCount--;
+  [lockBusy unlock];
+  
+  return resDict;
+}
+
+/** retrieves IDs of deleted objects given a time interval */
 - (NSMutableDictionary *)getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate;
 {
   NSMutableDictionary *resDict;
