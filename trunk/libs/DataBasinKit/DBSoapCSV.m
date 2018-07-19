@@ -654,6 +654,42 @@
   return resultArray;
 }
 
+- (NSMutableArray *)undeleteFromReader:(DBCSVReader *)reader progressMonitor:(id<DBProgressProtocol>)p
+{
+  NSMutableArray *objectsArray;
+  NSMutableArray *resultArray;
+  GWSService     *serv;
+  DBSoap         *dbSoap;
+  
+  /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
+  dbSoap = [[DBSoap alloc] init];
+  serv = [DBSoap gwserviceForDBSoap];
+  [dbSoap setSessionId:[db sessionId]];
+  [serv setURL:[db serverUrl]];  
+  [dbSoap setService:serv];
+  [dbSoap setLogger:logger];
+  [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
+  
+  /* retrieve objects to undelete */
+  // FIXME perhaps this copy is useless
+  objectsArray = [[NSMutableArray arrayWithArray:[reader readDataSet]] retain];
+  [logger log: LogDebug :@"[DBSoapCSV undelete] objects to undelete: %@\n", objectsArray];
+  [logger log: LogStandard :@"[DBSoapCSV undelete] Count of objects to undelete: %d\n", [objectsArray count]];
+
+  resultArray = nil;
+  NS_DURING
+    resultArray = [dbSoap undelete:objectsArray progressMonitor:p];
+  NS_HANDLER
+    [objectsArray release];
+    [dbSoap release];
+    [localException raise];
+  NS_ENDHANDLER
+
+  [dbSoap release];
+  [objectsArray release];
+  return resultArray;
+}
+
 
 - (void)dealloc
 {
