@@ -509,7 +509,6 @@
 
 - (void)getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate toWriter:(DBFileWriter *)writer progressMonitor:(id<DBProgressProtocol>)p
 {
-  NSUInteger     size;
   NSDictionary   *deletedDict;
   NSArray        *deletedArray;
   NSArray        *keys;
@@ -535,7 +534,6 @@
   NS_ENDHANDLER
   
   deletedArray = [deletedDict objectForKey:@"deletedRecords"];
-  size = [deletedArray count];
 
   [writer writeStart];
   
