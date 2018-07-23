@@ -1,5 +1,10 @@
 2018-07-19  Riccardo Mottola <rm@gnu.org>
 
+	* DBSoap+Deleting.m
+	Fix cycle exit condition!
+
+2018-07-19  Riccardo Mottola <rm@gnu.org>
+
 	* DBSoap.h
 	* DBSoap.m
 	* DBSoap+Deleting.m

@@ -86,8 +86,9 @@
 	  [batchObjArray addObject: idStr];
 	  batchCounter++;
 	}
+ 
       /* did we fill a batch or did we reach the end? */
-      if (batchCounter == upBatchSize || !idStr)
+      if (batchCounter && (batchCounter == upBatchSize || idStr == nil))
 	{
 	  /* prepare the parameters */
 	  queryParmDict = [NSMutableDictionary dictionaryWithCapacity: 2];
@@ -265,8 +266,9 @@
 	  [batchObjArray addObject: idStr];
 	  batchCounter++;
 	}
+
       /* did we fill a batch or did we reach the end? */
-      if (batchCounter == upBatchSize || !idStr)
+      if (batchCounter && (batchCounter == upBatchSize || idStr == nil))
 	{
 	  /* prepare the parameters */
 	  queryParmDict = [NSMutableDictionary dictionaryWithCapacity: 2];
