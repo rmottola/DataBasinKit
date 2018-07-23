@@ -419,10 +419,12 @@
       for (i = 0; i < [updatedRecords count]; i++)
 	{
 	  id record;
+          NSDictionary *d;
 
 	  record = [updatedRecords objectAtIndex:i];
-	  [returnRecords addObject:record];
-	  NSLog(@"%lu: %@", i, record);
+          d = [[NSDictionary alloc] initWithObjectsAndKeys:record, @"Id", NULL];
+	  [returnRecords addObject:d];
+          [record release];
 	}
     }
 

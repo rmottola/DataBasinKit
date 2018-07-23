@@ -1,7 +1,10 @@
-2018-07-19  Riccardo Mottola <rm@gnu.org>
+2018-07-23  Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap+Deleting.m
 	Fix cycle exit condition!
+
+	* DBSoap+Updating.m
+	wrap result in a dictionary, to ease FileReader output.
 
 2018-07-19  Riccardo Mottola <rm@gnu.org>
 
