@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2018 Free Software Foundation
+  Copyright (C) 2008-2019 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -511,7 +511,6 @@
   NSDictionary   *updatedDict;
   NSArray        *updatedArray;
   NSArray        *keys;
-  NSMutableArray *set;
   GWSService     *serv;
   DBSoap         *dbSoap;
   
@@ -541,7 +540,6 @@
     
   [writer writeDataSet:updatedArray];
   [writer writeEnd];
-  [set release];
   [dbSoap release];
 }
 
@@ -551,7 +549,6 @@
   NSDictionary   *deletedDict;
   NSArray        *deletedArray;
   NSArray        *keys;
-  NSMutableArray *set;
   GWSService     *serv;
   DBSoap         *dbSoap;
   
@@ -581,7 +578,6 @@
     
   [writer writeDataSet:deletedArray];
   [writer writeEnd];
-  [set release];
   [dbSoap release];
 }
 
