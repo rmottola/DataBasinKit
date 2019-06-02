@@ -22,10 +22,10 @@ include $(GNUSTEP_MAKEFILES)/common.make
 #
 # Framework
 #
-VERSION = 1.0
+VERSION = 1.1
 PACKAGE_NAME = DataBasinKit
 FRAMEWORK_NAME = DataBasinKit
-DataBasinKit_CURRENT_VERSION_NAME = 1.0
+DataBasinKit_CURRENT_VERSION_NAME = 1.1
 DataBasinKit_DEPLOY_WITH_CURRENT_VERSION = yes
 
 

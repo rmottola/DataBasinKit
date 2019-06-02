@@ -56,7 +56,7 @@
   dbSoap = [[DBSoap alloc] init];
   serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverUrl]];  
+  [serv setURL:[db serverURL]];  
   [dbSoap setService:serv];
   [dbSoap setLogger:logger];
   [dbSoap setDownBatchSize:[db downBatchSize]];
@@ -163,7 +163,7 @@
   dbSoap = [[DBSoap alloc] init];
   serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverUrl]];  
+  [serv setURL:[db serverURL]];  
   [dbSoap setService:serv];
   [dbSoap setLogger:logger];
   [dbSoap setDownBatchSize:2000];
@@ -283,7 +283,7 @@
   dbSoap = [[DBSoap alloc] init];
   serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverUrl]];  
+  [serv setURL:[db serverURL]];  
   [dbSoap setService:serv];
   [dbSoap setLogger:logger];
   [dbSoap setEnableFieldTypesDescribeForQuery:[db enableFieldTypesDescribeForQuery]];
@@ -397,7 +397,7 @@
   dbSoap = [[DBSoap alloc] init];
   serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverUrl]];  
+  [serv setURL:[db serverURL]];  
   [dbSoap setService:serv];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
   
@@ -458,7 +458,7 @@
   dbSoap = [[DBSoap alloc] init];
   serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverUrl]];  
+  [serv setURL:[db serverURL]];  
   [dbSoap setService:serv];
   [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
@@ -518,7 +518,7 @@
   dbSoap = [[DBSoap alloc] init];
   serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverUrl]];  
+  [serv setURL:[db serverURL]];  
   [dbSoap setService:serv];
   [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
@@ -556,7 +556,7 @@
   dbSoap = [[DBSoap alloc] init];
   serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverUrl]];  
+  [serv setURL:[db serverURL]];  
   [dbSoap setService:serv];
   [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
@@ -597,7 +597,7 @@
   dbSoap = [[DBSoap alloc] init];
   serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverUrl]];  
+  [serv setURL:[db serverURL]];  
   [dbSoap setService:serv];
   [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
@@ -662,7 +662,7 @@
   dbSoap = [[DBSoap alloc] init];
   serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverUrl]];  
+  [serv setURL:[db serverURL]];  
   [dbSoap setService:serv];
   [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
@@ -698,7 +698,7 @@
   dbSoap = [[DBSoap alloc] init];
   serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverUrl]];  
+  [serv setURL:[db serverURL]];  
   [dbSoap setService:serv];
   [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
