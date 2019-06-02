@@ -48,7 +48,8 @@ DBCSVReader.h \
 DBCSVWriter.h \
 DBHTMLWriter.h \
 DBFileWriter.h \
-DBSFTypeWrappers.h 
+DBSFTypeWrappers.h \
+DBRest.h 
 
 #
 # Objective-C Class files
@@ -65,7 +66,20 @@ DBSFTypeWrappers.m \
 DBSoap+Updating.m \
 DBSoap+Creating.m \
 DBSoap+Selecting.m \
-DBSoap+Deleting.m
+DBSoap+Deleting.m \
+DBRest.m
+#
+# AutoGSDoc
+#
+DOCUMENT_NAME = DataBasinKit
+
+DataBasinKit_AGSDOC_FILES = DataBasinKit.gsdoc \
+	$(DataBasinKit_HEADER_FILES) \
+	$(DataBasinKit_OBJC_FILES) \
+
+
+DataBasinKit_AGSDOC_FLAGS += -MakeFrames YES
+
 
 #
 # Makefiles
@@ -74,3 +88,10 @@ DBSoap+Deleting.m
 include $(GNUSTEP_MAKEFILES)/aggregate.make
 include $(GNUSTEP_MAKEFILES)/framework.make
 -include GNUmakefile.postamble
+
+
+#Only build documentation if doc=yes was passed on the command line
+#
+ifeq ($(doc),yes)
+include $(GNUSTEP_MAKEFILES)/documentation.make
+endif

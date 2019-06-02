@@ -19,7 +19,8 @@
 	"DBSoap+Updating.m",
 	"DBSoap+Creating.m",
 	"DBSoap+Selecting.m",
-	"DBSoap+Deleting.m"
+	"DBSoap+Deleting.m",
+	"DBRest.m"
     );
     COMPILEROPTIONS = "";
     CPPOPTIONS = "";
@@ -40,7 +41,8 @@
 	"DBCSVWriter.h",
 	"DBHTMLWriter.h",
 	"DBFileWriter.h",
-	"DBSFTypeWrappers.h"
+	"DBSFTypeWrappers.h",
+	"DBRest.h"
     );
     IMAGES = (
     );
@@ -85,7 +87,8 @@
 	"DBCSVWriter.h",
 	"DBHTMLWriter.h",
 	"DBFileWriter.h",
-	"DBSFTypeWrappers.h"
+	"DBSFTypeWrappers.h",
+	"DBRest.h"
     );
     "SEARCH_HEADER_DIRS" = (
     );
