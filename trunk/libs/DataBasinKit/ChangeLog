@@ -2,6 +2,15 @@
 
 	* DBRest.h
 	* DBRest.m
+	* DBSoap.h
+	* DBSoap.m
+	* DBSoapCSV.m
+	Store serviceURL as NSURL and not as a string anymore.
+
+2019-06-02 Riccardo Mottola <rm@gnu.org>
+
+	* DBRest.h
+	* DBRest.m
 	First steps in REST API query support.
 
 2019-05-28 Riccardo Mottola <rm@gnu.org>

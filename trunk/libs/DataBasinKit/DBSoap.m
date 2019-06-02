@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2018 Free Software Foundation
+  Copyright (C) 2008-2019 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -423,7 +423,7 @@
     
   [sessionId release];
   sessionId = [loginResult2 objectForKey:@"sessionId"];
-  serverUrl = [loginResult2 objectForKey:@"serverUrl"];
+  serverURL = [NSURL URLWithString:[loginResult2 objectForKey:@"serverUrl"]];
   
   passwordExpired = NO;
   if ([[loginResult2 objectForKey:@"passwordExpired"] isEqualToString:@"true"])
@@ -443,10 +443,11 @@
 
   /* since Salesforce seems to be stubborn and returns an https connection
      even if we initiate a non-secure one, we force it to http */
-  if ([[serverUrl substringToIndex:5] isEqualToString:@"https"] && !useHttps)
+  if ([[serverURL scheme] isEqualToString:@"https"] && !useHttps)
     {
       [logger log: LogInformative: @"[DBSoap Login]: preferences set to http, forcing....\n"];
-      serverUrl = [@"http" stringByAppendingString:[serverUrl substringFromIndex:5]];
+      [serverURL autorelease];
+      serverURL = [[NSURL alloc] initWithScheme:@"http" host:[serverURL host] path:[serverURL path]];
     }
   
   if (sessionId == nil)
@@ -456,10 +457,10 @@
   else
   {
     [logger log: LogStandard: @"[DBSoap Login]: sessionId: %@\n", sessionId];
-    [logger log: LogStandard: @"[DBSoap Login]: serverUrl: %@\n", serverUrl];
+    [logger log: LogStandard: @"[DBSoap Login]: serverUrl: %@\n", serverURL];
   }
   
-  [service setURL:serverUrl];
+  [service setURL:serverURL];
 
   [sessionId retain];
 }
@@ -1168,18 +1169,18 @@
     }
 }
 
-- (NSString *) serverUrl
+- (NSURL *) serverURL
 {
-  return serverUrl;
+  return serverURL;
 }
 
-- (void) setServerUrl:(NSString *)urlStr
+- (void) setServerURL:(NSURL *)url
 {
-  if (serverUrl != urlStr)
+  if (serverURL != url)
     {
-      [serverUrl release];
-      serverUrl = urlStr;
-      [serverUrl retain];
+      [serverURL release];
+      serverURL = url;
+      [serverURL retain];
     }
 }
 

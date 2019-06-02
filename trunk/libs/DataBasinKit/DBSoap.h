@@ -1,7 +1,7 @@
  /*
   Project: DataBasin
 
-  Copyright (C) 2008-2018 Free Software Foundation
+  Copyright (C) 2008-2019 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -54,7 +54,7 @@
     
   /* salesforce.com session variables */
   NSString     *sessionId;
-  NSString     *serverUrl;
+  NSURL        *serverURL;
   BOOL         passwordExpired;
   NSDictionary *userInfo;
 
@@ -138,8 +138,8 @@
 
 - (NSString *) sessionId;
 - (void) setSessionId:(NSString *)session;
-- (NSString *) serverUrl;
-- (void) setServerUrl:(NSString *)urlStr;
+- (NSURL *) serverURL;
+- (void) setServerURL:(NSURL *)url;
 - (BOOL) passwordExpired;
 - (NSDictionary *) userInfo;
 - (void)setService:(GWSService *)serv;

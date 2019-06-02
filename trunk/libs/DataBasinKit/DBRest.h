@@ -39,7 +39,7 @@
     
   /* salesforce.com session variables */
   NSString     *sessionId;
-  NSString     *serverUrl;
+  NSURL        *serverURL;
 }
 
 + (NSString *)encodeQueryString:(NSString *)query;
@@ -51,8 +51,8 @@
 
 - (NSString *) sessionId;
 - (void) setSessionId:(NSString *)session;
-- (NSString *) serverUrl;
-- (void) setServerUrl:(NSString *)urlStr;
+- (NSURL *) serverURL;
+- (void) setServerURL:(NSURL *)url;
 - (void)setService:(GWSService *)serv;
 
 @end

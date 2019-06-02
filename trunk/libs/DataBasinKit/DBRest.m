@@ -61,7 +61,8 @@
 
 - (NSString *)query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p
 {
-  NSString *url;
+  NSURL *url;
+  NSString *queryCommand;
   NSDictionary *headers;
   NSDictionary *response;
   id result;
@@ -74,9 +75,9 @@
 			    @"application/json; charset=utf-8", @"Content-Type",
 			  bearerStr, @"Authorization",
 			  nil];
-  
-  url = [serverUrl stringByAppendingString:@"/query/?q="];
-  url = [url stringByAppendingString:[DBRest encodeQueryString:queryString]];
+
+  queryCommand = [@"query/?=" stringByAppendingString:[DBRest encodeQueryString:queryString]];
+  url = [serverURL URLByAppendingPathComponent:queryCommand];
   NSLog(@"URL: %@", url);
   gsrv = [[GWSService alloc] init];
 
@@ -147,18 +148,18 @@
     }
 }
 
-- (NSString *) serverUrl
+- (NSURL *) serverURL
 {
-  return serverUrl;
+  return serverURL;
 }
 
-- (void) setServerUrl:(NSString *)urlStr
+- (void) setServerURL:(NSURL *)url
 {
-  if (serverUrl != urlStr)
+  if (serverURL != url)
     {
-      [serverUrl release];
-      serverUrl = urlStr;
-      [serverUrl retain];
+      [serverURL release];
+      serverURL = url;
+      [serverURL retain];
     }
 }
 
