@@ -236,7 +236,7 @@
   return [NSURL URLWithString:@"https://test.salesforce.com/services/Soap/u/42.0"];
 }
 
-/** returns a GWSerivce inited usefully for DBSoap */
+/** returns a GWService inited usefully for DBSoap */
 + (GWSService *)gwserviceForDBSoap
 {
   GWSService    *gws;
@@ -1182,6 +1182,7 @@
       serverURL = url;
       [serverURL retain];
     }
+  [service setURL:serverURL];
 }
 
 - (BOOL) passwordExpired
