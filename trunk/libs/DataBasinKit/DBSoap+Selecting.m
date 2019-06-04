@@ -35,6 +35,7 @@
 
 - (NSString *)_query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects declaredSize:(NSUInteger *)ds progressMonitor:(id<DBProgressProtocol>)p
 {
+  GWSService            *service;
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
   NSMutableDictionary   *queryOptionsDict;
@@ -85,13 +86,16 @@
   [queryParmDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
   [queryParmDict setObject: queryString forKey: @"queryString"];
   
-  parmsDict = [NSMutableDictionary dictionaryWithCapacity: 1];
-  
+  parmsDict = [NSMutableDictionary dictionaryWithCapacity: 1]; 
   
   /* make the query */
   requestName = @"query";
   if (all)
     requestName = @"queryAll";
+
+  /* init our service */
+  service = [[DBSoap gwserviceForDBSoap] retain];
+  [service setURL:serverURL];
 
   [parmsDict setObject: queryParmDict forKey: requestName];
   [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];
@@ -99,6 +103,7 @@
                          parameters : parmsDict
                               order : nil
                             timeout : queryTimeoutSec];
+  [service release];
   
   [logger log: LogDebug: @"[DBSoap query] result: %@\n", resultDict];
   coderError = [resultDict objectForKey:GWSErrorKey];
@@ -226,6 +231,7 @@
 
 - (NSString *)_queryMore :(NSString *)locator toArray:(NSMutableArray *)objects
 {
+  GWSService            *service;  
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *queryOptionsDict;
   NSMutableDictionary   *sessionHeaderDict;
@@ -265,14 +271,19 @@
 
   parmsDict = [NSMutableDictionary dictionaryWithCapacity: 1];
   [parmsDict setObject: queryParmDict forKey: @"queryMore"];
-  [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey]; 
+  [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];
+
+  /* init our service */
+  service = [[DBSoap gwserviceForDBSoap] retain];
+  [service setURL:serverURL];
 
   /* make the query */  
   resultDict = [service invokeMethod: @"queryMore"
                          parameters : parmsDict
                               order : nil
                             timeout : queryTimeoutSec];
-  
+
+  [service release];
 
   queryLocator = nil;
   queryFault = [resultDict objectForKey:GWSFaultKey];
@@ -627,6 +638,7 @@
 
 - (NSMutableArray *)_retrieveFields:(NSArray *)fieldList ofObject:(NSString*)objectType fromObjects:(NSArray *)objectList
 {
+  GWSService            *service;
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
   NSMutableArray        *resultArray;
@@ -681,12 +693,17 @@
   parmsDict = [NSMutableDictionary dictionaryWithCapacity: 1];
   [parmsDict setObject: queryParmDict forKey: @"retrieve"];
   [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];
+
+  /* init our service */
+  service = [[DBSoap gwserviceForDBSoap] retain];
+  [service setURL:serverURL];
   
   /* make the query */  
   resultDict = [service invokeMethod: @"retrieve"
                          parameters : parmsDict
                               order : nil
                             timeout : standardTimeoutSec];
+  [service release];
 
   [logger log: LogDebug: @"[DBSoap retrieve] result: %@\n", resultDict];
   coderError = [resultDict objectForKey:GWSErrorKey];

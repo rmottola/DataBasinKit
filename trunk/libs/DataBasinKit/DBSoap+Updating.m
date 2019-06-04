@@ -35,6 +35,7 @@
 
 - (NSMutableArray *)_update :(NSString *)objectName fromArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p
 {
+  GWSService            *service;
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
   NSDictionary          *resultDict;
@@ -60,6 +61,10 @@
   headerDict = [[NSMutableDictionary dictionaryWithCapacity: 2] retain];
   [headerDict setObject: sessionHeaderDict forKey: @"SessionHeader"];
   [headerDict setObject: GWSSOAPUseLiteral forKey: GWSSOAPUseKey];
+
+  /* init our service */
+  service = [[DBSoap gwserviceForDBSoap] retain];
+  [service setURL:serverURL];
   
   [logger log: LogDebug: @"[DBSoap update] update objects array size: %lu\n", (unsigned long)[objects count]];
   
@@ -163,6 +168,7 @@
               [sessionHeaderDict release];
               [headerDict release];
               [resultArray release];
+              [service release];
               return nil;
 	    }
 	  queryFault = [resultDict objectForKey:GWSFaultKey];
@@ -180,6 +186,7 @@
               [sessionHeaderDict release];
               [headerDict release];
               [resultArray release];
+              [service release];
               return nil;
 	    }
 
@@ -300,12 +307,14 @@
   [queryObjectsArray release];
   [sessionHeaderDict release];
   [headerDict release];
+  [service release];
 
   return [resultArray autorelease];
 }
 
 - (NSMutableDictionary *)_getUpdated :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate
 {
+  GWSService            *service;
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
   
@@ -371,12 +380,18 @@
   parmsDict = [NSMutableDictionary dictionaryWithCapacity: 1];
   [parmsDict setObject: queryParmDict forKey: @"getUpdated"];
   [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];
+
+  /* init our service */
+  service = [[DBSoap gwserviceForDBSoap] retain];
+  [service setURL:serverURL];
+  
   
   /* make the query */  
   resultDict = [service invokeMethod: @"getUpdated"
 			 parameters : parmsDict
 			      order : nil
 			    timeout : standardTimeoutSec];
+  [service release];
 
   queryFault = [resultDict objectForKey:GWSFaultKey];
   if (queryFault != nil)

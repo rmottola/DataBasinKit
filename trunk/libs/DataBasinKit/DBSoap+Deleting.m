@@ -1,7 +1,7 @@
 /*
    Project: DataBasinKit
 
-   Copyright (C) 2009-2018 Free Software Foundation
+   Copyright (C) 2009-2019 Free Software Foundation
 
    Author: multix
 
@@ -34,6 +34,7 @@
 
 - (NSMutableArray *)_delete :(NSArray *)array progressMonitor:(id<DBProgressProtocol>)p
 {
+  GWSService            *service;
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
   NSMutableArray        *resultArray;
@@ -61,6 +62,11 @@
   batchCounter = 0;
   batchObjArray = [[NSMutableArray arrayWithCapacity: upBatchSize] retain];
   resultArray = [[NSMutableArray arrayWithCapacity:1] retain];
+
+  /* init our service */
+  service = [[DBSoap gwserviceForDBSoap] retain];
+  [service setURL:serverURL];
+  
   
   do
     {
@@ -121,6 +127,7 @@
 	      [[NSException exceptionWithName:@"DBException" reason:faultString userInfo:nil] raise];
               [batchObjArray release];
               [resultArray release];
+              [service release];
 	      return nil;
 	    }
   
@@ -209,11 +216,13 @@
   while (idStr  && ![p shouldStop]);
 
   [batchObjArray release];
+  [service release];
   return [resultArray autorelease];
 }
 
 - (NSMutableArray *)_undelete :(NSArray *)array progressMonitor:(id<DBProgressProtocol>)p
 {
+  GWSService            *service;
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
   NSMutableArray        *resultArray;
@@ -241,6 +250,10 @@
   batchCounter = 0;
   batchObjArray = [[NSMutableArray arrayWithCapacity: upBatchSize] retain];
   resultArray = [[NSMutableArray arrayWithCapacity:1] retain];
+
+  /* init our service */
+  service = [[DBSoap gwserviceForDBSoap] retain];
+  [service setURL:serverURL];
   
   do
     {
@@ -300,6 +313,7 @@
 	      [[NSException exceptionWithName:@"DBException" reason:faultString userInfo:nil] raise];
               [batchObjArray release];
               [resultArray release];
+              [service release];
 	      return nil;
 	    }
   
@@ -386,11 +400,13 @@
   while (idStr  && ![p shouldStop]);
 
   [batchObjArray release];
+  [service release];
   return [resultArray autorelease];
 }
 
 - (NSMutableDictionary *)_getDeleted :(NSString *)objectType :(NSDate *)startDate :(NSDate *)endDate
 {
+  GWSService            *service;
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
   
@@ -456,12 +472,17 @@
   parmsDict = [NSMutableDictionary dictionaryWithCapacity: 1];
   [parmsDict setObject: queryParmDict forKey: @"getDeleted"];
   [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];
+
+  /* init our service */
+  service = [[DBSoap gwserviceForDBSoap] retain];
+  [service setURL:serverURL];
   
   /* make the query */  
   resultDict = [service invokeMethod: @"getDeleted"
 			 parameters : parmsDict
 			      order : nil
 			    timeout : standardTimeoutSec];
+  [service release];
 
   queryFault = [resultDict objectForKey:GWSFaultKey];
   if (queryFault != nil)

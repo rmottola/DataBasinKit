@@ -49,7 +49,6 @@
 
 @interface DBSoap : NSObject
 {
-  GWSService *service;
   id<DBLoggerProtocol> logger;
     
   /* salesforce.com session variables */
@@ -142,7 +141,6 @@
 - (void) setServerURL:(NSURL *)url;
 - (BOOL) passwordExpired;
 - (NSDictionary *) userInfo;
-- (void)setService:(GWSService *)serv;
 
 - (void)setStandardTimeout:(unsigned)sec;
 - (void)setQueryTimeout:(unsigned)sec;

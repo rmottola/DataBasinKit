@@ -1,3 +1,14 @@
+2019-06-04 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap+Updating.m
+	* DBSoap+Selecting.m
+	* DBSoapCSV.m
+	* DBSoap+Deleting.m
+	* DBSoap+Creating.m
+	* DBSoap.h
+	* DBSoap.m
+	Instantiate GWSService each time it is needed, do not keep it persistent as an ivar.
+
 2019-06-02 Riccardo Mottola <rm@gnu.org>
 
 	* DBRest.h
