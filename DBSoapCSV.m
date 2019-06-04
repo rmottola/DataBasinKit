@@ -49,15 +49,12 @@
   NSArray        *fields;
   NSString       *qLoc;
   NSMutableArray *sObjects;
-  GWSService     *serv;
   DBSoap         *dbSoap;
   
   /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
   dbSoap = [[DBSoap alloc] init];
-  serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverURL]];  
-  [dbSoap setService:serv];
+  [dbSoap setServerURL:[db serverURL]];
   [dbSoap setLogger:logger];
   [dbSoap setDownBatchSize:[db downBatchSize]];
   [dbSoap setEnableFieldTypesDescribeForQuery:[db enableFieldTypesDescribeForQuery]];
@@ -147,7 +144,6 @@
   NSUInteger     i;
   NSUInteger     batchSize;
   NSArray        *queryFields;
-  GWSService     *serv;
   DBSoap         *dbSoap;
   BOOL           firstBatchIteration;
   NSUInteger     identifyBatchSize;
@@ -161,10 +157,8 @@
   
   /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
   dbSoap = [[DBSoap alloc] init];
-  serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverURL]];  
-  [dbSoap setService:serv];
+  [dbSoap setServerURL:[db serverURL]];
   [dbSoap setLogger:logger];
   [dbSoap setDownBatchSize:2000];
   [dbSoap setEnableFieldTypesDescribeForQuery:[db enableFieldTypesDescribeForQuery]];
@@ -270,7 +264,6 @@
   NSUInteger     i;
   NSUInteger     batchSize;
   NSArray        *queryFields;
-  GWSService     *serv;
   DBSoap         *dbSoap;
   BOOL           firstBatchIteration;
   NSUInteger     retrieveBatchSize;
@@ -281,10 +274,8 @@
   
   /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
   dbSoap = [[DBSoap alloc] init];
-  serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverURL]];  
-  [dbSoap setService:serv];
+  [dbSoap setServerURL:[db serverURL]];
   [dbSoap setLogger:logger];
   [dbSoap setEnableFieldTypesDescribeForQuery:[db enableFieldTypesDescribeForQuery]];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
@@ -390,15 +381,12 @@
   NSUInteger     fieldCount;
   NSMutableArray *sObjectsArray;
   NSMutableArray *resultArray;
-  GWSService     *serv;
   DBSoap         *dbSoap;
   
   /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
   dbSoap = [[DBSoap alloc] init];
-  serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverURL]];  
-  [dbSoap setService:serv];
+  [dbSoap setServerURL:[db serverURL]];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
   
   /* retrieve objects to create */
@@ -451,15 +439,12 @@
   NSUInteger     fieldCount;
   NSMutableArray *sObjectsArray;
   NSMutableArray *resultArray;
-  GWSService     *serv;
   DBSoap         *dbSoap;
   
   /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
   dbSoap = [[DBSoap alloc] init];
-  serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverURL]];  
-  [dbSoap setService:serv];
+  [dbSoap setServerURL:[db serverURL]];
   [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
   
@@ -511,15 +496,12 @@
   NSDictionary   *updatedDict;
   NSArray        *updatedArray;
   NSArray        *keys;
-  GWSService     *serv;
   DBSoap         *dbSoap;
   
   /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
   dbSoap = [[DBSoap alloc] init];
-  serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverURL]];  
-  [dbSoap setService:serv];
+  [dbSoap setServerURL:[db serverURL]];
   [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
   
@@ -549,15 +531,12 @@
   NSDictionary   *deletedDict;
   NSArray        *deletedArray;
   NSArray        *keys;
-  GWSService     *serv;
   DBSoap         *dbSoap;
   
   /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
   dbSoap = [[DBSoap alloc] init];
-  serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverURL]];  
-  [dbSoap setService:serv];
+  [dbSoap setServerURL:[db serverURL]];
   [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
   
@@ -590,15 +569,12 @@
   NSArray        *fields;
   NSArray        *keys;
   NSMutableArray *set;
-  GWSService     *serv;
   DBSoap         *dbSoap;
   
   /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
   dbSoap = [[DBSoap alloc] init];
-  serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverURL]];  
-  [dbSoap setService:serv];
+  [dbSoap setServerURL:[db serverURL]];
   [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
   
@@ -655,15 +631,12 @@
 {
   NSMutableArray *objectsArray;
   NSMutableArray *resultArray;
-  GWSService     *serv;
   DBSoap         *dbSoap;
   
   /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
   dbSoap = [[DBSoap alloc] init];
-  serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverURL]];  
-  [dbSoap setService:serv];
+  [dbSoap setServerURL:[db serverURL]];
   [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
   
@@ -691,15 +664,12 @@
 {
   NSMutableArray *objectsArray;
   NSMutableArray *resultArray;
-  GWSService     *serv;
   DBSoap         *dbSoap;
   
   /* we clone the soap instance and pass the session, so that the method can run in a separate thread */
   dbSoap = [[DBSoap alloc] init];
-  serv = [DBSoap gwserviceForDBSoap];
   [dbSoap setSessionId:[db sessionId]];
-  [serv setURL:[db serverURL]];  
-  [dbSoap setService:serv];
+  [dbSoap setServerURL:[db serverURL]];
   [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
   

@@ -346,6 +346,8 @@
   NSDictionary          *loginResult2;
   NSDictionary          *userInfoResult;
   NSDictionary          *queryFault;
+  GWSService            *service;
+  NSURL                 *gottenURL;
 
 
   defs = [NSUserDefaults standardUserDefaults];
@@ -389,7 +391,8 @@
                 parameters : parmsDict
 		order : nil
 		timeout : standardTimeoutSec];
-
+  [service release];
+  
   [logger log: LogDebug: @"[DBSoap Login]:resultDict is %d big\n", [resultDict count]];
   
   queryFault = [resultDict objectForKey:GWSFaultKey];
@@ -397,7 +400,6 @@
   {
     NSString *faultCode;
     NSString *faultString;
-    
     
     faultCode = [queryFault objectForKey:@"faultcode"];
     faultString = [queryFault objectForKey:@"faultstring"];
@@ -423,7 +425,7 @@
     
   [sessionId release];
   sessionId = [loginResult2 objectForKey:@"sessionId"];
-  serverURL = [NSURL URLWithString:[loginResult2 objectForKey:@"serverUrl"]];
+  gottenURL = [NSURL URLWithString:[loginResult2 objectForKey:@"serverUrl"]];
   
   passwordExpired = NO;
   if ([[loginResult2 objectForKey:@"passwordExpired"] isEqualToString:@"true"])
@@ -443,13 +445,14 @@
 
   /* since Salesforce seems to be stubborn and returns an https connection
      even if we initiate a non-secure one, we force it to http */
-  if ([[serverURL scheme] isEqualToString:@"https"] && !useHttps)
+  if ([[gottenURL scheme] isEqualToString:@"https"] && !useHttps)
     {
       [logger log: LogInformative: @"[DBSoap Login]: preferences set to http, forcing....\n"];
-      [serverURL autorelease];
-      serverURL = [[NSURL alloc] initWithScheme:@"http" host:[serverURL host] path:[serverURL path]];
+      [gottenURL autorelease];
+      gottenURL = [[NSURL alloc] initWithScheme:@"http" host:[gottenURL host] path:[gottenURL path]];
     }
-  
+  [self setServerURL:gottenURL];
+
   if (sessionId == nil)
   {
     [[NSException exceptionWithName:@"DBException" reason:@"No Session information returned." userInfo:nil] raise];
@@ -459,9 +462,6 @@
     [logger log: LogStandard: @"[DBSoap Login]: sessionId: %@\n", sessionId];
     [logger log: LogStandard: @"[DBSoap Login]: serverUrl: %@\n", serverURL];
   }
-  
-  [service setURL:serverURL];
-
   [sessionId retain];
 }
 
@@ -782,6 +782,7 @@
 
 - (NSArray *)_describeGlobal
 {
+  GWSService            *service;
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
   NSMutableDictionary   *parmsDict;
@@ -811,13 +812,16 @@
   [parmsDict setObject: queryParmDict forKey: @"describeGlobal"];
   [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];
 
+  /* init our service */
+  service = [[DBSoap gwserviceForDBSoap] retain];
+  [service setURL:serverURL];
   
   /* make the query */  
   resultDict = [service invokeMethod: @"describeGlobal"
                 parameters : parmsDict
 		order : nil
 		timeout : standardTimeoutSec];
-
+  [service release];
 
   [logger log: LogDebug: @"[DBSoap describeGlobal] Describe Global dict is %lu big\n", [resultDict count]];
   
@@ -924,6 +928,7 @@
 
 - (DBSObject *)_describeSObject: (NSString *)objectType
 {
+  GWSService            *service;
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
   NSMutableDictionary   *parmsDict;
@@ -958,17 +963,21 @@
 
   [queryParmDict setObject: objectType forKey: @"sObjectType"];
 
-  
   parmsDict = [NSMutableDictionary dictionaryWithCapacity: 1];
   [parmsDict setObject: queryParmDict forKey: @"describeSObject"];
   [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];
+
+  /* init our service */
+  service = [[DBSoap gwserviceForDBSoap] retain];
+  [service setURL:serverURL];
   
   /* make the query */  
   resultDict = [service invokeMethod: @"describeSObject"
                 parameters : parmsDict
 		order : nil
 		timeout : standardTimeoutSec];
-  
+  [service release];
+
   queryFault = [resultDict objectForKey:GWSFaultKey];
   if (queryFault != nil)
     {
@@ -1182,7 +1191,6 @@
       serverURL = url;
       [serverURL retain];
     }
-  [service setURL:serverURL];
 }
 
 - (BOOL) passwordExpired
@@ -1220,24 +1228,14 @@
   return busyCount > 0;
 }
 
-- (void)setService:(GWSService *)serv
-{
-  if (service != serv)
-    {
-      [service release];
-      service = serv;
-      [service retain];
-    }
-}
-
 - (void)dealloc
 {
   [lockBusy release];
 
   [sObjectDetailsDict release];
   [sessionId release];
+  [serverURL release];
   [userInfo release];
-  [service release];
   [super dealloc];
 }
 

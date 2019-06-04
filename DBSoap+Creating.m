@@ -1,7 +1,7 @@
 /*
    Project: DataBasinKit
 
-   Copyright (C) 2009-2017 Free Software Foundation
+   Copyright (C) 2009-2019 Free Software Foundation
 
    Author: multix
 
@@ -35,6 +35,7 @@
 
 - (NSMutableArray *)_create :(NSString *)objectName fromArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p
 {
+  GWSService            *service;
   NSMutableDictionary   *headerDict;
   NSMutableDictionary   *sessionHeaderDict;
   NSDictionary          *resultDict;
@@ -61,6 +62,10 @@
   headerDict = [[NSMutableDictionary dictionaryWithCapacity: 2] retain];
   [headerDict setObject: sessionHeaderDict forKey: @"SessionHeader"];
   [headerDict setObject: GWSSOAPUseLiteral forKey: GWSSOAPUseKey];
+
+  /* init our service */
+  service = [[DBSoap gwserviceForDBSoap] retain];
+  [service setURL:serverURL];
 
   [p setCurrentDescription:@"Creating"];
     
@@ -165,6 +170,7 @@
               [sessionHeaderDict release];
               [headerDict release];
               [resultArray release];
+              [service release];
 	      return nil;
 	    }
 	  queryFault = [resultDict objectForKey:GWSFaultKey];
@@ -183,6 +189,7 @@
               [sessionHeaderDict release];
               [headerDict release];
               [resultArray release];
+              [service release];
 	      return nil;
 	    }
 
@@ -290,6 +297,7 @@
   [queryObjectsArray release];
   [sessionHeaderDict release];
   [headerDict release];
+  [service release];
 
   return [resultArray autorelease];
 }
