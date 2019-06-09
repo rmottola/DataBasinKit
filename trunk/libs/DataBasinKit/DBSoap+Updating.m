@@ -439,7 +439,7 @@
 	  record = [updatedRecords objectAtIndex:i];
           d = [[NSDictionary alloc] initWithObjectsAndKeys:record, @"Id", NULL];
 	  [returnRecords addObject:d];
-          [record release];
+          [d release];
 	}
     }
 
