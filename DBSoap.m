@@ -448,8 +448,8 @@
   if ([[gottenURL scheme] isEqualToString:@"https"] && !useHttps)
     {
       [logger log: LogInformative: @"[DBSoap Login]: preferences set to http, forcing....\n"];
-      [gottenURL autorelease];
       gottenURL = [[NSURL alloc] initWithScheme:@"http" host:[gottenURL host] path:[gottenURL path]];
+      [gottenURL autorelease];
     }
   [self setServerURL:gottenURL];
 
