@@ -1,3 +1,8 @@
+2019-06-19 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoapCSV.m
+        Fix autorelease issues inside the loop with Query Locator.
+
 2019-06-18 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoapCSV.m

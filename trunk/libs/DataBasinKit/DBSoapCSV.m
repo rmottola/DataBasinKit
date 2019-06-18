@@ -102,6 +102,7 @@
 	}	  
     }
 
+  [qLoc retain];
   while (qLoc != nil && ![p shouldStop])
     {
       NSAutoreleasePool *arp;
@@ -110,16 +111,19 @@
       [p setCurrentDescription:@"Retrieving"];
       [sObjects removeAllObjects];
       NS_DURING
+        [qLoc autorelease];
         qLoc = [dbSoap queryMore: qLoc toArray: sObjects];
       NS_HANDLER
         qLoc = nil;
         [logger log: LogDebug :@"[DBSoapCSV query] Exception during query more: %@\n", [localException description]];
       NS_ENDHANDLER
+      [qLoc retain];
       [p setCurrentDescription:@"Writing"];
       [writer writeDataSet: sObjects];
       [p incrementCurrentValue:[sObjects count]];
       [arp release];
     }
+  [qLoc release];
 
   [writer writeEnd];
   [dbSoap release];
