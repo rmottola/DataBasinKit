@@ -2,6 +2,9 @@
 
 	* DBSoapCSV.m
         Fix autorelease issues inside the loop with Query Locator.
+        
+        * DBSoap+Selecting.m
+        Clean up memory management of GWSService a little.
 
 2019-06-18 Riccardo Mottola <rm@gnu.org>
 
