@@ -1,3 +1,8 @@
+2019-06-18 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoapCSV.m
+        Correctly initialize create and update services.
+
 2019-06-04 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap+Updating.m
