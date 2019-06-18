@@ -103,7 +103,7 @@
                          parameters : parmsDict
                               order : nil
                             timeout : queryTimeoutSec];
-  [service release];
+  [service autorelease];
   
   [logger log: LogDebug: @"[DBSoap query] result: %@\n", resultDict];
   coderError = [resultDict objectForKey:GWSErrorKey];
@@ -143,6 +143,7 @@
   
   queryResult = [resultDict objectForKey:GWSParametersKey];
   result = [queryResult objectForKey:@"result"];
+
   [logger log: LogDebug: @"[DBSoap query] result: %@\n", result];  
   doneStr = [result objectForKey:@"done"];
   records = [result objectForKey:@"records"];
@@ -164,7 +165,7 @@
       [logger log: LogStandard: @"[DBSoap query] error, doneStr is nil: unexpected\n"];
       return nil;
     }
-  [result retain];
+
   if (sizeStr != nil)
     {
       NSScanner *scan;
@@ -180,7 +181,6 @@
       else
 	{
           [logger log: LogStandard : @"[DBSoap query] Could not parse Size string: %@\n", sizeStr];
-          [result release];
           return nil;
         }
       
@@ -219,11 +219,9 @@
   if (!done)
     {
       queryLocator = [result objectForKey:@"queryLocator"];
-      [[queryLocator retain] autorelease];
       [logger log: LogDebug: @"[DBSoap query] should do query more, queryLocator: %@\n", queryLocator];
     }
   
-  [result release];
   return queryLocator;
 }
 
@@ -282,8 +280,7 @@
                          parameters : parmsDict
                               order : nil
                             timeout : queryTimeoutSec];
-
-  [service release];
+  [service autorelease];
 
   queryLocator = nil;
   queryFault = [resultDict objectForKey:GWSFaultKey];
@@ -338,7 +335,6 @@
       return nil;
     }
 
-  [result retain];
   // Size returned in queryMore refers to the original size of the query
   // not to the current batch
   // So we can just check against the actually returned records
@@ -354,11 +350,9 @@
   if (!done)
     {
       queryLocator = [result objectForKey:@"queryLocator"];
-      [[queryLocator retain] autorelease];
       [logger log: LogInformative: @"[DBSoap queryMore] should do query more, queryLocator: %@\n", queryLocator];
     }
 
-  [result release];
   return queryLocator;
 }
 
@@ -703,7 +697,7 @@
                          parameters : parmsDict
                               order : nil
                             timeout : standardTimeoutSec];
-  [service release];
+  [service autorelease];
 
   [logger log: LogDebug: @"[DBSoap retrieve] result: %@\n", resultDict];
   coderError = [resultDict objectForKey:GWSErrorKey];
