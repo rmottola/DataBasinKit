@@ -387,6 +387,8 @@
   dbSoap = [[DBSoap alloc] init];
   [dbSoap setSessionId:[db sessionId]];
   [dbSoap setServerURL:[db serverURL]];
+  [dbSoap setUpBatchSize:[db upBatchSize]];
+  [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
   
   /* retrieve objects to create */
@@ -445,6 +447,7 @@
   dbSoap = [[DBSoap alloc] init];
   [dbSoap setSessionId:[db sessionId]];
   [dbSoap setServerURL:[db serverURL]];
+  [dbSoap setUpBatchSize:[db upBatchSize]];
   [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
   
