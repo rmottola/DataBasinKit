@@ -1,3 +1,8 @@
+2019-06-26 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoapCSV.m
+	Do not use autorelease
+
 2019-06-19 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoapCSV.m

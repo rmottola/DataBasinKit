@@ -111,13 +111,15 @@
       [p setCurrentDescription:@"Retrieving"];
       [sObjects removeAllObjects];
       NS_DURING
-        [qLoc autorelease];
-        qLoc = [dbSoap queryMore: qLoc toArray: sObjects];
+        NSString *temp;
+        temp = [dbSoap queryMore: qLoc toArray: sObjects];
+        [qLoc release];
+        qLoc = [temp retain];
       NS_HANDLER
+        [qLoc release];
         qLoc = nil;
         [logger log: LogDebug :@"[DBSoapCSV query] Exception during query more: %@\n", [localException description]];
       NS_ENDHANDLER
-      [qLoc retain];
       [p setCurrentDescription:@"Writing"];
       [writer writeDataSet: sObjects];
       [p incrementCurrentValue:[sObjects count]];
