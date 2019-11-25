@@ -37,8 +37,9 @@
 {
   GWSService            *service;
   NSMutableDictionary   *headerDict;
-  NSMutableDictionary   *sessionHeaderDict;
   NSDictionary          *resultDict;
+  NSMutableDictionary   *assignmentRuleHeaderDict;
+  NSMutableDictionary   *sessionHeaderDict;
   NSEnumerator          *enumerator;
   NSArray               *fieldNames;
   unsigned              fieldCount;
@@ -54,13 +55,23 @@
   [p setMaximumValue: [objects count]];
   
   /* prepare the header */
+  headerDict = [[NSMutableDictionary dictionaryWithCapacity: 2] retain];
+  [headerDict setObject: GWSSOAPUseLiteral forKey: GWSSOAPUseKey];
+
+  /* session header */
   sessionHeaderDict = [[NSMutableDictionary dictionaryWithCapacity: 2] retain];
   [sessionHeaderDict setObject: sessionId forKey: @"sessionId"];
   [sessionHeaderDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
-
-  headerDict = [[NSMutableDictionary dictionaryWithCapacity: 2] retain];
   [headerDict setObject: sessionHeaderDict forKey: @"SessionHeader"];
-  [headerDict setObject: GWSSOAPUseLiteral forKey: GWSSOAPUseKey];
+
+  /* assignmentRuleHeader - set Default assignment rule */
+  if (runAssignmentRules)
+    {
+      assignmentRuleHeaderDict = [[NSMutableDictionary dictionaryWithCapacity: 2] retain];
+      [assignmentRuleHeaderDict setObject: @"true" forKey: @"useDefaultRule"];
+      [assignmentRuleHeaderDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
+      [headerDict setObject: assignmentRuleHeaderDict forKey: @"AssignmentRuleHeader"];
+    }
 
   /* init our service */
   service = [[DBSoap gwserviceForDBSoap] retain];

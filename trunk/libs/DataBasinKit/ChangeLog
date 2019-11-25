@@ -1,3 +1,12 @@
+2019-11-24 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap+Creating.m
+	* DBSoap+Updating.m
+	* DBSoap.h
+	* DBSoap.m
+	Provide means for applying assignment ruleson insert/update (currently
+	defaulted to yes)
+
 2019-06-26 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoapCSV.m

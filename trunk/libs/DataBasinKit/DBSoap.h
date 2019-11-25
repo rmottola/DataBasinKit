@@ -64,6 +64,9 @@
   /* Map of described objects, for which details are present */
   NSMutableDictionary *sObjectDetailsDict;
 
+  /** should run assignment rules on create, update, upsert */
+  BOOL runAssignmentRules;
+
   /** create, update, upsert batch size */
   unsigned upBatchSize;
 
