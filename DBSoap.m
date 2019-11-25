@@ -271,6 +271,7 @@
       standardTimeoutSec = 60;
       queryTimeoutSec = 180;
       
+      runAssignmentRules = YES;
       upBatchSize = 1;
       downBatchSize = 500;
       maxSOQLLength = MAX_SOQL_LENGTH;
