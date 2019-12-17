@@ -72,6 +72,7 @@
       [assignmentRuleHeaderDict setObject: @"true" forKey: @"useDefaultRule"];
       [assignmentRuleHeaderDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
       [headerDict setObject: assignmentRuleHeaderDict forKey: @"AssignmentRuleHeader"];
+      [assignmentRuleHeaderDict release];
     }
 
   /* init our service */
