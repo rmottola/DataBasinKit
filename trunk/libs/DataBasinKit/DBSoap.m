@@ -1,7 +1,7 @@
 /*
   Project: DataBasin
 
-  Copyright (C) 2008-2019 Free Software Foundation
+  Copyright (C) 2008-2020 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -227,13 +227,13 @@
 /** Returns the standard URL for login into production, https. Use this as login: parameter */
 + (NSURL *)loginURLProduction
 {
-  return [NSURL URLWithString:@"https://login.salesforce.com/services/Soap/u/42.0"];
+  return [NSURL URLWithString:@"https://login.salesforce.com/services/Soap/u/48.0"];
 }
 
 /** Returns the standard URL for login into sandbox, https. Use this as login: parameter */
 + (NSURL *)loginURLTest
 {
-  return [NSURL URLWithString:@"https://test.salesforce.com/services/Soap/u/42.0"];
+  return [NSURL URLWithString:@"https://test.salesforce.com/services/Soap/u/48.0"];
 }
 
 /** returns a GWService inited usefully for DBSoap */
