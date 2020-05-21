@@ -1,7 +1,7 @@
 /* -*- mode: objc -*-
  Project: DataBasin
  
- Copyright (C) 2009-2017 Free Software Foundation
+ Copyright (C) 2009-2020 Free Software Foundation
  
  Author: Riccardo Mottola
  
@@ -265,6 +265,52 @@
 	}
       else
 	NSLog(@"[DBFileWriter formatComplexObject] unknown class of value: %@, object: %@", [obj class], obj);
+      
+    }
+}
+
+- (void)formatSObject:(DBSObject *)so withRoot:(NSString *)root inDict:(NSMutableDictionary *)dict inOrder:(NSMutableArray *)order
+{
+  NSArray  *fields;
+  NSUInteger i;
+
+  if (!so)
+    return;
+
+  fields = [so fieldNames];
+  
+  for (i = 0; i < [fields count]; i++)
+    {
+      id obj;
+      NSString *field;
+      NSMutableString *extendedFieldName;
+      
+      field = [fields objectAtIndex: i];
+      obj = [so valueForField: field];
+
+      if (root)
+        {
+          extendedFieldName  = [NSMutableString stringWithString:root];
+          [extendedFieldName appendString:@"."];
+          [extendedFieldName appendString:field];
+        }
+      else
+        {
+          extendedFieldName  = [NSMutableString stringWithString:field];
+        }
+      
+      if ([obj isKindOfClass: [DBSFDataType class]])
+	{
+          [dict setObject:obj forKey:extendedFieldName];
+          [order addObject:extendedFieldName];
+	}
+      else if ([obj isKindOfClass: [NSString class]] || [obj isKindOfClass: [NSNumber class]])
+        {
+          [dict setObject:obj forKey:extendedFieldName];
+          [order addObject:extendedFieldName];
+	}
+      else
+	NSLog(@"[DBFileWriter formatSObject] unknown class of value: %@, object: %@", [obj class], obj);
       
     }
 }

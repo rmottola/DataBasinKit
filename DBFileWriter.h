@@ -1,7 +1,7 @@
 /* -*- mode: objc -*-
  Project: DataBasin
  
- Copyright (C) 2017 Free Software Foundation
+ Copyright (C) 2017-2020 Free Software Foundation
  
  Author: Riccardo Mottola
  
@@ -28,6 +28,7 @@
 
 @protocol DBLoggerProtocol;
 
+@class DBSObject;
 
 @interface DBFileWriter : NSObject
 {
@@ -53,6 +54,7 @@
 - (void)writeDataSet:(NSArray *)array;
 
 - (void)formatComplexObject:(NSMutableDictionary *)d withRoot:(NSString *)root inDict:(NSMutableDictionary *)dict inOrder:(NSMutableArray *)order;
+- (void)formatSObject:(DBSObject *)so withRoot:(NSString *)root inDict:(NSMutableDictionary *)dict inOrder:(NSMutableArray *)order;
 - (NSString *)formatOneLine:(id)data forHeader:(BOOL) headerFlag;
 
 
