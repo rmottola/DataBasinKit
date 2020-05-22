@@ -760,16 +760,60 @@
             
           key = [keys objectAtIndex:j];
           obj = [record objectForKey: key];
-          if ([key isEqualToString:@"Id"])
-            value = [(NSArray *)obj objectAtIndex: 0];
-          else
-            value = obj;
 
-          if (enableFieldTypesDescribeForQuery)
-            {
-              value = [self adjustFormatForField:key forValue:value inObject:sObj];
-            }
-          [sObj setValue: value forField: key];
+          if ([key isEqualToString:@"Id"])
+	    {
+	      value = [(NSArray *)obj objectAtIndex: 0];
+	      [sObj setValue: value forField: key];
+	    }
+          else if ([obj isKindOfClass:[NSDictionary class]])
+	    {
+	      // This is recurisve, it is a sub-query result
+	      NSDictionary *result = (NSDictionary *)obj;
+	      NSArray      *subRecords;
+
+	      subRecords = [(NSDictionary *)obj objectForKey:@"records"];
+	      if (subRecords != nil)
+		{
+	          NSMutableArray *subObjects;
+	          NSString       *sizeStr;
+	          int             size;
+		  
+		  // We have a sub-query or otherwise a list of records
+		  sizeStr = [result objectForKey:@"size"];
+		  size = [sizeStr intValue];
+		  subObjects = [NSMutableArray new];
+
+		  /* if we have only one element, put it in an array */
+		  if (subRecords != nil && size == 1)
+		    {
+		      subRecords = [NSArray arrayWithObject:subRecords];
+		    }
+		  [self extractQueryRecords:subRecords toObjects:subObjects];
+
+		  [sObj setValue:subObjects forField: key];
+		  [subObjects release];
+		}
+	      else
+		{
+		  value = obj;
+		  // we have a complex field, but not an object
+		  if (enableFieldTypesDescribeForQuery)
+		    {
+		      value = [self adjustFormatForField:key forValue:value inObject:sObj];
+		    }
+		  [sObj setValue: value forField: key];
+		}
+	    }
+	  else 
+	    {
+	      value = obj;
+	      if (enableFieldTypesDescribeForQuery)
+		{
+		  value = [self adjustFormatForField:key forValue:value inObject:sObj];
+		}
+	      [sObj setValue: value forField: key];
+	    }
         }
 
       [objects addObject:sObj];
