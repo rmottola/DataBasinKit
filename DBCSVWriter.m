@@ -1,7 +1,7 @@
 /*
    Project: DataBasin
 
-   Copyright (C) 2009-2017 Free Software Foundation
+   Copyright (C) 2009-2020 Free Software Foundation
 
    Author: Riccardo Mottola
 
@@ -246,6 +246,20 @@ NSString *DBFileFormatCSV = @"CSV";
 	      key = [keys objectAtIndex: j];
 	      value = [obj valueForField: key];
 	      //NSLog(@"key ---> %@ object %@", key, value);
+
+	      // If we have a subitem array of one we can attempt to explode it
+	      // write ordered will have issues though
+	      if ([value isKindOfClass: [NSArray class]])
+		{
+		  NSArray *a;
+
+		  a = (NSArray *)value;
+		  if ([a count] == 1)
+		    {
+		      value = [a objectAtIndex:0];
+		    }
+		}
+
 	      
 	      if ([value isKindOfClass: [DBSFDataType class]])
 		{
@@ -260,6 +274,10 @@ NSString *DBFileFormatCSV = @"CSV";
 	      else if ([value isKindOfClass: [NSDictionary class]])
 		{
 		  [self formatComplexObject:value withRoot:key inDict:dataDict inOrder:keyOrder];
+		}
+	      else if ([value isKindOfClass: [DBSObject class]])
+		{
+		  [self formatSObject:value withRoot:key inDict:dataDict inOrder:keyOrder];
 		}
               else if ([value isKindOfClass: [NSArray class]])
 		{
