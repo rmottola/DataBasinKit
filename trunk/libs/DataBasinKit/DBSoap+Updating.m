@@ -67,7 +67,7 @@
   /* assignmentRuleHeader - set Default assignment rule */
   if (runAssignmentRules)
     {
-      assignmentRuleHeaderDict = [[NSMutableDictionary dictionaryWithCapacity: 2] retain];
+      assignmentRuleHeaderDict = [NSMutableDictionary dictionaryWithCapacity: 2];
       [assignmentRuleHeaderDict setObject: @"true" forKey: @"useDefaultRule"];
       [assignmentRuleHeaderDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
       [headerDict setObject: assignmentRuleHeaderDict forKey: @"AssignmentRuleHeader"];
