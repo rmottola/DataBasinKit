@@ -183,6 +183,9 @@
           [logger log: LogStandard : @"[DBSoap query] Could not parse Size string: %@\n", sizeStr];
           return nil;
         }
+
+      if (size == 0)
+	return nil;
       
       
       [p setMaximumValue: size];
