@@ -309,8 +309,14 @@
           [dict setObject:obj forKey:extendedFieldName];
           [order addObject:extendedFieldName];
 	}
+      else if ([obj isKindOfClass: [NSDictionary class]])
+        {
+          [self formatComplexObject: obj withRoot:extendedFieldName inDict:dict inOrder:order];
+        }
       else
-	NSLog(@"[DBFileWriter formatSObject] unknown class of value: %@, object: %@", [obj class], obj);
+	{
+	  NSLog(@"[DBFileWriter formatSObject] unknown class of value: %@, object: %@", [obj class], obj);
+	}
       
     }
 }
