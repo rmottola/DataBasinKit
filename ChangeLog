@@ -1,3 +1,8 @@
+2020-05-29 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.m
+	split extractQueryRecord from extractQueryRecords and start extracting all sub-objects into DBSObjects, not just the top-level.
+
 2020-05-23 Riccardo Mottola <rm@gnu.org>
 
 	* DBCSVWriter.m
@@ -5,7 +10,7 @@
 
 2020-05-22 Riccardo Mottola <rm@gnu.org>
 
-	* DBSoap.m 
+	* DBSoap.m
 	Unpack nested queries and extract list of SObjects.
 
 2020-05-22 Riccardo Mottola <rm@gnu.org>
