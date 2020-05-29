@@ -742,10 +742,8 @@
 	  id           subRecords;
 
 	  subRecords = [obj objectForKey:@"records"];
-	  NSLog(@"Records! %@", subRecords);
 	  if (subRecords != nil)
 	    {
-
 	      NSString       *sizeStr;
 	      int             size;
 		  
