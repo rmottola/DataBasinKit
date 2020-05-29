@@ -684,37 +684,16 @@
   return retObj;
 }
 
-/*
-  Parses a result: this can be the main result but can also be nested in case of a subquery (nested query)
- */
-- (void)extractQueryRecords:(NSArray *)records toObjects:(NSMutableArray *)objects
+/* A record of the result - may contain nested objects of subqueries */
+- (DBSObject *)extractQueryRecord:(NSDictionary *)record
 {
-  NSUInteger     i;
-  NSUInteger     batchSize;
+  NSUInteger      j;
+  DBSObject      *sObj;
   NSMutableArray *keys;
-  BOOL typePresent;
-  NSDictionary          *record;
+  BOOL            typePresent;
 
-  if (records == nil || [records count] == 0)
-    return;
+  sObj = [[DBSObject alloc] init];
 
-  [records retain];
-  batchSize = [records count];
-  record = [records objectAtIndex:0];
-
-  if ([record isKindOfClass:[NSString class]])
-    {
-      NSLog(@"unexpected: we got a string");
-      if ([(NSString *)record length] == 0)
-        {
-          NSLog(@"and it is even empty");
-          [records release];
-          return;
-        }
-    }
-
-  [logger log: LogInformative :@"[DBSoap extractQueryRecords] records size is: %d\n", batchSize];
-      
   /* let's get the fields from the keys of the first record */
   keys = [NSMutableArray arrayWithArray:[record allKeys]];
   [keys removeObject:GWSOrderKey];
@@ -728,100 +707,127 @@
   if (![[record objectForKey:@"Id"] isKindOfClass: [NSArray class]])
     [keys removeObject:@"Id"];
 
-      
-  /* now cycle all the records and read out the fields */
-  for (i = 0; i < batchSize; i++)
+  /* we removed type, but if it is present, set it as a property
+     Further, we describe the type if desired to get field types.
+  */
+  if (typePresent) 
     {
-      NSUInteger   j;
-      DBSObject    *sObj;
+      NSDictionary *propDict;
+      NSString *typeStr;
+
+      typeStr = [record objectForKey: @"type"];
+      propDict = [NSDictionary dictionaryWithObject:typeStr forKey:@"type"];
+      [sObj setObjectProperties: propDict];
+    }
         
-      sObj = [[DBSObject alloc] init];
-
-      /* we removed type, but if it is present, set it as a property
-         Further, we describe the type if desired to get field types.
-      */
-      if (typePresent) 
-        {
-          NSDictionary *propDict;
-          NSString *typeStr;
-
-          typeStr = [record objectForKey: @"type"];
-          propDict = [NSDictionary dictionaryWithObject:typeStr forKey:@"type"];
-          [sObj setObjectProperties: propDict];
-        }
-
-      record = [records objectAtIndex:i];
-      //[logger log: LogDebug: @"[DBSoap query] record :%@\n", record];
-      for (j = 0; j < [keys count]; j++)
-        {
-          id       obj;
-          id       value;
-          NSString *key;
+  NSLog (@"single record: %@", record);
+  for (j = 0; j < [keys count]; j++)
+    {
+      id       obj;
+      id       value;
+      NSString *key;
             
-          key = [keys objectAtIndex:j];
-          obj = [record objectForKey: key];
+      key = [keys objectAtIndex:j];
+      obj = [record objectForKey: key];
+      NSLog(@"analyzing %@ : %@", key, obj);
+      if ([key isEqualToString:@"Id"])
+	{
+	  value = [(NSArray *)obj objectAtIndex: 0];
+	  [sObj setValue: value forField: key];
+	}
+      else if ([obj isKindOfClass:[NSDictionary class]])
+	{
+	  // This is recurisve, it is a sub-query result
+	  NSDictionary *result = (NSDictionary *)obj;
+	  id           subRecords;
 
-          if ([key isEqualToString:@"Id"])
+	  subRecords = [obj objectForKey:@"records"];
+	  NSLog(@"Records! %@", subRecords);
+	  if (subRecords != nil)
 	    {
-	      value = [(NSArray *)obj objectAtIndex: 0];
-	      [sObj setValue: value forField: key];
-	    }
-          else if ([obj isKindOfClass:[NSDictionary class]])
-	    {
-	      // This is recurisve, it is a sub-query result
-	      NSDictionary *result = (NSDictionary *)obj;
-	      NSArray      *subRecords;
 
-	      subRecords = [(NSDictionary *)obj objectForKey:@"records"];
-	      if (subRecords != nil)
-		{
-	          NSMutableArray *subObjects;
-	          NSString       *sizeStr;
-	          int             size;
+	      NSString       *sizeStr;
+	      int             size;
 		  
-		  // We have a sub-query or otherwise a list of records
-		  sizeStr = [result objectForKey:@"size"];
-		  size = [sizeStr intValue];
-		  subObjects = [NSMutableArray new];
+	      // We have a sub-query or otherwise a list of records
+	      sizeStr = [result objectForKey:@"size"];
+	      size = [sizeStr intValue];
 
-		  /* if we have only one element, put it in an array */
-		  if (subRecords != nil && size == 1)
-		    {
-		      subRecords = [NSArray arrayWithObject:subRecords];
-		    }
-		  [self extractQueryRecords:subRecords toObjects:subObjects];
 
-		  [sObj setValue:subObjects forField: key];
-		  [subObjects release];
+	      /* if we have only one element, we just recurse */
+	      if (size == 1)
+		{
+		  DBSObject *o;
+		  o = [self extractQueryRecord:subRecords];
+		  [sObj setValue:o forField: key];
 		}
 	      else
 		{
-		  value = obj;
-		  // we have a complex field, but not an object
-		  if (enableFieldTypesDescribeForQuery)
-		    {
-		      value = [self adjustFormatForField:key forValue:value inObject:sObj];
-		    }
-		  [sObj setValue: value forField: key];
+		  NSMutableArray *subObjects;
+		  subObjects = [NSMutableArray new];
+		  [self extractQueryRecords:subRecords toObjects:subObjects];
+		  [sObj setValue:subObjects forField: key];
+		  [subObjects release];
 		}
 	    }
-	  else 
+	  else
 	    {
 	      value = obj;
+	      NSLog(@"complex field: %@", value);
+	      // we have a complex field, but not an object
 	      if (enableFieldTypesDescribeForQuery)
 		{
 		  value = [self adjustFormatForField:key forValue:value inObject:sObj];
 		}
 	      [sObj setValue: value forField: key];
 	    }
-        }
+	}
+      else 
+	{
+	  value = obj;
+	  if (enableFieldTypesDescribeForQuery)
+	    {
+	      value = [self adjustFormatForField:key forValue:value inObject:sObj];
+	    }
+	  [sObj setValue: value forField: key];
+	}
+    }
+
+  return [sObj autorelease];
+}
+
+/*
+  Parses a result: this can be the main result but can also be nested in case of a subquery (nested query)
+ */
+- (void)extractQueryRecords:(NSArray *)records toObjects:(NSMutableArray *)objects
+{
+  NSUInteger     i;
+  NSUInteger     batchSize;
+  NSMutableArray *keys;
+
+  if (records == nil || [records count] == 0)
+    return;
+  NSLog(@"\n\nRecords to extract: %@\n\n", records);
+  [records retain];
+  batchSize = [records count];
+
+  [logger log: LogInformative :@"[DBSoap extractQueryRecords] records size is: %d\n", batchSize];
+      
+  /* now cycle all the records and read out the fields */
+  for (i = 0; i < batchSize; i++)
+    {
+      DBSObject *sObj;
+      NSDictionary          *record;
+
+      record = [records objectAtIndex:i];
+      [logger log: LogDebug: @"[DBSoap query] record :%@\n", record];
+      
+      sObj = [self extractQueryRecord:record];
 
       [objects addObject:sObj];
-      [sObj release];
     }
   [records release];
 }
-
 
 
 
