@@ -1,7 +1,7 @@
 /*
    Project: DataBasinKit
 
-   Copyright (C) 2019 Free Software Foundation
+   Copyright (C) 2019-2020 Free Software Foundation
 
    Author: Riccardo Mottola
 
@@ -53,7 +53,6 @@
 - (void) setSessionId:(NSString *)session;
 - (NSURL *) serverURL;
 - (void) setServerURL:(NSURL *)url;
-- (void)setService:(GWSService *)serv;
 
 @end
 
