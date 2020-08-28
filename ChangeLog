@@ -1,3 +1,9 @@
+2020-08-28 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.m
+	* DBSoap.h
+	Remove http support, no longer supported by salesforce.com
+
 2020-05-29 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap.m

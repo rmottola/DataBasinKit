@@ -1,7 +1,7 @@
  /*
   Project: DataBasin
 
-  Copyright (C) 2008-2019 Free Software Foundation
+  Copyright (C) 2008-2020 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -101,7 +101,7 @@
 + (NSURL *)loginURLTest;
 + (GWSService *)gwserviceForDBSoap;
 
-- (void)login :(NSURL *)url :(NSString *)userName :(NSString *)password :(BOOL)useHttps;
+- (void)login :(NSURL *)url :(NSString *)userName :(NSString *)password;
 - (void)setLogger: (id<DBLoggerProtocol>)l;
 - (id<DBLoggerProtocol>)logger;
 - (unsigned)upBatchSize;

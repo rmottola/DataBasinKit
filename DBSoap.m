@@ -334,7 +334,7 @@
     maxSOQLLength = MAX_SOQL_LENGTH;
 }
 
-- (void)_login :(NSURL *)url :(NSString *)userName :(NSString *)password :(BOOL)useHttps
+- (void)_login :(NSURL *)url :(NSString *)userName :(NSString *)password
 {
   NSUserDefaults        *defs;
   NSMutableArray        *orderArray;
@@ -360,14 +360,6 @@
   /* init our service */
   service = [[DBSoap gwserviceForDBSoap] retain];
   
-  if (!useHttps && [[url scheme] isEqualTo:@"https"])
-    {
-      if (!useHttps)
-        url = [[NSURL alloc] initWithScheme:@"http" host:[url host] path:[url path]];
-      else
-        url = [[NSURL alloc] initWithScheme:@"https" host:[url host] path:[url path]];
-      [url autorelease];
-    }
   [service setURL:url];
   
   //[service setDebug:YES];
@@ -443,15 +435,6 @@
   [userInfo setValue:[userInfoResult objectForKey:@"userFullName"] forKey:@"userFullName"];
   [userInfo setValue:[userInfoResult objectForKey:@"userName"] forKey:@"userName"];
   
-
-  /* since Salesforce seems to be stubborn and returns an https connection
-     even if we initiate a non-secure one, we force it to http */
-  if ([[gottenURL scheme] isEqualToString:@"https"] && !useHttps)
-    {
-      [logger log: LogInformative: @"[DBSoap Login]: preferences set to http, forcing....\n"];
-      gottenURL = [[NSURL alloc] initWithScheme:@"http" host:[gottenURL host] path:[gottenURL path]];
-      [gottenURL autorelease];
-    }
   [self setServerURL:gottenURL];
 
   if (sessionId == nil)
@@ -1293,17 +1276,16 @@
 
 /**<p>executes login</p>
    <p><i>url</i> specifies the URL of the endpoint</p>
-   <p><i>useHttps</i> specifies if secure connecton has to be used or not. If not, http is attempted and then enforced.
-   The Salesforce.com instance must be configured to accept non-secure connections.</p>
+   <p>salesforce.com removed HTTP support since Spring '20, so HTTPS is mandatory</p>
  */
-- (void)login :(NSURL *)url :(NSString *)userName :(NSString *)password :(BOOL)useHttps
+- (void)login :(NSURL *)url :(NSString *)userName :(NSString *)password
 {
   [lockBusy lock];
   busyCount++;
   [lockBusy unlock];
 
   NS_DURING
-    [self _login :url :userName :password :useHttps];
+    [self _login :url :userName :password];
   NS_HANDLER
     {
       [lockBusy lock];
