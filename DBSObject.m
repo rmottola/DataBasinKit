@@ -2,7 +2,7 @@
  Project: DataBasin
  DBSobject.m
  
- Copyright (C) 2010-2017 Free Software Foundation
+ Copyright (C) 2010-2020 Free Software Foundation
  
  Author: Riccardo Mottola
  
@@ -103,7 +103,7 @@
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat: @"<DBSObject %@, %@, %@, %@>", [self name], [self sfId], [self label], [self type]];
+  return [NSString stringWithFormat: @"<DBSObject %@, n:%@, l:%@, t:%@>", [self sfId], [self name], [self label], [self type]];
 }
 
 /** <p>returns the current salesforce id, in whichever format it is currently stored.</p>

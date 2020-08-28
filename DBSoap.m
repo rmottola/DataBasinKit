@@ -720,7 +720,7 @@
       [sObj setObjectProperties: propDict];
     }
         
-  NSLog (@"single record: %@", record);
+//  NSLog (@"single record: %@", record);
   for (j = 0; j < [keys count]; j++)
     {
       id       obj;
@@ -729,7 +729,7 @@
             
       key = [keys objectAtIndex:j];
       obj = [record objectForKey: key];
-      NSLog(@"analyzing %@ : %@", key, obj);
+//      NSLog(@"analyzing %@ : %@", key, obj);
       if ([key isEqualToString:@"Id"])
 	{
 	  value = [(NSArray *)obj objectAtIndex: 0];
@@ -805,7 +805,7 @@
 
   if (records == nil || [records count] == 0)
     return;
-  NSLog(@"\n\nRecords to extract: %@\n\n", records);
+//  NSLog(@"\n\nRecords to extract: %@\n\n", records);
   [records retain];
   batchSize = [records count];
 
