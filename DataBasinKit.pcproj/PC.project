@@ -65,17 +65,17 @@
     "PROJECT_AUTHORS" = (
 	"Riccardo Mottola"
     );
-    "PROJECT_COPYRIGHT" = "Copyright (C) 2008-2019";
+    "PROJECT_COPYRIGHT" = "Copyright (C) 2008-2020";
     "PROJECT_COPYRIGHT_DESC" = "Released under LGPL v2";
     "PROJECT_CREATOR" = "";
-    "PROJECT_DESCRIPTION" = "Salesforce.com Framework";
+    "PROJECT_DESCRIPTION" = "salesforce.com Framework";
     "PROJECT_GROUP" = "No group avaliable!";
     "PROJECT_MAINTAINER" = "";
     "PROJECT_NAME" = DataBasinKit;
     "PROJECT_RELEASE" = "1.1";
     "PROJECT_SUMMARY" = "No summary avaliable!";
     "PROJECT_TYPE" = Framework;
-    "PROJECT_URL" = "http://gap.nongnu.org/databasin/index.html";
+    "PROJECT_URL" = "https://github.com/rmottola/DataBasinKit";
     "PUBLIC_HEADERS" = (
 	"DataBasinKit.h",
 	"DBSoap.h",
