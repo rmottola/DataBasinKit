@@ -1,11 +1,11 @@
- /*
+/* -*- mode: objc -*-
   Project: DataBasin
 
   Copyright (C) 2008-2020 Free Software Foundation
 
   Author: Riccardo Mottola
 
-  Created: 2008-11-13 22:44:45 +0100 by multix
+  Created: 2008-11-13 22:44:45 +0100 by Riccardo Mottola
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public

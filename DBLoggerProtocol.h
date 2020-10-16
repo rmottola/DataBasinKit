@@ -1,11 +1,11 @@
-/*
+/* -*- mode: objc -*-
   Project: DataBasinKit
 
   Copyright (C) 2014 Free Software Foundation
 
   Author: Riccardo Mottola
 
-  Created: 2014-05-01 17:13:41 +0200 by multix
+  Created: 2014-05-01 17:13:41 +0200 by Riccardo Mottola
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public

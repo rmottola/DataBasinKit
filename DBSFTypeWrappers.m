@@ -5,7 +5,7 @@
 
    Author: Riccardo Mottola
 
-   Created: 2017-10-11
+   Created: 2017-10-11 Riccardo Mottola
 
    This application is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public

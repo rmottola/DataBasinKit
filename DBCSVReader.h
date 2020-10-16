@@ -5,7 +5,7 @@
 
   Author: Riccardo Mottola
 
-  Created: 2009-06-24 22:34:06 +0200 by multix
+  Created: 2009-06-24 22:34:06 +0200 by Riccardo Mottola
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
