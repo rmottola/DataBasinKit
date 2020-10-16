@@ -2,6 +2,7 @@
 *.framework/
 derived_src/
 obj/
+*.backup
 
 #patches
 *.orig
@@ -12,3 +13,4 @@ obj/
 
 #emacs
 .#*
+*~
