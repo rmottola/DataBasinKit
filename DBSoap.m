@@ -754,7 +754,7 @@
 	  else
 	    {
 	      value = obj;
-	      NSLog(@"complex field: %@", value);
+	      //NSLog(@"complex field: %@", value);
 	      // we have a complex field, but not an object
 	      if (enableFieldTypesDescribeForQuery)
 		{
