@@ -1,7 +1,7 @@
 /* -*- mode: objc -*-
   Project: DataBasinKit
 
-  Copyright (C) 2008-2018 Free Software Foundation
+  Copyright (C) 2008-2021 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -100,7 +100,7 @@
 
   [parmsDict setObject: queryParmDict forKey: requestName];
   [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];
-  resultDict = [service invokeMethod: @"queryAll"
+  resultDict = [service invokeMethod: requestName
                          parameters : parmsDict
                               order : nil
                             timeout : queryTimeoutSec];
