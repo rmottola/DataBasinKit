@@ -2,7 +2,7 @@
  Project: DataBasin
  DBSobject.h
  
- Copyright (C) 2010-2016 Free Software Foundation
+ Copyright (C) 2010-2021 Free Software Foundation
  
  Author: Riccardo Mottola
  
@@ -76,8 +76,11 @@
 /** returns the properties of the object itself, like its name */
 - (NSDictionary *)objectProperties;
 
-/** Set the soap database interface */
+/** Set the soap database interface (not retained) */
 - (void)setDBSoap: (DBSoap *)db;
+
+/** returns the soap database interface */
+- (DBSoap *)DBSoap;
 
 /** shortcut to return the property "name" */
 - (NSString *)name;

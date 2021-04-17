@@ -1,5 +1,11 @@
 2021-04-17 Riccardo Mottola <rm@gnu.org>
 
+	* DBSObject.h
+	* DBSObject.m
+	Add getter for the DBSoap interface.
+
+2021-04-17 Riccardo Mottola <rm@gnu.org>
+
 	* DBSoap.h
 	* DBSoap.m
 	* DBSoapCSV.h

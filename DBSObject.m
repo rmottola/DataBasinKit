@@ -2,7 +2,7 @@
  Project: DataBasin
  DBSobject.m
  
- Copyright (C) 2010-2020 Free Software Foundation
+ Copyright (C) 2010-2021 Free Software Foundation
  
  Author: Riccardo Mottola
  
@@ -156,6 +156,11 @@ converting it if necessary.</p>
 - (void)setDBSoap: (DBSoap *)db
 {
   dbs = db;
+}
+
+- (DBSoap *)DBSoap
+{
+  return dbs;
 }
 
 - (void)setObjectProperties: (NSDictionary *)properties
