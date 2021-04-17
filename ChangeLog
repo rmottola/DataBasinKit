@@ -1,3 +1,11 @@
+2021-04-17 Riccardo Mottola <rm@gnu.org>
+
+	* DBSoap.h
+	* DBSoap.m
+	* DBSoapCSV.h
+	* DBSoapCSV.m
+	Allow to set and use runAssignmentRules, init to NO.
+
 2021-02-18 Riccardo Mottola <rm@gnu.org>
 
 	* DBSoap+Selecting.m: _query

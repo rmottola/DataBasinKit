@@ -1,7 +1,7 @@
 /* -*- mode: objc -*-
   Project: DataBasin
 
-  Copyright (C) 2008-2019 Free Software Foundation
+  Copyright (C) 2008-2021 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -42,6 +42,18 @@
   db = dbs;
   logger = [db logger];
 }
+
+- (void)setRunAssignmentRules :(BOOL)flag
+{
+  runAssignmentRules = flag;
+  [db setRunAssignmentRules: runAssignmentRules];
+}
+
+- (BOOL)runAssignmentRules
+{
+  return runAssignmentRules;
+}
+
 
 - (void)query :(NSString *)queryString queryAll:(BOOL)all toWriter:(DBFileWriter *)writer progressMonitor:(id<DBProgressProtocol>)p
 {
@@ -396,6 +408,7 @@
   [dbSoap setUpBatchSize:[db upBatchSize]];
   [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
+  [dbSoap setRunAssignmentRules: runAssignmentRules];
   
   /* retrieve objects to create */
   
@@ -456,7 +469,8 @@
   [dbSoap setUpBatchSize:[db upBatchSize]];
   [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
-  
+  [dbSoap setRunAssignmentRules: runAssignmentRules];
+
   /* retrieve objects to update */
   [p reset];
   [p setCurrentDescription:@"Retrieving"];

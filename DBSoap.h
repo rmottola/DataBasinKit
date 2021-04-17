@@ -1,7 +1,7 @@
 /* -*- mode: objc -*-
   Project: DataBasin
 
-  Copyright (C) 2008-2020 Free Software Foundation
+  Copyright (C) 2008-2021 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -104,12 +104,17 @@
 - (void)login :(NSURL *)url :(NSString *)userName :(NSString *)password;
 - (void)setLogger: (id<DBLoggerProtocol>)l;
 - (id<DBLoggerProtocol>)logger;
+
+- (void)setRunAssignmentRules :(BOOL)flag;
+- (BOOL)runAssignmentRules;
+
 - (unsigned)upBatchSize;
 - (void)setUpBatchSize:(unsigned)size;
 - (unsigned)downBatchSize;
 - (void)setDownBatchSize:(unsigned)size;
 - (unsigned)maxSOQLLength;
 - (void)setMaxSOQLLength:(unsigned)size;
+
 - (NSMutableArray *)queryFull :(NSString *)queryString queryAll:(BOOL)all progressMonitor:(id<DBProgressProtocol>)p;
 - (NSString *)query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p;
 - (NSString *)queryMore :(NSString *)locator toArray:(NSMutableArray *)objects;

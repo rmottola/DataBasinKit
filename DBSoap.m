@@ -1,7 +1,7 @@
 /* -*- mode: objc -*-
   Project: DataBasin
 
-  Copyright (C) 2008-2020 Free Software Foundation
+  Copyright (C) 2008-2021 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -271,7 +271,7 @@
       standardTimeoutSec = 60;
       queryTimeoutSec = 180;
       
-      runAssignmentRules = YES;
+      runAssignmentRules = NO;
       upBatchSize = 1;
       downBatchSize = 500;
       maxSOQLLength = MAX_SOQL_LENGTH;
@@ -295,6 +295,16 @@
 - (id<DBLoggerProtocol>)logger
 {
   return logger;
+}
+
+- (void)setRunAssignmentRules :(BOOL)flag
+{
+  runAssignmentRules = flag;
+}
+
+- (BOOL)runAssignmentRules
+{
+  return runAssignmentRules;
 }
 
 - (unsigned)upBatchSize

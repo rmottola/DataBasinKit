@@ -40,9 +40,13 @@
 {
   id<DBLoggerProtocol> logger;
   DBSoap *db;
+  BOOL runAssignmentRules;
 }
 
 - (void)setDBSoap: (DBSoap *)dbs;
+
+- (void)setRunAssignmentRules :(BOOL)flag;
+- (BOOL)runAssignmentRules;
 
 - (void)query :(NSString *)queryString queryAll:(BOOL)all toWriter:(DBFileWriter *)writer progressMonitor:(id<DBProgressProtocol>)p;
 - (void)queryIdentify :(NSString *)queryString queryAll:(BOOL)all fromReader:(DBCSVReader *)reader toWriter:(DBFileWriter *)writer withBatchSize:(int)bSize progressMonitor:(id<DBProgressProtocol>)p;
