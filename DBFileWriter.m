@@ -1,7 +1,7 @@
 /* -*- mode: objc -*-
  Project: DataBasin
  
- Copyright (C) 2009-2020 Free Software Foundation
+ Copyright (C) 2009-2021 Free Software Foundation
  
  Author: Riccardo Mottola
  
@@ -69,16 +69,7 @@
   bomLength = 0;
 
   /* BOM heuristics */
-  tempData = [@" "dataUsingEncoding: encoding];
-#if defined(__APPLE__) && (MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_4)
-  NSString *blankString;
-    
-  blankString = [[[NSString alloc] initWithBytes: [tempData bytes] length: [tempData length] encoding: encoding] autorelease];
-  NSLog(@"blank string: %@", blankString);
-  tempData = [tempData subdataWithRange: NSMakeRange(0, [tempData length] - [blankString length])];
-#else
-  tempData = [tempData subdataWithRange: NSMakeRange(0, [tempData length] - [@" " lengthOfBytesUsingEncoding: encoding])];
-#endif
+  tempData = [@"" dataUsingEncoding: encoding];
   bomLength = [tempData length];
 
   NSLog(@"bom length: %u", bomLength);
@@ -178,7 +169,7 @@
       oneLine = [self formatOneLine:o forHeader:NO];
       data = [oneLine dataUsingEncoding: encoding];
       if (bomLength > 0)
-	data2 = [NSData dataWithBytesNoCopy: (void *)[data bytes] length: [data length]-bomLength freeWhenDone: NO];
+	data2 = [NSData dataWithBytesNoCopy: (void *)[data bytes]+bomLength length: [data length]-bomLength freeWhenDone: NO];
       else
 	data2 = data;
       [file writeData: data2];

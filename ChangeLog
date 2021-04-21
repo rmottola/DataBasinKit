@@ -1,3 +1,10 @@
+2021-04-21 Riccardo Mottola <rm@gnu.org>
+
+	* DBFileWriter.m
+	Now that GNUstep supports getting a BOM for an empty string, simplify
+	the code which dind't even work. Also, take in account of the BOM
+	length and skip it when writing.
+
 2021-04-17 Riccardo Mottola <rm@gnu.org>
 
 	* DBSObject.h
