@@ -215,15 +215,15 @@
       //NSLog(@"loc %lu, total length: %lu", [scanner scanLocation], [line length]);
       inField = NO;
       inQualifier = NO;
-      while ([scanner scanLocation] < [line length])
+      while (![scanner isAtEnd])
 	{
 	  NSUInteger loc;
 
-	  token = nil;
+          token = nil;
 	  [scanner scanUpToString:qualifier intoString:&token];
 
 	  loc = [scanner scanLocation];
-	  if ([token isEqualToString:separator])
+	  if ([token hasPrefix:separator])
 	    {
               if (inField)
                 {
@@ -232,6 +232,10 @@
               else
                 {
                   [record addObject:field];
+
+                  /* some CSV's do not put qualifiers for empty strings, leading to ,, here */
+                  if ([token length] == 2 && [token hasSuffix:separator])
+                    [record addObject:@""];
                   field = @"";
                 }                
               [scanner scanString:separator intoString:(NSString **)nil];
@@ -272,7 +276,7 @@
               inQualifier = inField;
               inField = !inField;
 	    }
-	}
+	} // while scanLocation
       if (field)
         [record addObject:field];
     }
@@ -289,10 +293,8 @@
 	    }
 	  else
 	    {
-	      
 	      field = @"";
 	    }
-	  //NSLog(@"adding nq field: %@", field);
 	  [record addObject:field];
 	  scanLocation = [scanner scanLocation];
 	  [scanner scanString:separator intoString:(NSString **)nil];
@@ -300,13 +302,14 @@
 	  if ((scanLocation2 == [line length])  && (scanLocation != scanLocation2))
 	    {
 	      /* the last is empty and was skipped, we add it */
-	      //NSLog(@"Skipped separator");
 	      [record addObject:@""];
 	    }
-	    //NSLog(@"scan location: %lu-%lu", scanLocation2, [line length]);
 	}
     }
-  [logger log:LogDebug :@"[DBCVSReader getFieldNames] decoded record: %@\n", record];
+
+  if ([fieldNames count] > 0 && ([fieldNames count] != [record count]))
+    [logger log:LogStandard :@"[DBCVSReader decodeOneLine] decoded fields (%d) do not match header count (%d): %@\n", [record count], [fieldNames count], record];
+  [logger log:LogDebug :@"[DBCVSReader decodeOneLine] decoded record: %@\n", record];
   return record;
 }
 

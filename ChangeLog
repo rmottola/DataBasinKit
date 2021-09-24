@@ -1,6 +1,12 @@
+2021-09-24 Riccardo Mottola <rm@gnu.org>
+
+	* DBCSVReader.m:
+	Better check for separators and treat exceptions of unqualified emtpy
+	fields even in a qualified file.
+
 2021-04-21 Riccardo Mottola <rm@gnu.org>
 
-	* DBFileWriter.m
+	* DBFileWriter.m:
 	Now that GNUstep supports getting a BOM for an empty string, simplify
 	the code which dind't even work. Also, take in account of the BOM
 	length and skip it when writing.
