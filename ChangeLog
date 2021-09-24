@@ -4,6 +4,10 @@
 	Better check for separators and treat exceptions of unqualified emtpy
 	fields even in a qualified file.
 
+	* DBSoapCSV.m:
+	Insert a check if the number of values is less than the fields
+	(probable misparsing).
+
 2021-04-21 Riccardo Mottola <rm@gnu.org>
 
 	* DBFileWriter.m:
