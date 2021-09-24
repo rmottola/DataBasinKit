@@ -429,8 +429,13 @@
     sObj = [[DBSObject alloc] init];
   
     for (i = 0; i < fieldCount; i++)
-      [sObj setValue: [fieldValues objectAtIndex:i] forField: [fieldNames objectAtIndex:i]];
- 
+      {
+        if (i < [fieldValues count])
+          [sObj setValue: [fieldValues objectAtIndex:i] forField: [fieldNames objectAtIndex:i]];
+	else
+	  NSLog(@"Value/Field parsing inconsistency for %@", [fieldNames objectAtIndex:i]);
+      }
+
     [sObjectsArray addObject: sObj];
     [sObj release];
   }
