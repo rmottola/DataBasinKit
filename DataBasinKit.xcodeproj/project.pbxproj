@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -22,7 +22,6 @@
 		850A48C41912D4CB00B9303D /* DBSoapCSV.m in Sources */ = {isa = PBXBuildFile; fileRef = 850A48B81912D4CB00B9303D /* DBSoapCSV.m */; };
 		850A48C51912D4CB00B9303D /* DBSObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 850A48B91912D4CB00B9303D /* DBSObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		850A48C61912D4CB00B9303D /* DBSObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 850A48BA1912D4CB00B9303D /* DBSObject.m */; };
-		850A48D819131EC500B9303D /* WebServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 850A48D719131EC500B9303D /* WebServices.framework */; };
 		850FFFBB1F71DA8700B86D18 /* DBFileWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 850FFFB91F71DA8700B86D18 /* DBFileWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		850FFFBC1F71DA8700B86D18 /* DBFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 850FFFBA1F71DA8700B86D18 /* DBFileWriter.m */; };
 		85125B25192031A6000E6004 /* ChangeLog in Resources */ = {isa = PBXBuildFile; fileRef = 85125B24192031A6000E6004 /* ChangeLog */; };
@@ -34,6 +33,7 @@
 		8532DBD01FB632AC0040F7B6 /* DBSoap+Updating.m in Sources */ = {isa = PBXBuildFile; fileRef = 8532DBCC1FB632AC0040F7B6 /* DBSoap+Updating.m */; };
 		8534AFED1DAB9919005F5ECD /* DBHTMLWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8534AFEB1DAB9919005F5ECD /* DBHTMLWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8534AFEE1DAB9919005F5ECD /* DBHTMLWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 8534AFEC1DAB9919005F5ECD /* DBHTMLWriter.m */; };
+		858EE77729FABA30001851AB /* WebServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 850A48D719131EC500B9303D /* WebServices.framework */; };
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -80,7 +80,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */,
-				850A48D819131EC500B9303D /* WebServices.framework in Frameworks */,
+				858EE77729FABA30001851AB /* WebServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,8 +232,10 @@
 /* Begin PBXProject section */
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+			};
 			buildConfigurationList = 85125AC919155DE2000E6004 /* Build configuration list for PBXProject "DataBasinKit" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -306,6 +308,10 @@
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_EXCEPTIONS = YES;
@@ -331,6 +337,10 @@
 				COPY_PHASE_STRIP = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_EXCEPTIONS = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
@@ -352,6 +362,10 @@
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				FRAMEWORK_VERSION = A;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -369,10 +383,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
-				GCC_AUTO_VECTORIZATION = YES;
-				GCC_ENABLE_SSE3_EXTENSIONS = YES;
-				GCC_MODEL_TUNING = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
 				SYMROOT = "$(PROJECT_DIR)/build";
 			};
 			name = Development;
@@ -380,24 +392,18 @@
 		85125ACB19155DE2000E6004 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
-				GCC_AUTO_VECTORIZATION = YES;
-				GCC_ENABLE_SSE3_EXTENSIONS = YES;
-				GCC_MODEL_TUNING = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				ARCHS = "$(ARCHS_STANDARD)";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
 			};
 			name = Deployment;
 		};
 		85125ACC19155DE2000E6004 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
-				GCC_AUTO_VECTORIZATION = YES;
-				GCC_ENABLE_SSE3_EXTENSIONS = YES;
-				GCC_MODEL_TUNING = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				ARCHS = "$(ARCHS_STANDARD)";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
 			};
 			name = Default;
 		};
