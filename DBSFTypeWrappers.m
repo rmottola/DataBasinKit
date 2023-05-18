@@ -391,16 +391,7 @@
       // Try to guess if we have a standard SF String
       if (rangeOfT.location != NSNotFound)
         {
-	  NSDateFormatter *df = [[NSDateFormatter alloc] init];
-
-	  [df setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
-	  [df setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-	  [df setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.000'Z'"];
-
-	  d = [df dateFromString: str];
-	  if (d == nil)
-	    NSLog(@"failed to parse SF-Like string: %@:", str);
-          self = [self initWithDate:d];
+          self = [self initWithSFString:str];
         }
       else
         {
@@ -430,16 +421,17 @@
     {
       if (rangeOfT.location != NSNotFound)
 	{
-	  NSString *sD, *sT;
-	  NSString *s;
+	  NSDateFormatter *df = [[NSDateFormatter alloc] init];
 
-	  sD = [str substringToIndex:rangeOfT.location];
-	  sT = [str substringFromIndex:rangeOfT.location + 1];
-	  sT = [sT substringToIndex:8];
-	  //      NSLog(@"|%@| |%@|", sD, sT);
-	  s = [NSString stringWithFormat:@"%@ %@ +0000", sD, sT];
-	  d = [NSDate dateWithString:s];
-	  self = [self initWithDate:d];
+	  [df setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
+	  [df setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+	  [df setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.000'Z'"];
+
+	  d = [df dateFromString: str];
+	  [df release];
+	  if (d == nil)
+	    NSLog(@"failed to parse SF-Like string: %@:", str);
+          self = [self initWithDate:d];
 	}
     }
   return self;
