@@ -1,5 +1,11 @@
 2023-05-18 Riccardo Mottola <rm@gnu.org>
 
+	* DBSoapCSV.m:
+	Use [interpretString: forField: forObject:]  in update to parse input
+	for DBSFTypeWrappers, allows parsing for DateTime for now.
+
+2023-05-18 Riccardo Mottola <rm@gnu.org>
+
 	* DBSoap.h
 	* DBSoap.m: [interpretString: forField: forObject:]
 	new method that parses a string in a local format respeting the type

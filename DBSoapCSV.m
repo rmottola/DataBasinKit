@@ -1,7 +1,7 @@
 /* -*- mode: objc -*-
   Project: DataBasin
 
-  Copyright (C) 2008-2021 Free Software Foundation
+  Copyright (C) 2008-2023 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -31,6 +31,8 @@
 #import "DBProgressProtocol.h"
 #import "DBLoggerProtocol.h"
 #import "DBCSVReader.h"
+#import "DBSFTypeWrappers.h"
+
 
 /* since query identify would work in a big array giving memory issues, we split it up in this batch size */
 #define MAX_SIZE_OF_IDENTBATCH 20000
@@ -475,6 +477,7 @@
   [dbSoap setLogger:logger];
   [dbSoap setSObjectDetailsDict:[db sObjectDetailsDict]];
   [dbSoap setRunAssignmentRules: runAssignmentRules];
+  [dbSoap setEnableFieldTypesDescribeForQuery: [db enableFieldTypesDescribeForQuery]];
 
   /* retrieve objects to update */
   [p reset];
@@ -497,7 +500,14 @@
     sObj = [[DBSObject alloc] init];
   
     for (i = 0; i < fieldCount; i++)
-      [sObj setValue: [fieldValues objectAtIndex:i] forField: [fieldNames objectAtIndex:i]];
+      {
+        NSString *value;
+        NSString *fieldName = [fieldNames objectAtIndex:i];
+
+        value = [fieldValues objectAtIndex:i];
+        value = [dbSoap interpretString:value forField:fieldName forObject:objectName];
+        [sObj setValue: value forField: fieldName];
+      }
  
     [sObjectsArray addObject: sObj];
     [sObj release];
