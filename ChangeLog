@@ -1,5 +1,10 @@
 2023-05-18 Riccardo Mottola <rm@gnu.org>
 
+	* DBCSVWriter.m
+	In case of nil value insert empty string.
+
+2023-05-18 Riccardo Mottola <rm@gnu.org>
+
 	* DBSFTypeWrappers.h
 	* DBSFTypeWrappers.m:
 	Add stringValueSF method, to return value in expected SF format, differing from stringValue which may be type and locale dependent. for DateTime add parsing of yyyy-MM-DD hh:mm format with timezone and DST interpertation.

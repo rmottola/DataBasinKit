@@ -1,7 +1,7 @@
 /* -*- mode: objc -*-
   Project: DataBasin
 
-  Copyright (C) 2009-2020 Free Software Foundation
+  Copyright (C) 2009-2023 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -264,7 +264,12 @@ NSString *DBFileFormatCSV = @"CSV";
 	      
 	      if ([value isKindOfClass: [DBSFDataType class]])
 		{
-                  [dataDict setObject:[value stringValue] forKey:key];
+                  NSString *s;
+
+                  s = [value stringValue];
+                  if (nil == s)
+                    s = @"";
+                  [dataDict setObject:s forKey:key];
                   [keyOrder addObject:key];
 		}
 	      else if ([value isKindOfClass: [NSString class]] ||[value isKindOfClass: [NSNumber class]] )
@@ -296,7 +301,7 @@ NSString *DBFileFormatCSV = @"CSV";
 	}
       else if ([obj isKindOfClass: [DBSFDataType class]])
         {
-	  //NSLog(@"formatOneLine, we have directly a scalar object, NSString: %@", obj);
+	  //NSLog(@"formatOneLine, we have directly a scalar object, DBSFDataType: %@", obj);
           [dataDict setObject:obj forKey:obj];
           [keyOrder addObject:obj];
         }
