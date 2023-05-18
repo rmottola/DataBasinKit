@@ -1,6 +1,12 @@
 2023-05-18 Riccardo Mottola <rm@gnu.org>
 
-	* DBCSVWriter.m
+	* DBSFTypeWrappers.m:
+	Fix and correctly parse and output SF yyyy-MM-dd'T'HH:mm:ss.000'Z'
+	format
+
+2023-05-18 Riccardo Mottola <rm@gnu.org>
+
+	* DBCSVWriter.m:
 	In case of nil value insert empty string.
 
 2023-05-18 Riccardo Mottola <rm@gnu.org>
