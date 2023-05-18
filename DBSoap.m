@@ -465,6 +465,7 @@
  through an object describes.<br>
  Besides Strings the value could be complex being either a special type like an Address
  or a nested result of a query.</p>
+ <p>Source strings are supposed in SalesForce format for TypeWrappers initialization.</p>
 
  <p>Currently, queryMore is not performed for nested results</p>
  */
@@ -820,6 +821,91 @@
   [records release];
 }
 
+/*
+ <p>Parses a string from its type representation into the internal object, interpreting DBSFTypeObjects
+ valueStr: string value to parse, supposed in user format for TypeWrappers<br>
+ fieldName: field name<br>
+ objectName: string with the object name (used for describe)</p>
+ 
+ <p>If valueStr is nil or interpretation fails, returns an empty string</p>
+ */
+- (NSString *)interpretString:(NSString *)valueStr forField:(NSString *)fieldName forObject:(NSString *)objectName
+{
+  DBSObject *objDetails;
+  NSString *resultStr;;
+
+  objDetails = nil;
+  if ([self enableFieldTypesDescribeForQuery])
+    {
+      /* check for described object cache */
+      objDetails = [[self sObjectDetailsDict] objectForKey:objectName];
+      if (!objDetails)
+	{
+	  NSLog(@"*** describe Start***");
+	  // since we are already inside the queryAll lock, we call the unlocked describe version
+	  objDetails = [self _describeSObject:objectName];
+	  NSLog(@"*** describe End***");
+	  if (objDetails)
+	    [[self sObjectDetailsDict] setObject:objDetails forKey:objectName];
+	}
+    }
+
+  resultStr = nil;
+  if (objDetails)
+    {
+      NSString *fieldType;
+      DBSFDataType *dbsfObj;
+
+      fieldType = [[objDetails propertiesOfField: fieldName] objectForKey:@"type"];
+      if ([fieldType isEqualToString:@"double"])
+	{
+	  dbsfObj = [[[DBSFDouble alloc] initWithString:valueStr] autorelease];
+	  resultStr = [dbsfObj stringValueSF];
+	}
+      else if ([fieldType isEqualToString:@"int"])
+	{
+	  dbsfObj = [[[DBSFInteger alloc] initWithString:valueStr] autorelease];
+	  resultStr = [dbsfObj stringValueSF];
+	}
+      else if ([fieldType isEqualToString:@"boolean"])
+	{
+	  dbsfObj = [[[DBSFBoolean alloc] initWithString:valueStr] autorelease];
+	  resultStr = [dbsfObj stringValueSF];
+	}
+      else if ([fieldType isEqualToString:@"currency"])
+	{
+	  dbsfObj = [[[DBSFCurrency alloc] initWithString:valueStr] autorelease];
+	  resultStr = [dbsfObj stringValueSF];
+	}
+      else if ([fieldType isEqualToString:@"percent"])
+	{
+	  dbsfObj = [[[DBSFPercentage alloc] initWithString:valueStr] autorelease];
+	  resultStr = [dbsfObj stringValueSF];
+	}
+      else if ([fieldType isEqualToString:@"date"])
+	{
+	  dbsfObj = [[[DBSFDate alloc] initWithString:valueStr] autorelease];
+	  resultStr = [dbsfObj stringValueSF];
+	}
+      else if ([fieldType isEqualToString:@"datetime"])
+	{
+	  dbsfObj = [[[DBSFDateTime alloc] initWithString:valueStr] autorelease];
+	  resultStr = [dbsfObj stringValueSF];
+	}
+      else  // a type without wrapper, pass-through
+        {
+          resultStr = valueStr;
+        }
+    }
+  else
+    {  // no describe? again a string pass-through
+      resultStr = valueStr;
+    }
+
+  if (nil == resultStr)
+    resultStr = @"";
+  return resultStr;
+}
 
 
 - (NSArray *)_describeGlobal

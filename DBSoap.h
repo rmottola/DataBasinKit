@@ -202,5 +202,6 @@
 - (DBSObject *)_describeSObject: (NSString *)objectType;
 - (NSArray *)_describeGlobal;
 - (id)adjustFormatForField:(NSString *)key forValue:(id)value inObject:(DBSObject *)sObj;
+- (NSString *)interpretString:(NSString *)valueStr forField:(NSString *)fieldName forObject:(NSString *)objectName;
 - (void)extractQueryRecords:(NSArray *)records toObjects:(NSMutableArray *)objects;
 @end
