@@ -1,7 +1,7 @@
 /* -*- mode: objc -*-
    Project: DataBasinKit
 
-   Copyright (C) 2017 Free Software Foundation
+   Copyright (C) 2017-2023 Free Software Foundation
 
    Author: Riccardo Mottola
 
@@ -28,13 +28,18 @@
 
 #import <Foundation/Foundation.h>
 
-@interface DBSFDataType : NSObject
+@interface DBSFDataType : NSObject <NSCopying>
 {
 }
 
 - (id) initWithString:(NSString *)str;
 - (id) initWithSFString:(NSString *)str;
+
+/* returns string in the natural object format */
 - (NSString *)stringValue;
+
+/* returns string in the SalesForce expected format*/
+- (NSString *)stringValueSF;
 
 @end
 

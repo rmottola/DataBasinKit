@@ -1,7 +1,7 @@
 /* -*- mode: objc -*-
    Project: DataBasinKit
 
-   Copyright (C) 2017 Free Software Foundation
+   Copyright (C) 2017-2023 Free Software Foundation
 
    Author: Riccardo Mottola
 
@@ -26,6 +26,15 @@
 
 @implementation DBSFDataType
 
+- (id)copyWithZone:(NSZone *)zone
+{
+  DBSFDataType *objCopy;
+
+  objCopy = [[[self class] allocWithZone:zone] init];
+
+  return objCopy;
+}
+
 - (id) initWithString:(NSString *)str
 {
   NSLog(@"Subclass responsibility - initWithString");
@@ -44,6 +53,12 @@
   return nil;
 }
 
+- (NSString *)stringValueSF;
+{
+  NSLog(@"Subclass responsibility - stringValueSF");
+  return nil;
+}
+
 @end 
 
 @implementation DBSFBoolean
@@ -52,6 +67,16 @@
 + (DBSFBoolean *)sfBooleanWithBool:(BOOL)val
 {
   return [[[DBSFBoolean alloc] initWithBool:val] autorelease];
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+  DBSFBoolean *objCopy;
+
+  objCopy = [super copyWithZone:zone];
+  objCopy->value = value;
+
+  return objCopy;
 }
 
 - (id)initWithString:(NSString *)str
@@ -66,7 +91,7 @@
     v = YES;
 
   self = [self initWithBool:v];
-  
+
   return self;
 }
 
@@ -100,10 +125,30 @@
   return @"No";
 }
 
+- (NSString *)stringValueSF;
+{
+  BOOL v;
+
+  v = [self boolValue];
+  if (v)
+    return @"True";
+  return @"False";
+}
+
 @end
 
 
 @implementation DBSFInteger
+
+- (id)copyWithZone:(NSZone *)zone
+{
+  DBSFInteger *objCopy;
+
+  objCopy = [super copyWithZone:zone];
+  objCopy->value = [NSNumber copy];
+
+  return objCopy;
+}
 
 - (void)dealloc
 {
@@ -159,7 +204,7 @@
 + (DBSFDouble*) sfDoubleWithString: (NSString *)str
 {
   double d;
-  
+
   d = [str doubleValue];
   return [self sfDoubleWithDouble: d];
 }
@@ -172,16 +217,26 @@
 - (DBSFDouble *) initWithString:(NSString *)str
 {
   double d;
-  
+
   d = [str doubleValue];
   self = [self initWithDouble:d];
   return self;
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+  DBSFDouble *objCopy;
+
+  objCopy = [super copyWithZone:zone];
+  objCopy->value = [NSNumber copy];
+
+  return objCopy;
+}
+
 - (DBSFDouble *) initWithSFString:(NSString *)str
 {
   double d;
-  
+
   d = [str doubleValue];
   self = [self initWithDouble:d];
   return self;
@@ -218,6 +273,16 @@
   return [[[DBSFPercentage alloc] initWithDouble:val] autorelease];
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+  DBSFPercentage *objCopy;
+
+  objCopy = [super copyWithZone:zone];
+  objCopy->value = [NSNumber copy];
+
+  return objCopy;
+}
+
 - (id) initWithString: (NSString *)str
 {
   if (str && [str length])
@@ -239,7 +304,7 @@
   if (str && [str length])
     {
       double d;
-      
+
       d = [str doubleValue];
       self =  [self initWithDouble: d];
     }
@@ -263,7 +328,7 @@
 + (DBSFCurrency*) sfCurrencyWithString: (NSString *)str
 {
   double d;
-  
+
   d = [str doubleValue];
   return [self sfCurrencyWithDouble: d];
 }
@@ -272,6 +337,16 @@
 + (DBSFCurrency*) sfCurrencyWithDouble: (double)val
 {
   return [[[DBSFCurrency alloc] initWithDouble:val] autorelease];
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+  DBSFCurrency *objCopy;
+
+  objCopy = [super copyWithZone:zone];
+  objCopy->value = [NSNumber copy];
+
+  return objCopy;
 }
 
 @end
@@ -293,6 +368,16 @@
   return [[[DBSFDate alloc] initWithDate:val] autorelease];
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+  DBSFDateTime *objCopy;
+
+  objCopy = [super copyWithZone:zone];
+  objCopy->date = [NSDate copy];
+
+  return objCopy;
+}
+
 - (id)initWithString:(NSString *)str
 {
   NSDate *d;
@@ -300,8 +385,29 @@
   d = nil;
   if (str)
     {
-      d = [NSDate dateWithString:str];
-      self = [self initWithDate:d];
+      NSRange rangeOfT;
+
+      rangeOfT = [str rangeOfString:@"T"];
+      // Try to guess if we have a standard SF String
+      if (rangeOfT.location != NSNotFound)
+        {
+          d = [NSDate dateWithString:str];
+	  if (d == nil)
+	    NSLog(@"failed to parse SFllike string: %@:", str);
+          self = [self initWithDate:d];
+        }
+      else
+        {
+          NSDateFormatter *df = [[NSDateFormatter alloc] init];
+
+          [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+          d = [df dateFromString:str];
+          NSLog(@"inited date: %@", d);
+	  if (d == nil)
+	    NSLog(@"failed to parse locale string: %@:", str);
+          [df release];
+          self = [self initWithDate:d];
+        }
     }
 
   return self;
@@ -314,20 +420,22 @@
 
   d = nil;
   rangeOfT = [str rangeOfString:@"T"];
-  if (rangeOfT.location != NSNotFound)
+  if (str && [str length])
     {
-      NSString *sD, *sT;
-      NSString *s;
-    
-      sD = [str substringToIndex:rangeOfT.location];
-      sT = [str substringFromIndex:rangeOfT.location + 1];
-      sT = [sT substringToIndex:8];
-      //      NSLog(@"|%@| |%@|", sD, sT);
-      s = [NSString stringWithFormat:@"%@ %@ +0000", sD, sT];
-      d = [NSDate dateWithString:s];
-      self = [self initWithDate:d];
-    }
+      if (rangeOfT.location != NSNotFound)
+	{
+	  NSString *sD, *sT;
+	  NSString *s;
 
+	  sD = [str substringToIndex:rangeOfT.location];
+	  sT = [str substringFromIndex:rangeOfT.location + 1];
+	  sT = [sT substringToIndex:8];
+	  //      NSLog(@"|%@| |%@|", sD, sT);
+	  s = [NSString stringWithFormat:@"%@ %@ +0000", sD, sT];
+	  d = [NSDate dateWithString:s];
+	  self = [self initWithDate:d];
+	}
+    }
   return self;
 }
 
@@ -354,7 +462,29 @@
   s = nil;
   if (date)
     {
-      s = [date description];
+      NSDateFormatter *df = [[NSDateFormatter alloc] init];
+
+      [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+      s = [df stringFromDate: date];
+      [df release];
+    }
+  return s;
+}
+
+- (NSString *)stringValueSF
+{
+  NSString *s;
+
+  s = nil;
+  if (date)
+    {
+      NSDateFormatter *df = [[NSDateFormatter alloc] init];
+      [df setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
+      [df setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+
+      [df setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.00000'Z'"];
+      s = [df stringFromDate: date];
+      [df release];
     }
   return s;
 }
@@ -393,8 +523,29 @@
   s = nil;
   if (date)
     {
-      cd = [NSCalendarDate dateWithTimeIntervalSince1970:[date timeIntervalSince1970]];
-      s = [cd descriptionWithCalendarFormat:@"%Y-%m-%d"];
+      NSDateFormatter *df = [[NSDateFormatter alloc] init];
+
+      [df setDateFormat:@"yyyy-MM-dd"];
+      s = [df stringFromDate: date];
+      [df release];
+    }
+  return s;
+}
+
+- (NSString *)stringValueSF
+{
+  NSString *s;
+
+  s = nil;
+  if (date)
+    {
+      NSDateFormatter *df = [[NSDateFormatter alloc] init];
+      [df setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
+      [df setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+
+      [df setDateFormat:@"yyyy-MM-dd"];
+      s = [df stringFromDate: date];
+      [df release];
     }
   return s;
 }
