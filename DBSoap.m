@@ -227,13 +227,13 @@
 /** Returns the standard URL for login into production, https. Use this as login: parameter */
 + (NSURL *)loginURLProduction
 {
-  return [NSURL URLWithString:@"https://login.salesforce.com/services/Soap/u/56.0"];
+  return [NSURL URLWithString:@"https://login.salesforce.com/services/Soap/u/61.0"];
 }
 
 /** Returns the standard URL for login into sandbox, https. Use this as login: parameter */
 + (NSURL *)loginURLTest
 {
-  return [NSURL URLWithString:@"https://test.salesforce.com/services/Soap/u/56.0"];
+  return [NSURL URLWithString:@"https://test.salesforce.com/services/Soap/u/61.0"];
 }
 
 /** returns a GWService inited usefully for DBSoap */
@@ -617,8 +617,7 @@
 	  
               // hack until DBSObjects can be handled by writers
               dict2 = [[NSMutableDictionary alloc] init];
-	  
-	  
+
               keys = [(NSDictionary *)value allKeys];
               //      NSLog(@"we have a complex object: %@ with keys: %@", type2, keys);
               for (i = 0; i < [keys count]; i++)
@@ -799,7 +798,7 @@
 
   if (records == nil || [records count] == 0)
     return;
-//  NSLog(@"\n\nRecords to extract: %@\n\n", records);
+
   [records retain];
   batchSize = [records count];
 
