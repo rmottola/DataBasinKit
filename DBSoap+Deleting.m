@@ -460,8 +460,16 @@
   [queryParmDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
 
   [queryParmDict setObject: objectType forKey: @"objectType"];
-  [queryParmDict setObject: startDateStr forKey: @"startDate"];
-  [queryParmDict setObject: endDateStr forKey: @"endDate"];
+
+  if (startDateStr)
+    [queryParmDict setObject: startDateStr forKey: @"startDate"];
+  else
+    [logger log: LogStandard: @"[DBSoap getDeleted] exception: empty start date\n"];
+
+  if (endDateStr)
+    [queryParmDict setObject: endDateStr forKey: @"endDate"];
+  else
+    [logger log: LogStandard: @"[DBSoap getDeleted] exception: empty end date\n"];
 
   parmsOrder = [NSMutableArray arrayWithCapacity: 3];
   [parmsOrder addObject:@"objectType"];
