@@ -224,16 +224,32 @@
   return [NSArray arrayWithArray:fields];
 }
 
+/** Returns the supported API version */
++ (NSString *)apiVersion
+{
+  return @"61.0";
+}
+
 /** Returns the standard URL for login into production, https. Use this as login: parameter */
 + (NSURL *)loginURLProduction
 {
-  return [NSURL URLWithString:@"https://login.salesforce.com/services/Soap/u/61.0"];
+  NSURL *url;
+  
+  url = [NSURL URLWithString:@"https://login.salesforce.com/services/Soap/u/"];
+  url = [url URLByAppendingPathComponent:[DBSoap apiVersion] isDirectory:NO];
+
+  return url;
 }
 
 /** Returns the standard URL for login into sandbox, https. Use this as login: parameter */
 + (NSURL *)loginURLTest
 {
-  return [NSURL URLWithString:@"https://test.salesforce.com/services/Soap/u/61.0"];
+  NSURL *url;
+  
+  url = [NSURL URLWithString:@"https://test.salesforce.com/services/Soap/u/"];
+  url = [url URLByAppendingPathComponent:[DBSoap apiVersion] isDirectory:NO];
+  
+  return url;
 }
 
 /** returns a GWService inited usefully for DBSoap */

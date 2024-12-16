@@ -97,6 +97,7 @@
 }
 
 + (NSArray *)fieldsByParsingQuery:(NSString *)query;
++ (NSString *)apiVersion;
 + (NSURL *)loginURLProduction;
 + (NSURL *)loginURLTest;
 + (GWSService *)gwserviceForDBSoap;
