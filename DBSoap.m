@@ -370,7 +370,7 @@
   NSString              *key;
   NSDictionary          *loginResult;
   NSDictionary          *loginResult2;
-  NSDictionary          *userInfoResult;
+  NSMutableDictionary   *userInfoResult;
   NSDictionary          *queryFault;
   GWSService            *service;
   NSURL                 *gottenURL;
@@ -449,16 +449,9 @@
   if ([[loginResult2 objectForKey:@"passwordExpired"] isEqualToString:@"true"])
     passwordExpired = YES;
   
-  userInfoResult = [loginResult2 objectForKey:@"userInfo"];
-  userInfo = [[NSMutableDictionary dictionaryWithCapacity:5] retain];
-  [userInfo setValue:[userInfoResult objectForKey:@"organizationId"] forKey:@"organizationId"];
-  [userInfo setValue:[userInfoResult objectForKey:@"organizationName"] forKey:@"organizationName"];
-  [userInfo setValue:[userInfoResult objectForKey:@"profileId"] forKey:@"profileId"];
-  [userInfo setValue:[userInfoResult objectForKey:@"roleId"] forKey:@"roleId"];
-  [userInfo setValue:[userInfoResult objectForKey:@"userId"] forKey:@"userId"];
-  [userInfo setValue:[userInfoResult objectForKey:@"userEmail"] forKey:@"userEmail"];
-  [userInfo setValue:[userInfoResult objectForKey:@"userFullName"] forKey:@"userFullName"];
-  [userInfo setValue:[userInfoResult objectForKey:@"userName"] forKey:@"userName"];
+  userInfoResult = [NSMutableDictionary dictionaryWithDictionary:[loginResult2 objectForKey:@"userInfo"]];
+  [userInfoResult removeObjectForKey:@"GWSCoderOrder"];
+  userInfo = [[NSDictionary dictionaryWithDictionary:userInfoResult] retain];
   
   [self setServerURL:gottenURL];
 
