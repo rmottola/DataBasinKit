@@ -1,7 +1,7 @@
 /* -*- mode: objc -*-
   Project: DataBasin
 
-  Copyright (C) 2008-2021 Free Software Foundation
+  Copyright (C) 2008-2025 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -142,6 +142,8 @@
 - (void)setEnableFieldTypesDescribeForQuery:(BOOL)flag;
 - (NSMutableDictionary *)sObjectDetailsDict;
 - (void)setSObjectDetailsDict:(NSMutableDictionary *)md;
+
+- (NSDictionary *)getUserInfo;
 
 - (NSString *) sessionId;
 - (void) setSessionId:(NSString *)session;

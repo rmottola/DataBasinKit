@@ -1,7 +1,7 @@
 /* -*- mode: objc -*-
   Project: DataBasin
 
-  Copyright (C) 2008-2021 Free Software Foundation
+  Copyright (C) 2008-2025 Free Software Foundation
 
   Author: Riccardo Mottola
 
@@ -1022,6 +1022,82 @@
   return [NSArray arrayWithArray: objectList];
 }
 
+- (NSDictionary *)_getUserInfo
+{
+  GWSService            *service;
+  NSMutableDictionary   *headerDict;
+  NSMutableDictionary   *sessionHeaderDict;
+  NSMutableDictionary   *parmsDict;
+  NSMutableDictionary   *queryParmDict;
+  NSDictionary          *resultDict;
+  NSDictionary          *queryResult;
+  NSDictionary          *result;
+  NSDictionary          *queryFault;
+  NSArray               *records;
+  NSArray               *recordTypeObjs;
+  NSDictionary          *record;
+  NSUInteger            i;
+  NSMutableArray        *keys;
+  DBSObject             *object;
+  NSMutableDictionary   *propDict;
+  NSMutableArray        *rtArray;
+  NSMutableArray        *rtArray2;
+  NSMutableString       *queryString;
+  NSMutableDictionary   *userInfoDict;
+  NSArray               *resultKeys;
+
+  /* prepare the header */
+  sessionHeaderDict = [NSMutableDictionary dictionaryWithCapacity: 2];
+  [sessionHeaderDict setObject: sessionId forKey: @"sessionId"];
+  [sessionHeaderDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
+
+  headerDict = [NSMutableDictionary dictionaryWithCapacity: 2];
+  [headerDict setObject: sessionHeaderDict forKey: @"SessionHeader"];
+  [headerDict setObject: GWSSOAPUseLiteral forKey: GWSSOAPUseKey];
+
+  /* prepare the parameters */
+  queryParmDict = [NSMutableDictionary dictionaryWithCapacity: 2];
+  [queryParmDict setObject: @"urn:partner.soap.sforce.com" forKey: GWSSOAPNamespaceURIKey];
+
+  parmsDict = [NSMutableDictionary dictionaryWithCapacity: 1];
+  [parmsDict setObject: queryParmDict forKey: @"getUserInfo"];
+  [parmsDict setObject: headerDict forKey:GWSSOAPMessageHeadersKey];
+
+  /* init our service */
+  service = [[DBSoap gwserviceForDBSoap] retain];
+  [service setURL:serverURL];
+
+  /* make the query */
+  resultDict = [service invokeMethod: @"getUserInfo"
+                         parameters : parmsDict
+                              order : nil
+                            timeout : standardTimeoutSec];
+  [service release];
+
+  queryFault = [resultDict objectForKey:GWSFaultKey];
+  if (queryFault != nil)
+    {
+      NSDictionary *fault;
+      NSDictionary *faultDetail;
+
+      faultDetail = [queryFault objectForKey:@"detail"];
+      fault = [faultDetail objectForKey:@"fault"];
+      NSLog(@"fault: %@", fault);
+      [logger log: LogStandard :@"[DBSoap getUserInfo] exception code: %@\n", [fault objectForKey:@"exceptionCode"]];
+      [logger log: LogStandard :@"[DBSoap getUserInfo] exception message: %@\n", [fault objectForKey:@"exceptionMessage"]];
+      [[NSException exceptionWithName:@"DBException" reason:[fault objectForKey:@"exceptionMessage"] userInfo:nil] raise];
+      return nil;
+    }
+
+  queryResult = [resultDict objectForKey:GWSParametersKey];
+  result = [queryResult objectForKey:@"result"];
+
+  userInfoDict = [NSMutableDictionary dictionaryWithDictionary: result];
+  [userInfoDict removeObjectForKey:@"GWSCoderOrder"];
+
+  return userInfoDict;
+}
+
 
 
 /* returns the currently stored list of object names
@@ -2015,6 +2091,17 @@
       sObjectDetailsDict = md;
       [sObjectDetailsDict retain];
     }
+}
+
+/** retrieves/refreshes user information - performes API call */
+- (NSDictionary *)getUserInfo
+{
+  NSDictionary *dict;
+
+  dict = [self _getUserInfo];
+  [userInfo release];
+  userInfo = [dict retain];
+  return dict;
 }
   
 
