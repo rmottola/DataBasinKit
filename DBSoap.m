@@ -1025,6 +1025,7 @@
   NSDictionary          *resultDict;
   NSDictionary          *queryResult;
   NSDictionary          *result;
+  NSString              *coderError;
   NSDictionary          *queryFault;
   NSArray               *records;
   NSArray               *recordTypeObjs;
@@ -1066,6 +1067,15 @@
                               order : nil
                             timeout : standardTimeoutSec];
   [service release];
+
+  coderError = [resultDict objectForKey:@"GWSCoderError"];
+  if (coderError != nil)
+    {
+      NSLog(@"coderError: %@", coderError);
+      [logger log: LogStandard :@"[DBSoap getUserInfo] exception code: %@\n", coderError];
+      [[NSException exceptionWithName:@"DBException" reason:coderError userInfo:nil] raise];
+      return nil;
+    }
 
   queryFault = [resultDict objectForKey:GWSFaultKey];
   if (queryFault != nil)
