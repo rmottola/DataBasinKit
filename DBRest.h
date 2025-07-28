@@ -1,7 +1,7 @@
 /* -*- mode: objc -*-
    Project: DataBasinKit
 
-   Copyright (C) 2019-2020 Free Software Foundation
+   Copyright (C) 2019-2025 Free Software Foundation
 
    Author: Riccardo Mottola
 
@@ -36,10 +36,17 @@
 {
   GWSService *service;
   id<DBLoggerProtocol> logger;
-    
+
   /* salesforce.com session variables */
   NSString     *sessionId;
   NSURL        *serverURL;
+
+  /** is executing */
+  NSUInteger *busyCount;
+  NSRecursiveLock *lockBusy;
+
+  /** describe each object in a query to get field types */
+  BOOL enableFieldTypesDescribeForQuery;
 }
 
 + (NSString *)encodeQueryString:(NSString *)query;
@@ -48,11 +55,16 @@
 - (id<DBLoggerProtocol>)logger;
 
 - (NSString *)query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects progressMonitor:(id<DBProgressProtocol>)p;
+- (NSString *)queryMore :(NSString *)locator toArray:(NSMutableArray *)objects;
+
 
 - (NSString *) sessionId;
 - (void) setSessionId:(NSString *)session;
 - (NSURL *) serverURL;
 - (void) setServerURL:(NSURL *)url;
+
+
+- (NSString *)_query :(NSString *)queryString queryAll:(BOOL)all toArray:(NSMutableArray *)objects declaredSize:(NSUInteger *)ds progressMonitor:(id<DBProgressProtocol>)p;
 
 @end
 
