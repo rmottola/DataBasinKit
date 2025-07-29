@@ -144,17 +144,18 @@
 
       key = [keys objectAtIndex:j];
       obj = [record objectForKey: key];
-      //      NSLog(@"analyzing %@ : %@", key, obj);
+      NSLog(@"analyzing %@ : %@ %@", key, obj, NSStringFromClass([obj class]));
       if ([key isEqualToString:@"Id"])
 	{
 	  [sObj setValue: obj forField: key];
 	}
       else if ([obj isKindOfClass:[NSDictionary class]])
 	{
-	  // This is recurisve, it is a sub-query result
+	  // This is recursive, it is a sub-query result
 	  NSDictionary *result = (NSDictionary *)obj;
 	  id           subRecords;
 
+          NSLog(@"recursing into %@", obj);
 	  subRecords = [obj objectForKey:@"records"];
 	  if (subRecords != nil)
 	    {
@@ -162,7 +163,7 @@
 	      int             size;
 
 	      // We have a sub-query or otherwise a list of records
-	      sizeStr = [result objectForKey:@"size"];
+	      sizeStr = [result objectForKey:@"size"]; // FIXME verify in REST 
 	      size = [sizeStr intValue];
 
 	      /* if we have only one element, we just recurse */
@@ -183,14 +184,11 @@
 	    }
 	  else
 	    {
-	      value = obj;
-	      //NSLog(@"complex field: %@", value);
-	      // we have a complex field, but not an object
-	      if (enableFieldTypesDescribeForQuery)
-		{
-		  value = [self adjustFormatForField:key forValue:value inObject:sObj];
-		}
-	      [sObj setValue: value forField: key];
+              DBSObject *o;
+
+              NSLog(@"complex field: %@, %@", obj, NSStringFromClass([obj class]));
+              o = [self extractQueryRecord:obj];
+              [sObj setValue:o forField: key];
 	    }
 	}
       else
@@ -283,11 +281,9 @@
   [urlComp setPath:[[urlComp path] stringByAppendingPathComponent:@"query"]];
   [urlComp setQuery:queryCommand];
   url = [urlComp URL];
-  NSLog(@"URL: %@", url);
   gsrv = [[GWSService alloc] init];
 
   [gsrv setHeaders:headers];
-  [gsrv setDebug:YES];
   [gsrv setURL:url];
   [gsrv setHTTPMethod:@"GET"];
   
@@ -317,19 +313,26 @@
 
   queryResult = [response objectForKey:GWSParametersKey];
   result = [queryResult objectForKey:@"Result"];
-  NSLog(@"Result: %@", result);
+  NSLog(@"Result: %@, %@", result, NSStringFromClass([result class]));
 
   [logger log: LogDebug: @"[DBRest query] result: %@\n", result];
 
-  queryFault = [result objectForKey:@"errorCode"];
-  if (queryFault != nil)
+  if ([result isKindOfClass:[NSArray class]])
     {
-      NSDictionary *faultDetail;
-      NSString *message;
+      NSDictionary *firstItem;
 
-      message = [response objectForKey:@"message"];
-      [logger log: LogStandard: @"[DBSoap query] exception: %@\n", message];
-      [[NSException exceptionWithName:@"DBException" reason:message userInfo:nil] raise];
+      firstItem = [result objectAtIndex:0];
+      queryFault = [firstItem objectForKey:@"errorCode"];
+
+      if (queryFault != nil)
+        {
+          NSDictionary *faultDetail;
+          NSString *message;
+
+          message = [firstItem objectForKey:@"message"];
+          [logger log: LogStandard: @"[DBSoap query] exception: %@\n", message];
+          [[NSException exceptionWithName:@"DBException" reason:message userInfo:nil] raise];
+        }
     }
 
   done = [[result objectForKey:@"done"] boolValue];
@@ -358,12 +361,8 @@
   [p setMaximumValue: size];
 
   /* if we have only one element, put it in an array */
-  if (records != nil)
+  if (records != nil && [records count] > 0)
     {
-      if (size == 1)
-	{
-	  records = [NSArray arrayWithObject:records];
-	}
       [self extractQueryRecords:records toObjects:objects];
     }
   else
