@@ -44,8 +44,19 @@
 {
   if ((self = [super init]))
     {
+      lockBusy = [[NSRecursiveLock alloc] init];
+      busyCount = 0;
     }
   return self;
+}
+
+- (void)dealloc
+{
+  [lockBusy release];
+
+  [sessionId release];
+  [serverURL release];
+  [super dealloc];
 }
 
 - (void)setLogger: (id<DBLoggerProtocol>)l
@@ -427,12 +438,5 @@
     }
 }
 
-
-- (void)dealloc
-{
-  [sessionId release];
-  [service release];
-  [super dealloc];
-}
 
 @end

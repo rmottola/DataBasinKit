@@ -300,6 +300,18 @@
   return self;
 }
 
+- (void)dealloc
+{
+  [lockBusy release];
+
+  [sObjectDetailsDict release];
+  [sessionId release];
+  [serverURL release];
+  [userInfo release];
+  [super dealloc];
+}
+
+
 - (void)setLogger: (id<DBLoggerProtocol>)l
 {
   if (logger)
@@ -1448,18 +1460,6 @@
 {
   return busyCount > 0;
 }
-
-- (void)dealloc
-{
-  [lockBusy release];
-
-  [sObjectDetailsDict release];
-  [sessionId release];
-  [serverURL release];
-  [userInfo release];
-  [super dealloc];
-}
-
 
 /* ------- public exposed API, which test for lock and invoke internal implementations */
 
