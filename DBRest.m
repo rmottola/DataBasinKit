@@ -244,7 +244,7 @@
   NSString              *queryCommand;
   NSDictionary          *headers;
   NSDictionary          *response;
-  NSDictionary          *result;
+  id                     result;
   NSString              *doneStr;
   BOOL                  done;
   GWSService            *gsrv;
@@ -321,7 +321,7 @@
     {
       NSDictionary *firstItem;
 
-      firstItem = [result objectAtIndex:0];
+      firstItem = [(NSArray *)result objectAtIndex:0];
       queryFault = [firstItem objectForKey:@"errorCode"];
 
       if (queryFault != nil)
@@ -335,9 +335,9 @@
         }
     }
 
-  done = [[result objectForKey:@"done"] boolValue];
-  records = [result objectForKey:@"records"];
-  sizeNum = [result objectForKey:@"totalSize"];
+  done = [[(NSDictionary *)result objectForKey:@"done"] boolValue];
+  records = [(NSDictionary *)result objectForKey:@"records"];
+  sizeNum = [(NSDictionary *)result objectForKey:@"totalSize"];
 
   [logger log: LogDebug: @"[DBRest query] done: %d\n", done];
 
